@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="悦动健康">
-<link rel="stylesheet" href="assets/css/style.css?v=38">
+<link rel="stylesheet" href="assets/css/style.css?v=39">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="悦动健康">
 <meta property="og:locale" content="zh_CN">
@@ -63,37 +63,51 @@
 
 <section class="section-sm">
   <div class="container">
-    <div id="todayPick" class="mb-3"></div>
-    <div class="flex-between flex-wrap" style="margin-bottom:16px;gap:10px">
-      <div class="tabs" id="articleCats" style="margin:0"></div>
-      <select class="input" id="articleSort" style="width:auto;padding:8px 34px 8px 14px;border-radius:var(--radius-full)">
-        <option value="smart">✨ 智能推荐</option>
-        <option value="new">🕐 最新发布</option>
-        <option value="hot">🔥 最多阅读</option>
-      </select>
+    <div class="kb-head">
+      <div class="kb-head-text">
+        <h1 style="font-size:1.6rem;font-weight:900">📖 健康知识</h1>
+        <p class="muted small" style="margin-top:4px">科学健身干货 · 每日更新</p>
+      </div>
+      <div class="search-box" style="margin:0;flex:1;max-width:340px">
+        <span class="s-ico">🔍</span>
+        <input class="input" id="articleSearch" placeholder="搜索健康知识…">
+      </div>
     </div>
-    <div class="search-box">
-      <span class="s-ico">🔍</span>
-      <input class="input" id="articleSearch" placeholder="搜索文章标题、摘要或内容…">
+    <div class="kb-layout">
+      <div class="kb-main">
+        <div class="kb-toolbar">
+          <div class="kb-sort" id="kbSort">
+            <button class="kb-sort-btn active" data-sort="smart">✨ 推荐</button>
+            <button class="kb-sort-btn" data-sort="new">🕐 最新</button>
+            <button class="kb-sort-btn" data-sort="hot">🔥 热门</button>
+          </div>
+        </div>
+        <div id="articleList" class="kb-list"></div>
+      </div>
+      <aside class="kb-side">
+        <div class="kb-card">
+          <div class="kb-card-title">🌟 今日推荐</div>
+          <div id="sidePick"></div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-title">🔥 热门排行</div>
+          <div id="sideHot"></div>
+        </div>
+        <div class="kb-card">
+          <div class="kb-card-title">🏷️ 分类</div>
+          <div id="sideCats"></div>
+        </div>
+      </aside>
     </div>
-    <div class="grid grid-3" id="articleCards"></div>
-    <div class="mt-4" id="articleBodies"></div>
   </div>
 </section>
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <a class="logo" href="index.html" style="color:var(--text)"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
-        <p class="f-desc">科学运动 + 均衡饮食 + 数据追踪，一站式私人健康管理平台。所有数据仅保存在你的浏览器本地。</p>
-      </div>
-      <div><h4>工具</h4><a href="bmi.html">BMI 计算</a><a href="calorie.html">卡路里计算</a><a href="foods.html">食物热量库</a></div>
-      <div><h4>健康</h4><a href="plans.html">运动计划</a><a href="tracker.html">健康追踪</a><a href="articles.html">健康知识</a></div>
-      <div><h4>关于</h4><a href="about.html">关于本站</a><a href="about.html#privacy">隐私说明</a><a href="about.html#disclaimer">免责声明</a></div>
-    </div>
-    <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
+
+<!-- 阅读弹窗 -->
+<div class="modal-overlay" id="readModal">
+  <div class="modal" style="max-width:720px;max-height:88vh;overflow-y:auto">
+    <div id="readContent"></div>
   </div>
-</footer><!-- 文章管理面板 -->
+</div><!-- 文章管理面板 -->
 <div class="modal-overlay" id="adminModal">
   <div class="modal" style="max-width:640px">
     <div class="modal-title" id="adminModalTitle">✍️ 新建文章</div>
@@ -124,11 +138,11 @@
   </div>
 </div>
 
-<script src="assets/js/supabase-config.js?v=38"></script>
-<script src="assets/js/storage.js?v=38"></script>
-<script src="assets/js/data.js?v=38"></script>
-<script src="assets/js/charts.js?v=38"></script>
-<script src="assets/js/app.js?v=38"></script><script src="assets/js/pages/articles.js?v=38"></script><script>
+<script src="assets/js/supabase-config.js?v=39"></script>
+<script src="assets/js/storage.js?v=39"></script>
+<script src="assets/js/data.js?v=39"></script>
+<script src="assets/js/charts.js?v=39"></script>
+<script src="assets/js/app.js?v=39"></script><script src="assets/js/pages/articles.js?v=39"></script><script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('sw.js').catch(function () {});
