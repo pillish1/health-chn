@@ -1047,3 +1047,39 @@ html[data-theme="dark"] .hero-card {
 .welcome-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
 .welcome-stats span { font-size: .78rem; color: var(--text-2); background: var(--surface); padding: 3px 10px; border-radius: 8px; }
 .welcome-stats b { color: var(--primary); }
+
+
+/* ============ 打磨 v10：精致动效（克制版） ============ */
+
+/* 按钮按压 */
+.btn:active { transform: scale(.96); }
+
+/* 卡片轻微悬浮（仅 hover） */
+.feature-card, .hot-card, .stat-card { transition: transform .2s var(--ease), box-shadow .2s, border-color .2s; }
+
+/* 图标微动 */
+.icon-badge { transition: transform .25s var(--ease); }
+.feature-card:hover .icon-badge { transform: scale(1.1) rotate(-4deg); }
+
+/* 进度条平滑 */
+.progress-bar { transition: width .5s var(--ease); }
+
+/* 数字统计 hover 高亮 */
+.stat-card:hover .s-value { transform: scale(1.06); }
+.stat-card .s-value { transition: transform .2s; display: inline-block; }
+
+/* 表格行 hover */
+.table tbody tr { transition: background .15s; }
+
+/* 导航链接下划线动效 */
+.nav-links a { position: relative; }
+.nav-links a:not(.active)::after {
+  content: ""; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 2px;
+  background: var(--primary); border-radius: 2px; transform: scaleX(0); transform-origin: left;
+  transition: transform .25s var(--ease);
+}
+.nav-links a:not(.active):hover::after { transform: scaleX(1); }
+
+/* 列表项 hover 反馈 */
+.list-row { transition: background .15s, padding-left .2s; }
+.list-row:hover { background: var(--surface-2); padding-left: 8px; }

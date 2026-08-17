@@ -4,6 +4,7 @@
   "description": "科学运动 + 均衡饮食 + 数据追踪，一站式私人健康管理平台",
   "start_url": "./index.html",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#f4f8ff",
   "theme_color": "#2563eb",

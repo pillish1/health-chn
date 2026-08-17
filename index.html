@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="悦动健康">
-<link rel="stylesheet" href="assets/css/style.css?v=35">
+<link rel="stylesheet" href="assets/css/style.css?v=36">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="悦动健康">
 <meta property="og:locale" content="zh_CN">
@@ -37,6 +37,13 @@
 </script>
 </head>
 <body>
+<div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="text-align:center">
+    <img src="icons/icon-192.png" alt="悦动健康" style="width:56px;height:56px;border-radius:16px;box-shadow:0 8px 24px rgba(139,92,246,.3);animation:pulse 1.2s ease-in-out infinite">
+    <div style="margin-top:12px;color:var(--muted);font-size:.85rem">加载中…</div>
+  </div>
+</div>
+<style>@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }</style>
 
 <nav class="navbar">
   <div class="nav-inner">
@@ -327,19 +334,16 @@
   </div>
 </div>
 
-<script src="assets/js/supabase-config.js?v=35"></script>
-<script src="assets/js/storage.js?v=35"></script>
-<script src="assets/js/data.js?v=35"></script>
-<script src="assets/js/charts.js?v=35"></script>
-<script src="assets/js/app.js?v=35"></script>
-<script src="assets/js/pages/home.js?v=35"></script>
+<script src="assets/js/supabase-config.js?v=36"></script>
+<script src="assets/js/storage.js?v=36"></script>
+<script src="assets/js/data.js?v=36"></script>
+<script src="assets/js/charts.js?v=36"></script>
+<script src="assets/js/app.js?v=36"></script>
+<script src="assets/js/pages/home.js?v=36"></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    if (!localStorage.getItem('ydjk:sw-off')) {
-      localStorage.setItem('ydjk:sw-off', '1');
-      navigator.serviceWorker.register('sw.js').catch(function () {});
-    }
+    navigator.serviceWorker.register('sw.js').catch(function () {});
   });
 }
 </script>

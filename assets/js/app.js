@@ -632,7 +632,20 @@
     });
   }
 
+  /* ---------- 页面加载指示 ---------- */
+  function initPageLoader() {
+    var loader = document.getElementById('pageLoader');
+    if (loader) {
+      // 页面内容渲染完成后淡出
+      setTimeout(function () {
+        loader.style.opacity = '0';
+        setTimeout(function () { loader.remove(); }, 300);
+      }, 200);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    initPageLoader();
     initSWUpdate();
     initCrossTab();
     initInstallPrompt();

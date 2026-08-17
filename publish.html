@@ -5,9 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>发布文章 · 悦动健康</title>
 <meta name="theme-color" content="#3b82f6">
-<link rel="stylesheet" href="assets/css/style.css?v=35">
+<link rel="stylesheet" href="assets/css/style.css?v=36">
 </head>
 <body>
+<div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="text-align:center">
+    <img src="icons/icon-192.png" alt="悦动健康" style="width:56px;height:56px;border-radius:16px;box-shadow:0 8px 24px rgba(139,92,246,.3);animation:pulse 1.2s ease-in-out infinite">
+    <div style="margin-top:12px;color:var(--muted);font-size:.85rem">加载中…</div>
+  </div>
+</div>
+<style>@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }</style>
 <nav class="navbar">
   <div class="nav-inner">
     <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
@@ -47,9 +54,9 @@
   </div>
 </section>
 
-<script src="assets/js/storage.js?v=35"></script>
-<script src="assets/js/supabase-config.js?v=35"></script>
-<script src="assets/js/app.js?v=35"></script>
+<script src="assets/js/storage.js?v=36"></script>
+<script src="assets/js/supabase-config.js?v=36"></script>
+<script src="assets/js/app.js?v=36"></script>
 <script>
 (function () {
   'use strict';
