@@ -1232,3 +1232,88 @@ html[data-theme="dark"] .hero-card {
   .dash-side { flex-direction: row; flex-wrap: wrap; }
   .dash-stat { flex: 1; min-width: 140px; }
 }
+
+
+/* ============ 移动端优先大改 v41 ============ */
+/* 手机端：隐藏桌面顶部导航，用底部 Tab 替代 */
+@media (max-width: 900px) {
+  .navbar { display: none; }
+  .page-hero { padding: 24px 0 20px; }
+  .page-hero h1 { font-size: 1.5rem; }
+  .page-hero p { font-size: .85rem; margin-top: 6px; }
+  .section { padding: 32px 0; }
+  .section-sm { padding: 24px 0; }
+  .container { padding: 0 16px; }
+  .card { border-radius: 18px; padding: 20px; }
+  .grid { gap: 14px; }
+  body { padding-bottom: 70px; }
+}
+
+/* 手机端首页精简 */
+@media (max-width: 900px) {
+  .hero { padding: 20px 0 32px !important; }
+  .dash-main { padding: 18px; border-radius: 20px; }
+  .dash-rings { gap: 8px; }
+  .dash-ring { max-width: 100px; }
+  .dash-quick .btn { padding: 9px 16px; font-size: .82rem; }
+  .dash-stat { padding: 14px 16px; }
+  .dash-stat b { font-size: 1.2rem; }
+  .hero-stats { margin-top: 24px; gap: 16px; }
+  .hero-stat .num { font-size: 1.3rem; }
+  .trust-bar { display: none; }
+  .step-guide { display: none; }
+  .demo-heatmap { display: none; }
+  .welcome-stats { display: none; }
+}
+
+
+/* ============ 移动端 App 头部 v41 ============ */
+@media (max-width: 900px) {
+  .m-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px 4px; gap: 10px;
+  }
+  .m-header .m-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 1.1rem; color: var(--text); }
+  .m-header .m-logo img { width: 34px; height: 34px; border-radius: 10px; }
+  .m-header .m-actions { display: flex; gap: 8px; align-items: center; }
+  .m-header .icon-btn { width: 38px; height: 38px; }
+  .m-header .m-search {
+    flex: 1; display: flex; align-items: center; gap: 6px;
+    background: var(--surface-2); border-radius: 999px; padding: 8px 14px;
+    color: var(--muted); font-size: .85rem; cursor: pointer;
+  }
+}
+@media (min-width: 901px) {
+  .m-header { display: none; }
+}
+
+
+/* ============ 移动端首页精简 v41 ============ */
+@media (max-width: 900px) {
+  /* 功能导览 → 横向滑动小卡片 */
+  .feature-grid-mobile { display: flex; overflow-x: auto; gap: 10px; padding: 4px 0 10px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .feature-grid-mobile .card { flex: 0 0 120px; scroll-snap-align: start; padding: 14px 12px; text-align: center; }
+  .feature-grid-mobile .icon-badge { margin: 0 auto 8px; }
+  .feature-grid-mobile .card-title { font-size: .8rem; justify-content: center; }
+  .feature-grid-mobile .card-sub { display: none; }
+  .feature-grid-mobile .fc-more { display: none; }
+  
+  /* 桌面 grid 3/4 在手机强制 2 列 */
+  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .grid-2 { grid-template-columns: 1fr !important; gap: 12px !important; }
+  
+  /* 文章预览卡片压缩 */
+  .article-card .a-title { font-size: .92rem; }
+  .article-card .a-excerpt { -webkit-line-clamp: 2; }
+  
+  /* 表格横滚 */
+  .table-wrap { overflow-x: auto; }
+  
+  /* 弹窗全屏化（App 体验） */
+  .modal { max-width: 100% !important; border-radius: 22px 22px 0 0 !important; max-height: 92vh !important; }
+  .modal-overlay { align-items: flex-end !important; }
+  
+  /* 输入框/按钮触控友好 */
+  .input { padding: 12px 14px !important; }
+  .btn { padding: 10px 20px !important; }
+}

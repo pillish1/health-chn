@@ -5,9 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>发布文章 · 悦动健康</title>
 <meta name="theme-color" content="#3b82f6">
-<link rel="stylesheet" href="assets/css/style.css?v=40">
+<link rel="stylesheet" href="assets/css/style.css?v=41">
 </head>
 <body>
+
+<!-- 移动端 App 头 -->
+<div class="m-header">
+  <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
+  <div class="m-search" onclick="location.href='discover.html'">🔍 搜索健康知识、计划…</div>
+  <div class="m-actions">
+    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的">👤</button>
+  </div>
+</div>
+
 <div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
   <div style="text-align:center">
     <img src="icons/icon-192.png" alt="悦动健康" style="width:56px;height:56px;border-radius:16px;box-shadow:0 8px 24px rgba(139,92,246,.3);animation:pulse 1.2s ease-in-out infinite">
@@ -54,9 +64,9 @@
   </div>
 </section>
 
-<script src="assets/js/storage.js?v=40"></script>
-<script src="assets/js/supabase-config.js?v=40"></script>
-<script src="assets/js/app.js?v=40"></script>
+<script src="assets/js/storage.js?v=41"></script>
+<script src="assets/js/supabase-config.js?v=41"></script>
+<script src="assets/js/app.js?v=41"></script>
 <script>
 (function () {
   'use strict';
