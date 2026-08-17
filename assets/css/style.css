@@ -1356,3 +1356,50 @@ html[data-theme="dark"] .hero-card {
   .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
   .grid-2 { grid-template-columns: 1fr !important; }
 }
+
+/* 追踪页分区 Tab（移动端） */
+.tracker-tabs { display: none; }
+@media (max-width: 900px) {
+  .tracker-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 12px; margin-bottom: 4px; }
+  .tracker-tab {
+    flex: none; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-2); font-size: .82rem; font-weight: 700; cursor: pointer; transition: all .2s;
+  }
+  .tracker-tab.active { background: linear-gradient(135deg,#3b82f6,#8b5cf6); color: #fff; border-color: transparent; }
+}
+
+/* 桌面首页大气化 v42b */
+@media (min-width: 901px) {
+  .dash-grid { grid-template-columns: 1.5fr 1fr; gap: 36px; max-width: 1080px; }
+  .dash-main { padding: 34px; border-radius: 28px; }
+  .dash-title h1 { font-size: 1.6rem; }
+  .dash-rings .dash-ring { max-width: 160px; }
+  .dash-stat { padding: 20px 26px; border-radius: 20px; }
+  .dash-stat b { font-size: 1.7rem; }
+  .dash-quick { margin-top: 26px; gap: 14px; }
+  .dash-quick .btn { padding: 12px 28px; font-size: .92rem; }
+}
+
+/* 今日任务清单 */
+.today-tasks { display: flex; gap: 10px; flex-wrap: wrap; }
+.task-list { display: flex; gap: 10px; width: 100%; flex-wrap: wrap; }
+.task-item {
+  flex: 1; min-width: 150px; display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  padding: 12px 14px; text-decoration: none; color: var(--text); transition: all .2s;
+}
+.task-item:hover { border-color: var(--primary); transform: translateY(-2px); }
+.task-item.done { border-color: rgba(16,185,129,.4); background: rgba(16,185,129,.05); }
+.task-ico { font-size: 1.3rem; }
+.task-main { flex: 1; min-width: 0; }
+.task-main b { font-size: .85rem; display: block; }
+.task-sub { font-size: .72rem; color: var(--muted); }
+.task-check { font-size: 1.1rem; color: var(--muted); font-weight: 800; }
+.task-item.done .task-check { color: #10b981; }
+
+.recent-list { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+.recent-chip {
+  flex: none; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-2); font-size: .82rem; font-weight: 700; cursor: pointer; transition: all .2s;
+}
+.recent-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }

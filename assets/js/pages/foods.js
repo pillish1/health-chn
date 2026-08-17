@@ -42,7 +42,21 @@
       '<div class="small muted mt-2">💡 数值为每 100g 可食部的常见估算值，实际以包装标签为准。</div>';
   }
 
-  /* ---------- 分类 ---------- */
+  /* ---------- 最近使用 ---------- */
+  function renderRecent() {
+    var el = document.getElementById('recentFoods');
+    if (!el) return;
+    var recent = [];
+    try { recent = JSON.parse(localStorage.getItem('ydjk:recent-foods') || '[]'); } catch (e) {}
+    if (!recent.length) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div class="small muted mb-1">🕐 最近使用</div>' +
+      '<div class="recent-list">' + recent.map(function (r) {
+        return '<button class="recent-chip" data-name="' + esc(r.name) + '" data-kcal="' + r.kcal + '" data-p="' + r.protein + '" data-c="' + r.carbs + '" data-f="' + r.fat + '">' + esc(r.name) + '</button>';
+      }).join('') + '</div>';
+    el.querySelectorAll('.recent-chip').forEach(function (btn) {
+      btn.addEventListener('click', function () { openMealModal(btn.dataset); });
+    });
+  }
   function renderCats() {
     var tabs = document.getElementById('catTabs');
     tabs.innerHTML = FOOD_CATS.map(function (c) {
@@ -163,6 +177,13 @@
       fat: Math.round(currentFood.f * ratio * 10) / 10
     };
     YDJK.addMeal(YDJK.today(), meal);
+    // 记录最近使用
+    var recent = [];
+    try { recent = JSON.parse(localStorage.getItem('ydjk:recent-foods') || '[]'); } catch (e) {}
+    recent = recent.filter(function (r) { return r.name !== meal.name; });
+    recent.unshift({ name: meal.name, kcal: meal.kcal, protein: meal.protein, carbs: meal.carbs, fat: meal.fat });
+    if (recent.length > 8) recent.pop();
+    try { localStorage.setItem('ydjk:recent-foods', JSON.stringify(recent)); } catch (e) {}
     YDJK_UI.closeModal('mealModal');
     YDJK_UI.toast('✅ 已记录：' + meal.name + '（' + meal.kcal + ' kcal）');
     renderSummary();
@@ -170,6 +191,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     renderSummary();
+    renderRecent();
     renderCats();
     renderFoods();
     document.getElementById('foodSearch').addEventListener('input', renderFoods);

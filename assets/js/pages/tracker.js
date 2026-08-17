@@ -423,7 +423,34 @@
       : '<span class="tag gray">📴 本地模式</span>';
   }
 
+  /* 追踪页分区切换（移动端） */
+  function initTrackerTabs() {
+    var tabs = document.getElementById('trackerTabs');
+    if (!tabs) return;
+    var secMap = { weight: '⚖️ 体重记录', workout: '🏃 今日运动打卡', diet: '🍽️ 今日饮食', water: '💧 饮水打卡' };
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.card')).filter(function (c) {
+      var t = (c.querySelector('.card-title') || {}).textContent || '';
+      return Object.keys(secMap).some(function (k) { return t.indexOf(secMap[k].slice(2)) >= 0; });
+    });
+    function apply(sec) {
+      if (sec === 'all') { cards.forEach(function (c) { c.style.display = ''; }); return; }
+      var target = secMap[sec] ? secMap[sec].slice(2) : '';
+      cards.forEach(function (c) {
+        var t = (c.querySelector('.card-title') || {}).textContent || '';
+        c.style.display = t.indexOf(target) >= 0 ? '' : 'none';
+      });
+    }
+    tabs.querySelectorAll('.tracker-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        tabs.querySelectorAll('.tracker-tab').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        apply(btn.dataset.sec);
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    initTrackerTabs();
     renderCloudBadge();
     var shareBtn = document.getElementById('btnShare');
     if (shareBtn) shareBtn.addEventListener('click', shareHealth);

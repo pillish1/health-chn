@@ -56,6 +56,32 @@
     renderWelcome();
   }
 
+  /* 今日任务清单 */
+  function renderTasks() {
+    var el = document.getElementById('todayTasks');
+    if (!el) return;
+    var today = YDJK.today();
+    var meal = YDJK.mealSummary(today);
+    var checkin = YDJK.getCheckin(today);
+    var workoutDone = checkin && ((checkin.types && checkin.types.length) || checkin.plan || (checkin.minutes && checkin.minutes > 0));
+    var water = YDJK.getWater(today);
+    var waterGoal = YDJK.getWaterGoal();
+    var p = YDJK.getProfile();
+    var goalCal = 2000;
+    if (p) { var bmr = YDJK.calcBMR(p); var tdee = YDJK.calcTDEE(bmr, p.activity); goalCal = YDJK.goalCalories(tdee, p.goal); }
+    var tasks = [
+      { icon: '🍽️', label: '记录饮食', done: meal.count > 0, sub: meal.kcal + ' / ' + Math.round(goalCal) + ' kcal', href: 'foods.html' },
+      { icon: '🏃', label: '今日运动', done: !!workoutDone, sub: workoutDone ? (checkin.minutes ? checkin.minutes + ' 分钟' : '已打卡') : '30 分钟起', href: 'tracker.html#workout' },
+      { icon: '💧', label: '饮水达标', done: water >= waterGoal, sub: water + ' / ' + waterGoal + ' ml', href: 'tracker.html' }
+    ];
+    el.innerHTML = '<div class="task-list">' + tasks.map(function (t) {
+      return '<a class="task-item' + (t.done ? ' done' : '') + '" href="' + t.href + '">' +
+        '<span class="task-ico">' + t.icon + '</span>' +
+        '<div class="task-main"><b>' + t.label + '</b><span class="task-sub">' + t.sub + '</span></div>' +
+        '<span class="task-check">' + (t.done ? '✓' : '○') + '</span></a>';
+    }).join('') + '</div>';
+  }
+
   function renderWelcome() {
     var el = document.getElementById('welcomeBar');
     var mini = document.getElementById('welcomeMini');
@@ -78,6 +104,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     renderDashboard();
+    renderTasks();
     renderWeek();
     renderHot();
     renderArticles();
@@ -149,6 +176,6 @@
     render();
   }
 
-  window.onProfileSaved = function () { renderDashboard(); renderWeek(); renderHot(); };
-  window.onDataChanged = function () { renderDashboard(); renderWeek(); renderHot(); };
+  window.onProfileSaved = function () { renderDashboard(); renderWeek(); renderHot(); renderTasks(); };
+  window.onDataChanged = function () { renderDashboard(); renderWeek(); renderHot(); renderTasks(); };
 })();

@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="悦动健康">
-<link rel="stylesheet" href="assets/css/style.css?v=42">
+<link rel="stylesheet" href="assets/css/style.css?v=43">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="悦动健康">
 <meta property="og:locale" content="zh_CN">
@@ -103,10 +103,17 @@
       <div class="ach-grid mt-2" id="achievementGrid"></div>
     </div>
 
+    <div class="tracker-tabs" id="trackerTabs">
+      <button class="tracker-tab active" data-sec="all">全部</button>
+      <button class="tracker-tab" data-sec="weight">⚖️ 体重</button>
+      <button class="tracker-tab" data-sec="workout">🏃 打卡</button>
+      <button class="tracker-tab" data-sec="diet">🍽️ 饮食</button>
+      <button class="tracker-tab" data-sec="water">💧 饮水</button>
+    </div>
     <div class="grid grid-2 mt-4" style="align-items:start">
       <!-- 左列：体重 + 运动 -->
       <div>
-        <!-- 体重记录 -->
+        <div class="tracker-sec"><!-- 体重记录 -->
         <div class="card mb-3">
           <div class="card-title">⚖️ 体重记录</div>
           <div class="flex gap-sm" style="margin-bottom:18px;flex-wrap:wrap">
@@ -130,7 +137,7 @@
           <div id="weightList" class="small"></div>
         </div>
 
-        <!-- 运动打卡 -->
+        </div><div class="tracker-sec"><!-- 运动打卡 -->
         <div class="card">
           <div class="card-title">🏃 今日运动打卡</div>
           <div id="todayCheckin"></div>
@@ -150,7 +157,7 @@
 
       <!-- 右列：饮食 + 饮水 -->
       <div>
-        <!-- 饮食记录 -->
+        </div><div class="tracker-sec"><!-- 饮食记录 -->
         <div class="card mb-3">
           <div class="flex-between">
             <div class="card-title" style="margin:0">🍽️ 今日饮食</div>
@@ -189,7 +196,7 @@
           <button class="btn btn-primary btn-block mt-2" id="manualAdd">保存记录</button>
         </div>
 
-        <!-- 饮水 -->
+        </div><div class="tracker-sec"><!-- 饮水 -->
         <div class="card">
           <div class="card-title">💧 饮水打卡</div>
           <div class="flex-between mb-2 flex-wrap" style="gap:8px">
@@ -221,11 +228,11 @@
     </div>
     <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
   </div>
-</footer><script src="assets/js/supabase-config.js?v=42"></script>
-<script src="assets/js/storage.js?v=42"></script>
-<script src="assets/js/data.js?v=42"></script>
-<script src="assets/js/charts.js?v=42"></script>
-<script src="assets/js/app.js?v=42"></script>
+</footer><script src="assets/js/supabase-config.js?v=43"></script>
+<script src="assets/js/storage.js?v=43"></script>
+<script src="assets/js/data.js?v=43"></script>
+<script src="assets/js/charts.js?v=43"></script>
+<script src="assets/js/app.js?v=43"></script>
 <!-- 饮食记录编辑弹窗 -->
 <div class="modal-overlay" id="mealEditModal">
   <div class="modal" style="max-width:460px">
@@ -257,7 +264,7 @@
   </div>
 </div>
 
-<script src="assets/js/pages/tracker.js?v=42"></script><script>
+<script src="assets/js/pages/tracker.js?v=43"></script><script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('sw.js').catch(function () {});

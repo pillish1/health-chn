@@ -312,6 +312,23 @@
     setTimeout(function () { openModal('onboardModal'); }, force ? 0 : 500);
   }
 
+  /* ---------- 移动端搜索入口 ---------- */
+  function initMSearch() {
+    var s = document.querySelector('.m-search');
+    if (!s) return;
+    s.addEventListener('click', function () {
+      // 打开全局搜索
+      var ov = document.getElementById('searchModal');
+      if (ov) {
+        openModal('searchModal');
+        setTimeout(function () { var i = document.getElementById('searchInput'); if (i) i.focus(); }, 80);
+      } else {
+        // 没有搜索面板则跳发现页
+        location.href = 'discover.html';
+      }
+    });
+  }
+
   /* ---------- 底部 Tab 导航 ---------- */
   function initTabBar() {
     var path = location.pathname.split('/').pop() || 'index.html';
@@ -676,6 +693,7 @@
     initInstallPrompt();
     initAuthNav();
     initTabBar();
+    initMSearch();
     // 已登录时自动拉取云端最新数据
     if (window.YDJK && window.YDJK.isCloudLogged && window.YDJK.isCloudLogged()) {
       window.YDJK.cloudPull().then(function (merged) {
