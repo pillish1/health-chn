@@ -24,6 +24,16 @@
   var searchQuery = '';
   function render() {
     var list = allArticles();
+    var recBox = document.getElementById('todayPick');
+    if (recBox && list.length) {
+      var hot = list.slice().sort(function (a, b) { return getViews(b.id) - getViews(a.id); });
+      var pick = hot[0] || list[0];
+      recBox.innerHTML = '<div class="today-pick"><div class="tp-label">\u2b50 今日推荐</div>' +
+        '<a class="tp-title" href="#article-' + pick.id + '">' + esc(pick.title) + '</a>' +
+        '<p class="tp-excerpt">' + esc(pick.excerpt) + '</p>' +
+        '<div class="tp-meta"><span class="tag ' + (pick._cloud ? 'purple' : 'blue') + '">' + esc(pick.cat) + '</span>' +
+        (getViews(pick.id) > 0 ? '<span class="muted small">\ud83d\udc41 ' + getViews(pick.id) + ' 阅读</span>' : '') + '</div></div>';
+    }
     if (searchQuery) {
       list = list.filter(function (a) {
         return (a.title || '').toLowerCase().indexOf(searchQuery) !== -1 ||
@@ -36,13 +46,15 @@
       return '<a href="#article-' + a.id + '" class="card card-hover article-card reveal">' +
         '<div class="a-meta"><span class="tag ' + (a._user ? 'purple' : 'blue') + '">' + esc(a.cat) + (a._user ? ' · 自建' : '') + '</span>' +
         (isNew(a.date) ? '<span class="tag red">NEW</span>' : '') +
-        '<span>' + a.date + '</span><span>⏱ ' + a.readTime + ' 分钟</span></div>' +
+        '<span>' + a.date + '</span><span>⏱ ' + a.readTime + ' 分钟</span>' +
+        (getViews(a.id) > 0 ? '<span>👁 ' + getViews(a.id) + '</span>' : '') + '</div>' +
         '<div class="a-title">' + esc(a.title) + '</div>' +
         '<div class="a-excerpt">' + esc(a.excerpt) + '</div></a>';
     }).join('') || '<div class="empty" style="grid-column:1/-1"><div class="e-icon">📖</div><div class="e-title">暂无文章</div><div class="e-desc">点击右上角「管理文章」发布第一篇</div></div>';
 
     var bodies = document.getElementById('articleBodies');
     bodies.innerHTML = list.map(function (a) {
+      addView(a.id);
       return '<article class="card mb-3 article-body" id="article-' + a.id + '">' +
         '<div class="a-meta"><span class="tag ' + (a._user ? 'purple' : 'blue') + '">' + esc(a.cat) + '</span>' +
         (isNew(a.date) ? '<span class="tag red">NEW</span>' : '') +
@@ -152,6 +164,8 @@
 
   /* 从数据库加载文章（动态内容） */
   var cloudArticles = [];
+  function getViews(id) { try { return Number(localStorage.getItem('ydjk:views:' + id)) || 0; } catch (e) { return 0; } }
+  function addView(id) { try { localStorage.setItem('ydjk:views:' + id, String(getViews(id) + 1)); } catch (e) {} }
   async function loadCloudArticles() {
     try {
       if (window.YD_CLOUD) {
