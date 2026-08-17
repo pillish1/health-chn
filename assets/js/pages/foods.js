@@ -42,7 +42,27 @@
       '<div class="small muted mt-2">💡 数值为每 100g 可食部的常见估算值，实际以包装标签为准。</div>';
   }
 
-  /* ---------- 最近使用 ---------- */
+  /* ---------- 本周摄入概览 ---------- */
+  function renderWeekOverview() {
+    var el = document.getElementById('weekOverview');
+    if (!el) return;
+    var week = YDJK.weekDates(YDJK.today());
+    var total = 0, days = 0;
+    week.forEach(function (d) {
+      var m = YDJK.mealSummary(d);
+      if (m.kcal > 0) { total += m.kcal; days++; }
+    });
+    var p = YDJK.getProfile();
+    var goal = 2000;
+    if (p) { var bmr = YDJK.calcBMR(p); goal = YDJK.goalCalories(YDJK.calcTDEE(bmr, p.activity), p.goal); }
+    var avg = days ? Math.round(total / days) : 0;
+    var pct = goal ? Math.round(avg / goal * 100) : 0;
+    el.innerHTML = '<div class="card" style="padding:14px 18px">' +
+      '<div class="flex-between flex-wrap" style="gap:8px">' +
+      '<div><b class="small">📊 本周摄入</b><div class="small muted">记录 ' + days + ' 天 · 日均 ' + avg + ' kcal</div></div>' +
+      '<div style="min-width:120px"><div class="progress" style="height:8px"><div class="progress-bar" style="width:' + Math.min(100, pct) + '%' + (pct > 100 ? ';background:linear-gradient(90deg,#f87171,#ef4444)' : '') + '"></div></div>' +
+      '<div class="small muted mt-1" style="text-align:right">目标 ' + Math.round(goal) + ' kcal · ' + pct + '%</div></div></div></div>';
+  }
   function renderRecent() {
     var el = document.getElementById('recentFoods');
     if (!el) return;
@@ -192,6 +212,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     renderSummary();
+    renderWeekOverview();
     renderRecent();
     renderCats();
     renderFoods();
@@ -223,7 +244,7 @@
     });
     // 保存时附带照片
     window._mealPhotoData = function () { return photoData; };
-    window.onDataChanged = function () { renderSummary(); };
+    window.onDataChanged = function () { renderSummary(); renderWeekOverview(); };
     document.getElementById('mealSave').addEventListener('click', saveMeal);
   });
 })();

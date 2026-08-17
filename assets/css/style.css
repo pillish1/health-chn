@@ -1470,3 +1470,14 @@ html[data-theme="dark"] .photo-name { background: linear-gradient(transparent, r
   .page-hero { padding: 20px 0 16px; }
   .breadcrumb { margin-bottom: 8px; }
 }
+
+/* 计算器页移动端优化 */
+@media (max-width: 900px) {
+  .range-wrap { flex-direction: row; }
+  input[type="range"] { height: 8px; }
+  .result-panel .big { font-size: 2.2rem; }
+  .bmi-scale { margin-top: 8px; }
+}
+
+/* 周概览卡片 */
+.week-overview .card { box-shadow: var(--shadow-sm); }

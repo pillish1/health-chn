@@ -15,7 +15,7 @@ Write-Host '[1/5] Downloading Java JDK 17...' -ForegroundColor Yellow
 $jdkZip = "$D\jdk17.zip"
 $jdkDir = "$D\jdk17"
 if (-not (Test-Path "$jdkDir\bin\java.exe")) {
-  $url = 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.12%2B7/OpenJDK17U-jdk_x64_windows_hotspot_17.0.12_7.zip'
+  $url = 'https://mirrors.tuna.tsinghua.edu.cn/Adoptium/17/jdk/x64/windows/OpenJDK17U-jdk_x64_windows_hotspot_17.0.20_8.zip'
   Invoke-WebRequest -Uri $url -OutFile $jdkZip -TimeoutSec 900 -UseBasicParsing
   Write-Host '  Downloaded, extracting...' -ForegroundColor Gray
   Expand-Archive -Path $jdkZip -DestinationPath "$D\_jdk_extract" -Force
@@ -35,7 +35,7 @@ $toolsZip = "$D\android-cmdline-tools.zip"
 $toolsDir = "$andDir\cmdline-tools\latest"
 if (-not (Test-Path "$toolsDir\bin\sdkmanager.bat")) {
   New-Item -ItemType Directory -Path "$andDir\cmdline-tools" -Force | Out-Null
-  $url2 = 'https://dl.google.com/android/repository/commandlinetools-win-11076708_latest.zip'
+  $url2 = 'https://dl.google.com/android/repository/commandlinetools-win-11076708_latest.zip'  # 如慢可开加速器
   Invoke-WebRequest -Uri $url2 -OutFile $toolsZip -TimeoutSec 900 -UseBasicParsing
   Write-Host '  Downloaded, extracting...' -ForegroundColor Gray
   Expand-Archive -Path $toolsZip -DestinationPath "$andDir\cmdline-tools\tmp" -Force
