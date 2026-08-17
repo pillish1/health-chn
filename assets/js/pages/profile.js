@@ -22,6 +22,34 @@
     var last = user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString('zh-CN') : '-';
     document.getElementById('pCreated').textContent = created;
     document.getElementById('pLastSignIn').textContent = last;
+    // 加载资料（昵称/头像）
+    loadUserProfile();
+  }
+
+  /* 默认头像：邮箱首字母 */
+  function defaultAvatar(email) {
+    return (email || '?').charAt(0).toUpperCase();
+  }
+  function renderAvatar(avatarUrl, email) {
+    var box = document.getElementById('avatarPreview');
+    if (!box) return;
+    if (avatarUrl) {
+      box.innerHTML = '<img src="' + esc(avatarUrl) + '" style="width:100%;height:100%;object-fit:cover">';
+    } else {
+      box.textContent = defaultAvatar(email);
+    }
+  }
+
+  async function loadUserProfile() {
+    try {
+      var p = await cloud.loadProfile();
+      if (p) {
+        if (p.nickname) document.getElementById('nicknameInput').value = p.nickname;
+        renderAvatar(p.avatar_url, cloud.currentUser().email);
+      } else {
+        renderAvatar(null, cloud.currentUser().email);
+      }
+    } catch (e) {}
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -33,6 +61,41 @@
     document.getElementById('profileGate').style.display = 'none';
     document.getElementById('profilePanel').style.display = 'block';
     renderUser();
+
+    // 头像上传（转 Base64 存数据库）
+    var avatarInput = document.getElementById('avatarInput');
+    document.getElementById('btnUploadAvatar').addEventListener('click', function () { avatarInput.click(); });
+    avatarInput.addEventListener('change', function () {
+      var file = avatarInput.files[0];
+      if (!file) return;
+      if (file.size > 2 * 1024 * 1024) { window.YDJK_UI.toast('图片不能超过 2MB', 'err'); return; }
+      if (!/^image\/(png|jpe?g|webp|gif)$/.test(file.type)) { window.YDJK_UI.toast('请上传图片文件', 'err'); return; }
+      var reader = new FileReader();
+      reader.onload = function () {
+        var dataUrl = reader.result;
+        renderAvatar(dataUrl, cloud.currentUser().email);
+        // 保存头像
+        cloud.saveProfile({ avatar_url: dataUrl }).then(function (r) {
+          if (r.ok) window.YDJK_UI.toast('✅ 头像已更新');
+          else window.YDJK_UI.toast('❌ 头像保存失败', 'err');
+        });
+      };
+      reader.readAsDataURL(file);
+      avatarInput.value = '';
+    });
+
+    // 保存昵称
+    document.getElementById('btnSaveProfile').addEventListener('click', async function () {
+      var nick = document.getElementById('nicknameInput').value.trim();
+      if (!nick) { window.YDJK_UI.toast('请输入昵称', 'err'); return; }
+      var r = await cloud.saveProfile({ nickname: nick });
+      if (r.ok) {
+        window.YDJK_UI.toast('✅ 昵称已更新');
+        localStorage.setItem('ydjk:nickname', nick);
+      } else {
+        window.YDJK_UI.toast('❌ 保存失败', 'err');
+      }
+    });
 
     // 修改密码
     document.getElementById('changePw').addEventListener('click', async function () {

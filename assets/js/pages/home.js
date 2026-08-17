@@ -25,7 +25,9 @@
     var el = document.getElementById('welcomeBar');
     if (!el) return;
     if (user) {
-      var name = (user.email || '').split('@')[0] || '用户';
+      var name = '';
+      try { name = localStorage.getItem('ydjk:nickname') || ''; } catch (e) {}
+      if (!name) name = (user.email || '').split('@')[0] || '用户';
       // 从云端数据统计累计值
       var stats = '';
       if (window.YD_CLOUD_LAST_DATA) {

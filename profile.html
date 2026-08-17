@@ -6,7 +6,7 @@
 <title>个人资料 · 悦动健康</title>
 <meta name="theme-color" content="#3b82f6">
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="assets/css/style.css?v=34">
+<link rel="stylesheet" href="assets/css/style.css?v=35">
 </head>
 <body>
 <nav class="navbar">
@@ -34,6 +34,21 @@
     </div>
 
     <div id="profilePanel" style="display:none">
+      <!-- 头像昵称 -->
+      <div class="card mb-3">
+        <div class="card-title">🖼️ 个人形象</div>
+        <div class="flex gap-md" style="align-items:center;margin-bottom:16px">
+          <div id="avatarPreview" style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:3px solid var(--primary);display:grid;place-items:center;font-size:1.8rem;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-weight:800;flex:none"></div>
+          <div>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none">
+            <button class="btn btn-outline btn-sm" id="btnUploadAvatar">📷 上传头像</button>
+            <div class="small muted mt-1">支持 JPG/PNG，最大 2MB</div>
+          </div>
+        </div>
+        <div class="field"><label>昵称</label><input class="input" id="nicknameInput" maxlength="20" placeholder="给自己起个昵称"></div>
+        <button class="btn btn-primary btn-block" id="btnSaveProfile">💾 保存资料</button>
+      </div>
+
       <!-- 账号信息 -->
       <div class="card mb-3">
         <div class="card-title">📧 账号信息</div>
@@ -67,9 +82,9 @@
   </div>
 </section>
 
-<script src="assets/js/storage.js?v=34"></script>
-<script src="assets/js/supabase-config.js?v=34"></script>
-<script src="assets/js/app.js?v=34"></script>
-<script src="assets/js/pages/profile.js?v=34"></script>
+<script src="assets/js/storage.js?v=35"></script>
+<script src="assets/js/supabase-config.js?v=35"></script>
+<script src="assets/js/app.js?v=35"></script>
+<script src="assets/js/pages/profile.js?v=35"></script>
 </body>
 </html>

@@ -73,6 +73,23 @@
       if (r.ok && r.data && r.data.length) return r.data[0];
       return null;
     },
+    // 用户资料（昵称/头像）
+    async loadProfile() {
+      var user = this.currentUser();
+      if (!user) return null;
+      var r = await this.request('/rest/v1/profiles?select=*&user_id=eq.' + user.id, {});
+      return r.ok && r.data && r.data.length ? r.data[0] : null;
+    },
+    async saveProfile(profile) {
+      var user = this.currentUser();
+      if (!user) return { ok: false };
+      var existing = await this.loadProfile();
+      var payload = Object.assign({ user_id: user.id, updated_at: new Date().toISOString() }, profile);
+      if (existing) {
+        return this.request('/rest/v1/profiles?user_id=eq.' + user.id, { method: 'PATCH', headers: { Prefer: 'return=representation' }, body: profile });
+      }
+      return this.request('/rest/v1/profiles', { method: 'POST', headers: { Prefer: 'return=representation' }, body: payload });
+    },
     // 读取文章列表（公开可读）
     async loadArticles() {
       var r = await this.request('/rest/v1/articles?select=*&published=eq.true&order=date.desc', {});

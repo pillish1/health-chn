@@ -326,22 +326,37 @@
       if (cloud && cloud.isLoggedIn()) {
         var user = cloud.currentUser();
         var email = (user && user.email) || '用户';
-        btn.innerHTML = '👤';
-        btn.title = email + '（点击退出）';
-        btn.onclick = function () {
-          YDJK_UI.confirmDialog({
-            title: '已登录：' + email,
-            message: '是否退出登录？退出后本设备将回到本地模式。',
-            okText: '退出登录', cancelText: '取消', danger: true, icon: '👤'
-          }).then(function (ok) {
-            if (ok && window.YD_CLOUD) {
-              window.YD_CLOUD.logout();
-              localStorage.removeItem('ydjk:cloud-logged');
-              render();
-              YDJK_UI.toast('已退出登录');
+        var nick = '';
+        try { nick = localStorage.getItem('ydjk:nickname') || ''; } catch (e) {}
+        var avatarUrl = '';
+        try { avatarUrl = localStorage.getItem('ydjk:avatar') || ''; } catch (e) {}
+        function updateBtn() {
+          var display = nick || (email || '用').split('@')[0];
+          if (avatarUrl) {
+            btn.innerHTML = '<img src="' + avatarUrl + '" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block">';
+            btn.style.padding = '0';
+            btn.style.border = 'none';
+            btn.style.width = '40px';
+            btn.style.height = '40px';
+          } else {
+            btn.innerHTML = '<span style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;display:grid;place-items:center;font-size:.95rem;font-weight:800">' + (display.charAt(0) || '?').toUpperCase() + '</span>';
+            btn.style.padding = '0';
+            btn.style.border = 'none';
+          }
+          btn.title = display + '（' + email + '）· 点击管理账号';
+        }
+        updateBtn();
+        // 从云端加载昵称/头像
+        if (cloud.loadProfile) {
+          cloud.loadProfile().then(function (p) {
+            if (p) {
+              if (p.nickname) { try { localStorage.setItem('ydjk:nickname', p.nickname); } catch (e) {} nick = p.nickname; }
+              if (p.avatar_url) { try { localStorage.setItem('ydjk:avatar', p.avatar_url); } catch (e) {} avatarUrl = p.avatar_url; }
+              updateBtn();
             }
-          });
-        };
+          }).catch(function () {});
+        }
+        btn.onclick = function () { location.href = 'profile.html'; };
       } else {
         btn.innerHTML = '👤';
         btn.title = '登录 / 注册';
