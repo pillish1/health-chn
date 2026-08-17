@@ -174,7 +174,8 @@
       kcal: Math.round(currentFood.kcal * ratio),
       protein: Math.round(currentFood.p * ratio * 10) / 10,
       carbs: Math.round(currentFood.c * ratio * 10) / 10,
-      fat: Math.round(currentFood.f * ratio * 10) / 10
+      fat: Math.round(currentFood.f * ratio * 10) / 10,
+      photo: window._mealPhotoData ? window._mealPhotoData() : null
     };
     YDJK.addMeal(YDJK.today(), meal);
     // 记录最近使用
@@ -201,6 +202,27 @@
       renderFoods();
     });
     document.getElementById('mealGram').addEventListener('input', updateMealCalc);
+
+    // 拍照记餐（存本地缩略图）
+    var photoInput = document.getElementById('mealPhotoInput');
+    var photoData = null;
+    document.getElementById('btnPhoto').addEventListener('click', function () { photoInput.click(); });
+    photoInput.addEventListener('change', function () {
+      var file = photoInput.files[0];
+      if (!file) return;
+      if (file.size > 2 * 1024 * 1024) { YDJK_UI.toast('图片需小于 2MB', 'err'); return; }
+      var reader = new FileReader();
+      reader.onload = function () {
+        photoData = reader.result;
+        document.getElementById('mealPhotoImg').src = photoData;
+        document.getElementById('mealPhotoPreview').style.display = 'block';
+        YDJK_UI.toast('📷 照片已添加');
+      };
+      reader.readAsDataURL(file);
+      photoInput.value = '';
+    });
+    // 保存时附带照片
+    window._mealPhotoData = function () { return photoData; };
     window.onDataChanged = function () { renderSummary(); };
     document.getElementById('mealSave').addEventListener('click', saveMeal);
   });

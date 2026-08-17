@@ -75,7 +75,50 @@
     YDJK_CHARTS.lineChart(document.getElementById('reportChart'), { labels: labels, values: values, unit: ' kcal', color: '#f59e0b' });
   }
 
+  function exportText() {
+    var r = calcReport();
+    var label = range === 'week' ? '本周' : '本月';
+    var rate = r.days.length ? Math.round(r.checkinDays / r.days.length * 100) : 0;
+    var text = '📈 悦动健康 · ' + label + '健康报告\n' +
+      '━━━━━━━━━━━━━━━\n' +
+      '📅 打卡：' + r.checkinDays + '/' + r.days.length + ' 天（' + rate + '%）\n' +
+      '⏱️ 运动：' + r.totalMin + ' 分钟\n' +
+      '🍽️ 记录：' + r.totalMeals + ' 餐\n' +
+      '🔥 日均摄入：' + r.avgKcal + ' kcal\n' +
+      '━━━━━━━━━━━━━━━\n' +
+      '和我一起管理健康吧！\nhttps://pillish1.github.io/health-chn/';
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function () { YDJK_UI.toast('✅ 报告已复制，去分享吧！'); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); YDJK_UI.toast('✅ 报告已复制'); } catch (e) {}
+      ta.remove();
+    }
+  }
+  function exportJson() {
+    var data = { exportedAt: new Date().toISOString(), app: 'yuedong-health' };
+    var keys = [];
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k.indexOf('ydjk:') === 0) keys.push(k);
+    }
+    data.data = {};
+    keys.forEach(function (k) { data.data[k] = localStorage.getItem(k); });
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'yuedong-data-' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click(); URL.revokeObjectURL(url);
+    YDJK_UI.toast('✅ 数据已导出');
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    var eb = document.getElementById('btnExportReport');
+    if (eb) eb.addEventListener('click', exportText);
+    var ej = document.getElementById('btnExportJson');
+    if (ej) ej.addEventListener('click', exportJson);
     render();
     var tabs = document.getElementById('reportTabs');
     tabs.querySelectorAll('.report-tab').forEach(function (btn) {

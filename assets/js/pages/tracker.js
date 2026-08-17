@@ -197,7 +197,9 @@
         if (!items.length) return '';
         return '<div class="mb-2"><div class="small muted" style="margin-bottom:6px">' + t.emoji + ' ' + t.label + '</div>' +
           items.map(function (x) {
-            return '<div class="list-row"><div class="lr-main"><b class="small">' + esc(x.name) + '</b><span class="lr-sub">' + x.kcal + ' kcal · P' + x.protein + ' C' + x.carbs + ' F' + x.fat + '</span></div>' +
+            return '<div class="list-row"><div class="lr-main" style="display:flex;align-items:center;gap:10px">' +
+              (x.photo ? '<img src="' + x.photo + '" style="width:38px;height:38px;border-radius:10px;object-fit:cover;flex:none" alt="">' : '') +
+              '<div style="min-width:0"><b class="small">' + esc(x.name) + '</b><span class="lr-sub">' + x.kcal + ' kcal · P' + x.protein + ' C' + x.carbs + ' F' + x.fat + '</span></div></div>' +
               '<div class="lr-side flex gap-sm" style="gap:6px">' +
               '<button class="btn btn-ghost btn-sm js-edit-meal" data-id="' + x.id + '" title="编辑">✏️</button>' +
               '<button class="btn btn-ghost btn-sm js-del-meal" data-id="' + x.id + '" title="删除">✕</button></div></div>';
