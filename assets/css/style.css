@@ -1403,3 +1403,26 @@ html[data-theme="dark"] .hero-card {
   background: var(--surface); color: var(--text-2); font-size: .82rem; font-weight: 700; cursor: pointer; transition: all .2s;
 }
 .recent-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+
+
+/* ============ App 化打磨 v44 ============ */
+/* 三环更精致 */
+.dash-ring { position: relative; }
+.dash-ring .chart { filter: drop-shadow(0 4px 12px rgba(59,130,246,.15)); }
+/* 环下方标签 */
+.dash-ring-label { font-size: .72rem; color: var(--muted); margin-top: 6px; font-weight: 600; }
+
+/* 今日任务更 App 化 */
+.task-item { border-radius: 16px; }
+.task-item.done { background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(16,185,129,.02)); }
+
+/* 底部 Tab 细节 */
+.tab-item.active .tab-ico { transform: translateY(-1px); }
+.tab-item .tab-ico { transition: transform .15s; }
+
+/* 快速记录面板精致化 */
+.quick-btn { border-radius: 18px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.quick-btn:hover { border-color: var(--primary); }
+
+/* 通知开关行 hover */
+.list-row { padding: 12px 4px; }

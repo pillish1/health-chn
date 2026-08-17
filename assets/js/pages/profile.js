@@ -97,6 +97,27 @@
       }
     });
 
+    // 提醒设置
+    var cfg = window.YDJK_UI.getReminderCfg();
+    document.getElementById('rmEnable').checked = cfg.enabled;
+    document.getElementById('rmWater').checked = cfg.water !== false;
+    document.getElementById('rmCheckin').checked = cfg.checkin !== false;
+    document.getElementById('rmMeal').checked = !!cfg.meal;
+    function saveCfg() {
+      window.YDJK_UI.setReminderCfg({
+        enabled: document.getElementById('rmEnable').checked,
+        water: document.getElementById('rmWater').checked,
+        checkin: document.getElementById('rmCheckin').checked,
+        meal: document.getElementById('rmMeal').checked
+      });
+    }
+    ['rmEnable', 'rmWater', 'rmCheckin', 'rmMeal'].forEach(function (id) {
+      document.getElementById(id).addEventListener('change', saveCfg);
+    });
+    document.getElementById('btnEnableNotif').addEventListener('click', function () {
+      window.YDJK_UI.requestNotifPermission();
+    });
+
     // 修改密码
     document.getElementById('changePw').addEventListener('click', async function () {
       var p1 = document.getElementById('np1').value;

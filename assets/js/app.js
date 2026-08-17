@@ -329,6 +329,72 @@
     });
   }
 
+  /* ---------- 通知与提醒（PWA App 化核心） ---------- */
+  var notifTimer = null;
+  function notifSupported() { return 'Notification' in window; }
+  function initNotifications() {
+    // 启动时检查已授权的提醒
+    if (!notifSupported()) return;
+    if (Notification.permission === 'granted') scheduleReminders();
+    // 刷新时检查是否该提醒
+  }
+  function requestNotifPermission() {
+    if (!notifSupported()) { YDJK_UI.toast('当前浏览器不支持通知', 'err'); return false; }
+    if (Notification.permission === 'granted') { YDJK_UI.toast('✅ 通知已开启'); return true; }
+    Notification.requestPermission().then(function (p) {
+      if (p === 'granted') {
+        YDJK_UI.toast('✅ 通知已开启，记得设置提醒');
+        scheduleReminders();
+      } else {
+        YDJK_UI.toast('❌ 通知被拒绝，可在浏览器设置中开启', 'err');
+      }
+    });
+    return true;
+  }
+  function fireNotif(title, body) {
+    if (!notifSupported() || Notification.permission !== 'granted') return;
+    try {
+      var n = new Notification(title, { body: body, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png' });
+      n.onclick = function () { window.focus(); n.close(); };
+    } catch (e) {}
+  }
+  /* 定时提醒（喝水/打卡）——基于设置 */
+  function scheduleReminders() {
+    if (notifTimer) { clearInterval(notifTimer); notifTimer = null; }
+    var cfg = getReminderCfg();
+    if (!cfg.enabled) return;
+    notifTimer = setInterval(function () {
+      var now = new Date();
+      var h = now.getHours();
+      // 喝水提醒：9:00-21:00 每 2 小时
+      if (cfg.water && h >= 9 && h <= 21) {
+        var today = YDJK.today();
+        var water = YDJK.getWater(today);
+        var goal = YDJK.getWaterGoal();
+        if (water < goal) fireNotif('💧 该喝水啦', '今日饮水 ' + water + '/' + goal + ' ml，记得补水');
+      }
+      // 打卡提醒：晚间 20:00 未打卡
+      if (cfg.checkin && h === 20) {
+        var c = YDJK.getCheckin(YDJK.today());
+        var done = c && ((c.types && c.types.length) || c.plan || (c.minutes && c.minutes > 0));
+        if (!done) fireNotif('🏃 今天还没运动', '来 30 分钟运动，完成今天的打卡吧');
+      }
+      // 早餐/午餐/晚餐提醒
+      if (cfg.meal) {
+        var mealTimes = { 7: '早餐', 12: '午餐', 18: '晚餐' };
+        if (mealTimes[h]) fireNotif('🍽️ ' + mealTimes[h] + '时间', '记得记录今天的' + mealTimes[h] + '，营养均衡很重要');
+      }
+    }, 60000); // 每分钟检查一次（实际提醒按小时）
+  }
+  function getReminderCfg() {
+    try { return JSON.parse(localStorage.getItem('ydjk:reminders') || '{"enabled":false,"water":true,"checkin":true,"meal":false}'); }
+    catch (e) { return { enabled: false, water: true, checkin: true, meal: false }; }
+  }
+  function setReminderCfg(cfg) {
+    try { localStorage.setItem('ydjk:reminders', JSON.stringify(cfg)); } catch (e) {}
+    scheduleReminders();
+  }
+
   /* ---------- 底部 Tab 导航 ---------- */
   function initTabBar() {
     var path = location.pathname.split('/').pop() || 'index.html';
@@ -694,6 +760,7 @@
     initAuthNav();
     initTabBar();
     initMSearch();
+    initNotifications();
     // 已登录时自动拉取云端最新数据
     if (window.YDJK && window.YDJK.isCloudLogged && window.YDJK.isCloudLogged()) {
       window.YDJK.cloudPull().then(function (merged) {
@@ -727,6 +794,7 @@
   window.YDJK_UI = {
     toast: toast, openModal: openModal, closeModal: closeModal, confirmDialog: confirmDialog, promptDialog: promptDialog,
     buildHealthTips: buildHealthTips, renderHealthTip: renderHealthTip,
+    requestNotifPermission: requestNotifPermission, getReminderCfg: getReminderCfg, setReminderCfg: setReminderCfg, initNotifications: initNotifications,
     initOnboarding: initOnboarding, openProfileEditor: openProfileEditor, submitProfileForm: submitProfileForm, applyTheme: applyTheme,
     checkMilestone: checkMilestone
   };

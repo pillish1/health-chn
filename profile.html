@@ -6,7 +6,7 @@
 <title>个人资料 · 悦动健康</title>
 <meta name="theme-color" content="#3b82f6">
 <meta name="robots" content="noindex">
-<link rel="stylesheet" href="assets/css/style.css?v=43">
+<link rel="stylesheet" href="assets/css/style.css?v=44">
 </head>
 <body>
 
@@ -74,6 +74,21 @@
         <div class="list-row"><div class="lr-main"><b class="small">最近登录</b></div><div class="lr-side" id="pLastSignIn"></div></div>
       </div>
 
+      <!-- 提醒设置（App 化核心） -->
+      <div class="card mb-3" id="reminderCard">
+        <div class="card-title">🔔 健康提醒</div>
+        <p class="text-2 small">开启后，会定时提醒你喝水、运动、记录饮食（需允许通知）</p>
+        <div class="list-row"><div class="lr-main"><b class="small">开启提醒</b></div>
+          <label class="switch"><input type="checkbox" id="rmEnable"><span class="slider"></span></label></div>
+        <div class="list-row"><div class="lr-main"><b class="small">💧 喝水提醒</b><span class="lr-sub">9:00-21:00 每 2 小时</span></div>
+          <label class="switch"><input type="checkbox" id="rmWater"><span class="slider"></span></label></div>
+        <div class="list-row"><div class="lr-main"><b class="small">🏃 运动打卡提醒</b><span class="lr-sub">每晚 20:00 未打卡提醒</span></div>
+          <label class="switch"><input type="checkbox" id="rmCheckin"><span class="slider"></span></label></div>
+        <div class="list-row"><div class="lr-main"><b class="small">🍽️ 用餐记录提醒</b><span class="lr-sub">早 7 / 午 12 / 晚 18 点</span></div>
+          <label class="switch"><input type="checkbox" id="rmMeal"><span class="slider"></span></label></div>
+        <button class="btn btn-primary btn-block mt-2" id="btnEnableNotif">🔔 允许通知</button>
+      </div>
+
       <!-- 修改密码 -->
       <div class="card mb-3">
         <div class="card-title">🔑 修改密码</div>
@@ -99,10 +114,10 @@
   </div>
 </section>
 
-<script src="assets/js/storage.js?v=43"></script>
-<script src="assets/js/supabase-config.js?v=43"></script>
-<script src="assets/js/app.js?v=43"></script>
-<script src="assets/js/pages/profile.js?v=43"></script>
+<script src="assets/js/storage.js?v=44"></script>
+<script src="assets/js/supabase-config.js?v=44"></script>
+<script src="assets/js/app.js?v=44"></script>
+<script src="assets/js/pages/profile.js?v=44"></script>
 
 <!-- 底部 Tab 导航（移动端 App 式） -->
 <nav class="tab-bar">
