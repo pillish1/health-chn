@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="悦动健康">
-<link rel="stylesheet" href="assets/css/style.css?v=37">
+<link rel="stylesheet" href="assets/css/style.css?v=38">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="悦动健康">
 <meta property="og:locale" content="zh_CN">
@@ -64,6 +64,14 @@
 <section class="section-sm">
   <div class="container">
     <div id="todayPick" class="mb-3"></div>
+    <div class="flex-between flex-wrap" style="margin-bottom:16px;gap:10px">
+      <div class="tabs" id="articleCats" style="margin:0"></div>
+      <select class="input" id="articleSort" style="width:auto;padding:8px 34px 8px 14px;border-radius:var(--radius-full)">
+        <option value="smart">✨ 智能推荐</option>
+        <option value="new">🕐 最新发布</option>
+        <option value="hot">🔥 最多阅读</option>
+      </select>
+    </div>
     <div class="search-box">
       <span class="s-ico">🔍</span>
       <input class="input" id="articleSearch" placeholder="搜索文章标题、摘要或内容…">
@@ -116,11 +124,11 @@
   </div>
 </div>
 
-<script src="assets/js/supabase-config.js?v=37"></script>
-<script src="assets/js/storage.js?v=37"></script>
-<script src="assets/js/data.js?v=37"></script>
-<script src="assets/js/charts.js?v=37"></script>
-<script src="assets/js/app.js?v=37"></script><script src="assets/js/pages/articles.js?v=37"></script><script>
+<script src="assets/js/supabase-config.js?v=38"></script>
+<script src="assets/js/storage.js?v=38"></script>
+<script src="assets/js/data.js?v=38"></script>
+<script src="assets/js/charts.js?v=38"></script>
+<script src="assets/js/app.js?v=38"></script><script src="assets/js/pages/articles.js?v=38"></script><script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('sw.js').catch(function () {});

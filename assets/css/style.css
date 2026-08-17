@@ -1100,3 +1100,31 @@ html[data-theme="dark"] .hero-card {
 .tp-title:hover { color: var(--primary); }
 .tp-excerpt { font-size: .88rem; color: var(--text-2); margin: 6px 0 10px; max-width: 90%; }
 .tp-meta { display: flex; gap: 12px; align-items: center; }
+
+
+/* ============ 智能知识库 v3 ============ */
+.cat-count { font-size: .68rem; opacity: .6; margin-left: 2px; }
+.today-pick {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 24px 28px; position: relative; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.today-pick::after {
+  content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px;
+  border-radius: 50%; background: radial-gradient(circle, rgba(139,92,246,.12), transparent 70%);
+}
+.tp-badge { display: inline-block; color: #fff; font-size: .75rem; font-weight: 800; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px; }
+.tp-title { font-size: 1.35rem; font-weight: 900; color: var(--text); display: block; margin-bottom: 6px; letter-spacing: -.01em; }
+.tp-title:hover { color: var(--primary); }
+.tp-excerpt { font-size: .92rem; color: var(--text-2); margin-bottom: 12px; max-width: 92%; }
+.tp-meta { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.tp-go { font-weight: 800; font-size: .88rem; margin-left: auto; }
+
+/* 新文章卡片 */
+.article-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.article-card .a-top { padding: 16px 18px 12px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.article-card .a-body { padding: 4px 18px 14px; flex: 1; }
+.article-card .a-title { font-size: 1.05rem; font-weight: 800; line-height: 1.4; margin-bottom: 6px; }
+.article-card .a-excerpt { font-size: .85rem; color: var(--text-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.article-card .a-foot { padding: 12px 18px; border-top: 1px dashed var(--border); display: flex; gap: 14px; align-items: center; }
+.article-card .a-foot .muted { font-size: .72rem; }
