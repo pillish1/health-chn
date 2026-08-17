@@ -229,6 +229,56 @@
     if (gi && document.activeElement !== gi) gi.value = goal;
   }
 
+  /* ---------- 分享我的健康 ---------- */
+  function shareHealth() {
+    var days = activeCheckinDays();
+    var totalMin = 0;
+    var all = YDJK.getCheckins();
+    days.forEach(function (d) { totalMin += (all[d].minutes || 0); });
+    var mealCount = totalMealCount();
+    var ws = YDJK.getWeights();
+    var streak = maxStreak(days);
+    var p = YDJK.getProfile();
+    var nick = '';
+    try { nick = localStorage.getItem('ydjk:nickname') || ''; } catch (e) {}
+    var name = nick || (p ? (p.gender === 'male' ? '这位' : '这位') : '我');
+    // 体重变化
+    var weightChange = '';
+    if (ws.length >= 2) {
+      var first = ws[0].weight, last = ws[ws.length - 1].weight;
+      var diff = last - first;
+      weightChange = (diff >= 0 ? '+' : '') + diff.toFixed(1) + ' kg';
+    }
+    var shareText = '🏃 悦动健康 · ' + name + '的健康报告\n' +
+      '━━━━━━━━━━━━━━━\n' +
+      '📅 累计打卡：' + days.length + ' 天\n' +
+      '⏱️ 累计运动：' + totalMin + ' 分钟\n' +
+      '🍽️ 累计饮食记录：' + mealCount + ' 餐\n' +
+      '🔥 最长连续：' + streak + ' 天\n' +
+      (weightChange ? '⚖️ 体重变化：' + weightChange + '\n' : '') +
+      '━━━━━━━━━━━━━━━\n' +
+      '数据存于本地/云端，隐私安全\n' +
+      'https://pillish1.github.io/health-chn/';
+    // 复制到剪贴板
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareText).then(function () {
+        YDJK_UI.toast('✅ 健康报告已复制，去粘贴分享吧！');
+      }).catch(function () { fallbackCopy(shareText); });
+    } else {
+      fallbackCopy(shareText);
+    }
+  }
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); YDJK_UI.toast('✅ 已复制，去粘贴分享吧！'); } catch (e) { YDJK_UI.toast('复制失败，请手动截图', 'err'); }
+    ta.remove();
+  }
+
   /* ---------- 数据工具 ---------- */
   function activeCheckinDays() {
     var all = YDJK.getCheckins();
@@ -375,6 +425,8 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     renderCloudBadge();
+    var shareBtn = document.getElementById('btnShare');
+    if (shareBtn) shareBtn.addEventListener('click', shareHealth);
     var meSave = document.getElementById('me-save');
     if (meSave) meSave.addEventListener('click', saveMealEdit);
     if (!YDJK.isOnboarded()) {

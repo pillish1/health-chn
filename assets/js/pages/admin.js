@@ -85,18 +85,27 @@
   function renderStats(users, arts) {
     var totalUsers = users.length;
     var totalCheckins = 0, totalMeals = 0, totalWeights = 0;
+    var activeToday = 0, activeWeek = 0;
+    var now = Date.now();
+    var weekAgo = now - 7 * 86400000;
+    var dayAgo = now - 86400000;
     users.forEach(function (u) {
       var d = {};
       try { d = u.data_json ? JSON.parse(u.data_json) : {}; } catch (e) {}
       if (d.checkins) totalCheckins += Object.keys(d.checkins).length;
       totalWeights += (d.weights || []).length;
       if (d.mealsAll) Object.keys(d.mealsAll).forEach(function (k) { totalMeals += (d.mealsAll[k] || []).length; });
+      var ut = u.updated_at ? new Date(u.updated_at).getTime() : 0;
+      if (ut >= weekAgo) activeWeek++;
+      if (ut >= dayAgo) activeToday++;
     });
     document.getElementById('sysStats').innerHTML =
       '<div class="stat-card green"><div class="s-icon">👥</div><div class="s-value">' + totalUsers + '</div><div class="s-label">用户数</div></div>' +
       '<div class="stat-card blue"><div class="s-icon">📅</div><div class="s-value">' + totalCheckins + '</div><div class="s-label">总打卡次数</div></div>' +
       '<div class="stat-card orange"><div class="s-icon">🍽️</div><div class="s-value">' + totalMeals + '</div><div class="s-label">总饮食记录</div></div>' +
-      '<div class="stat-card purple"><div class="s-icon">📝</div><div class="s-value">' + arts.length + '</div><div class="s-label">云端文章</div></div>';
+      '<div class="stat-card purple"><div class="s-icon">🔥</div><div class="s-value">' + activeWeek + '<small>/' + totalUsers + '</small></div><div class="s-label">7 日活跃</div></div>' +
+      '<div class="stat-card red"><div class="s-icon">⚡</div><div class="s-value">' + activeToday + '</div><div class="s-label">今日活跃</div></div>' +
+      '<div class="stat-card green"><div class="s-icon">📝</div><div class="s-value">' + arts.length + '</div><div class="s-label">云端文章</div></div>';
   }
 
   async function init() {
