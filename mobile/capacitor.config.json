@@ -1,7 +1,7 @@
 {
   "appId": "com.yuedong.health",
   "appName": "悦动健康",
-  "webDir": "..",
+  "webDir": "D:/health-chn/mobile/www",
   "server": {
     "androidScheme": "https"
   },
