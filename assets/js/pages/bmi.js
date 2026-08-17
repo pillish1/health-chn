@@ -31,6 +31,17 @@
     // 标尺指示（BMI 12-32 映射到 0-100%）
     var marker = document.getElementById('bmiMarker');
     if (marker) marker.style.left = Math.min(100, Math.max(0, (bmi - 12) / 20 * 100)) + '%';
+    // 健康评估
+    var adv = document.getElementById('bmiAdvice');
+    if (adv) {
+      var advice = {
+        thin: '💡 <b>增重建议</b>：增加 300-500 kcal 热量摄入，以优质蛋白和复合碳水为主，配合力量训练增肌。',
+        normal: '💡 <b>保持建议</b>：维持当前饮食与运动习惯，每周 150 分钟中等强度运动，均衡营养。',
+        over: '💡 <b>减重建议</b>：制造 300-500 kcal 热量缺口，增加有氧运动，每周减 0.3-0.5kg 为宜。',
+        obese: '💡 <b>科学减重</b>：建议咨询专业营养师制定计划，从控制精制碳水和增加日常活动量开始。'
+      }[level.key] || '';
+      adv.innerHTML = advice;
+    }
   }
 
   // 同步体重到档案

@@ -73,6 +73,27 @@
     var labels = r.daily.map(function (d) { return d.date.slice(5); });
     var values = r.daily.map(function (d) { return d.kcal; });
     YDJK_CHARTS.lineChart(document.getElementById('reportChart'), { labels: labels, values: values, unit: ' kcal', color: '#f59e0b' });
+
+    // 三餐分布（近 7 天）
+    var mealDist = { breakfast: 0, lunch: 0, dinner: 0, snack: 0 };
+    var recent7 = YDJK.weekDates(YDJK.today());
+    recent7.forEach(function (d) {
+      YDJK.getMeals(d).forEach(function (m) {
+        if (mealDist[m.type] !== undefined) mealDist[m.type] += m.kcal;
+      });
+    });
+    var distTotal = mealDist.breakfast + mealDist.lunch + mealDist.dinner + mealDist.snack;
+    if (distTotal > 0) {
+      var distHtml = '<div class="card mt-3"><div class="card-title">🍽️ 近 7 天三餐热量分布</div>';
+      [['breakfast', '🌅 早餐'], ['lunch', '🍱 午餐'], ['dinner', '🌙 晚餐'], ['snack', '🍎 加餐']].forEach(function (pair) {
+        var k = pair[0], label = pair[1];
+        var pct = Math.round(mealDist[k] / distTotal * 100);
+        distHtml += '<div class="mb-2"><div class="flex-between small" style="margin-bottom:6px"><span>' + label + '</span><b>' + mealDist[k] + ' kcal (' + pct + '%)</b></div>' +
+          '<div class="progress"><div class="progress-bar" style="width:' + pct + '%"></div></div></div>';
+      });
+      distHtml += '</div>';
+      el.innerHTML += distHtml;
+    }
   }
 
   function exportText() {
