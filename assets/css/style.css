@@ -1456,3 +1456,17 @@ html[data-theme="dark"] .photo-name { background: linear-gradient(transparent, r
 }
 .qa-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
 .qa-btn span { font-size: 1rem; }
+
+/* 食物页分类 tabs 移动端横滚 */
+@media (max-width: 900px) {
+  #catTabs { width: 100%; overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; }
+  #catTabs .tab-btn { flex: none; }
+  .food-card { padding: 16px; }
+  .f-kcal { font-size: .9rem; }
+}
+
+/* 页面顶部留白统一 */
+@media (max-width: 900px) {
+  .page-hero { padding: 20px 0 16px; }
+  .breadcrumb { margin-bottom: 8px; }
+}

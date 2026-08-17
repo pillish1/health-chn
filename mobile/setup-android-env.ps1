@@ -1,4 +1,4 @@
-﻿﻿# Health App Android Environment Setup
+# Health App Android Environment Setup
 # Installs Java JDK 17 + Android SDK to D:\
 $ErrorActionPreference = 'Stop'
 $D = 'D:'
