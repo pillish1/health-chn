@@ -1435,3 +1435,7 @@ html[data-theme="dark"] .hero-card {
 .ach-item .ach-progress .progress-bar { height: 100%; }
 .ach-tip { font-size: .66rem; color: var(--muted); }
 .ach-item.got .ach-tip { color: #10b981; }
+
+.photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.photo-cell { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; }
+.photo-name { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,.6)); color: #fff; font-size: .7rem; padding: 14px 6px 5px; }

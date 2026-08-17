@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="悦动健康">
-<link rel="stylesheet" href="assets/css/style.css?v=47">
+<link rel="stylesheet" href="assets/css/style.css?v=48">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="悦动健康">
 <meta property="og:locale" content="zh_CN">
@@ -161,8 +161,12 @@
         <div class="card mb-3">
           <div class="flex-between">
             <div class="card-title" style="margin:0">🍽️ 今日饮食</div>
-            <a href="foods.html" class="btn btn-outline btn-sm">+ 记一餐</a>
+            <div class="flex gap-sm" style="gap:8px">
+              <button class="btn btn-ghost btn-sm" id="btnPhotoAlbum">📷 相册</button>
+              <a href="foods.html" class="btn btn-outline btn-sm">+ 记一餐</a>
+            </div>
           </div>
+          <div id="photoAlbum" style="display:none;margin:10px 0"></div>
           <div id="mealList" class="mt-2"></div>
           <div id="mealEmpty" class="empty mt-2 hidden"><div class="e-icon">🍽️</div><div class="e-title">今天还没有饮食记录</div><div class="e-desc">去食物热量库记一餐，或手动添加</div></div>
           <div class="alert success mt-2" id="mealTotal"></div>
@@ -228,11 +232,11 @@
     </div>
     <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
   </div>
-</footer><script src="assets/js/supabase-config.js?v=47"></script>
-<script src="assets/js/storage.js?v=47"></script>
-<script src="assets/js/data.js?v=47"></script>
-<script src="assets/js/charts.js?v=47"></script>
-<script src="assets/js/app.js?v=47"></script>
+</footer><script src="assets/js/supabase-config.js?v=48"></script>
+<script src="assets/js/storage.js?v=48"></script>
+<script src="assets/js/data.js?v=48"></script>
+<script src="assets/js/charts.js?v=48"></script>
+<script src="assets/js/app.js?v=48"></script>
 <!-- 饮食记录编辑弹窗 -->
 <div class="modal-overlay" id="mealEditModal">
   <div class="modal" style="max-width:460px">
@@ -264,7 +268,7 @@
   </div>
 </div>
 
-<script src="assets/js/pages/tracker.js?v=47"></script><script>
+<script src="assets/js/pages/tracker.js?v=48"></script><script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('sw.js').catch(function () {});

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>健康报告 · 悦动健康</title>
 <meta name="theme-color" content="#3b82f6">
-<link rel="stylesheet" href="assets/css/style.css?v=47">
+<link rel="stylesheet" href="assets/css/style.css?v=48">
 </head>
 <body>
 <div class="m-header">
@@ -31,17 +31,25 @@
       <button class="report-tab" data-range="month">📅 本月</button>
     </div>
     <div id="reportContent"></div>
-    <div class="flex gap-sm mt-3" style="justify-content:center">
-      <button class="btn btn-outline btn-sm" id="btnExportReport">📤 导出周报分享</button>
-      <button class="btn btn-ghost btn-sm" id="btnExportJson">💾 导出全部数据</button>
+    <div class="flex gap-sm mt-3" style="justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" id="btnShareImage">🖼️ 生成分享图</button>
+      <button class="btn btn-outline btn-sm" id="btnExportReport">📤 复制周报</button>
+      <button class="btn btn-ghost btn-sm" id="btnExportJson">💾 导出数据</button>
+    </div>
+    <div id="shareCardWrap" style="display:none;margin-top:20px;text-align:center">
+      <canvas id="shareCanvas" style="max-width:100%;border-radius:20px;box-shadow:var(--shadow-lg)"></canvas>
+      <div class="flex gap-sm mt-2" style="justify-content:center">
+        <button class="btn btn-primary btn-sm" id="btnSaveImage">💾 保存图片</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('shareCardWrap').style.display='none'">关闭</button>
+      </div>
     </div>
   </div>
 </section>
-<script src="assets/js/storage.js?v=47"></script>
-<script src="assets/js/data.js?v=47"></script>
-<script src="assets/js/charts.js?v=47"></script>
-<script src="assets/js/supabase-config.js?v=47"></script>
-<script src="assets/js/app.js?v=47"></script>
-<script src="assets/js/pages/report.js?v=47"></script>
+<script src="assets/js/storage.js?v=48"></script>
+<script src="assets/js/data.js?v=48"></script>
+<script src="assets/js/charts.js?v=48"></script>
+<script src="assets/js/supabase-config.js?v=48"></script>
+<script src="assets/js/app.js?v=48"></script>
+<script src="assets/js/pages/report.js?v=48"></script>
 </body>
 </html>

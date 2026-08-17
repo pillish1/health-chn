@@ -457,6 +457,22 @@
     var shareBtn = document.getElementById('btnShare');
     if (shareBtn) shareBtn.addEventListener('click', shareHealth);
     var meSave = document.getElementById('me-save');
+    var albumBtn = document.getElementById('btnPhotoAlbum');
+    if (albumBtn) albumBtn.addEventListener('click', function () {
+      var wrap = document.getElementById('photoAlbum');
+      var meals = YDJK.getMeals(viewDate).filter(function (m) { return m.photo; });
+      if (wrap.style.display === 'none' || !wrap.style.display) {
+        if (!meals.length) { YDJK_UI.toast('今天还没有带照片的餐食', 'err'); return; }
+        wrap.style.display = 'block';
+        wrap.innerHTML = '<div class="photo-grid">' + meals.map(function (m) {
+          return '<div class="photo-cell"><img src="' + m.photo + '" alt="' + esc(m.name) + '" style="width:100%;height:100%;object-fit:cover"><span class="photo-name">' + esc(m.name) + '</span></div>';
+        }).join('') + '</div>';
+        albumBtn.textContent = '📋 列表';
+      } else {
+        wrap.style.display = 'none';
+        albumBtn.textContent = '📷 相册';
+      }
+    });
     if (meSave) meSave.addEventListener('click', saveMealEdit);
     if (!YDJK.isOnboarded()) {
       var na = document.getElementById('noProfileAlert');

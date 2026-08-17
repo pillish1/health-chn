@@ -114,7 +114,69 @@
     YDJK_UI.toast('✅ 数据已导出');
   }
 
+  function drawShareCard() {
+    var r = calcReport();
+    var label = range === 'week' ? '本周' : '本月';
+    var rate = r.days.length ? Math.round(r.checkinDays / r.days.length * 100) : 0;
+    var W = 600, H = 800;
+    var c = document.getElementById('shareCanvas');
+    c.width = W; c.height = H;
+    var ctx = c.getContext('2d');
+    // 背景渐变
+    var g = ctx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, '#2563eb'); g.addColorStop(1, '#8b5cf6');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    // 装饰圆
+    ctx.fillStyle = 'rgba(255,255,255,.06)';
+    ctx.beginPath(); ctx.arc(W - 60, 60, 120, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(50, H - 50, 90, 0, Math.PI * 2); ctx.fill();
+    // Logo
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 34px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('🏃 悦动健康', W / 2, 90);
+    ctx.font = '22px sans-serif'; ctx.fillStyle = 'rgba(255,255,255,.8)';
+    ctx.fillText(label + '健康报告', W / 2, 130);
+    // 大数字
+    ctx.font = 'bold 72px sans-serif'; ctx.fillStyle = '#fff';
+    ctx.fillText(rate + '%', W / 2, 260);
+    ctx.font = '20px sans-serif'; ctx.fillStyle = 'rgba(255,255,255,.85)';
+    ctx.fillText('打卡率', W / 2, 295);
+    // 数据卡
+    var data = [
+      { label: '打卡天数', value: r.checkinDays + '/' + r.days.length },
+      { label: '运动时长', value: r.totalMin + ' 分钟' },
+      { label: '饮食记录', value: r.totalMeals + ' 餐' },
+      { label: '日均摄入', value: r.avgKcal + ' kcal' }
+    ];
+    var y = 360;
+    data.forEach(function (d) {
+      ctx.fillStyle = 'rgba(255,255,255,.12)';
+      ctx.beginPath(); ctx.roundRect(50, y, W - 100, 70, 16); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.font = '18px sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText(d.label, 80, y + 32);
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 26px sans-serif'; ctx.textAlign = 'right';
+      ctx.fillText(d.value, W - 80, y + 32);
+      y += 90;
+    });
+    // 底部
+    ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.font = '16px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('和我一起管理健康吧！', W / 2, H - 50);
+    ctx.fillText('https://pillish1.github.io/health-chn/', W / 2, H - 20);
+    document.getElementById('shareCardWrap').style.display = 'block';
+  }
+  function saveShareImage() {
+    var c = document.getElementById('shareCanvas');
+    var a = document.createElement('a');
+    a.href = c.toDataURL('image/png');
+    a.download = 'yuedong-report.png';
+    a.click();
+    YDJK_UI.toast('✅ 分享图已保存');
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    var si = document.getElementById('btnShareImage');
+    if (si) si.addEventListener('click', drawShareCard);
+    var sv = document.getElementById('btnSaveImage');
+    if (sv) sv.addEventListener('click', saveShareImage);
     var eb = document.getElementById('btnExportReport');
     if (eb) eb.addEventListener('click', exportText);
     var ej = document.getElementById('btnExportJson');
