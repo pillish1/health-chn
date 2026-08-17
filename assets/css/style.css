@@ -1207,3 +1207,28 @@ html[data-theme="dark"] .hero-card {
   .kb-side { grid-template-columns: 1fr; }
   .kb-head { flex-direction: column; align-items: stretch; }
 }
+
+
+/* ============ 大改：今日仪表盘 ============ */
+.dash-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: center; max-width: 980px; margin: 0 auto; }
+.dash-main { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 26px; box-shadow: var(--shadow); }
+.dash-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.dash-rings { display: flex; justify-content: space-around; gap: 16px; }
+.dash-ring { flex: 1; max-width: 130px; text-align: center; }
+.dash-ring svg { width: 100%; }
+.dash-quick { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+.dash-side { display: flex; flex-direction: column; gap: 14px; }
+.dash-stat {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+  padding: 18px 22px; display: flex; justify-content: space-between; align-items: center;
+  box-shadow: var(--shadow-sm); transition: transform .2s;
+}
+.dash-stat:hover { transform: translateX(4px); }
+.dash-stat b { font-size: 1.5rem; font-weight: 900; background: linear-gradient(120deg, var(--primary), var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.dash-stat span { font-size: .82rem; color: var(--muted); }
+.hero-welcome { max-width: 980px; margin: 0 auto 20px; }
+@media (max-width: 800px) {
+  .dash-grid { grid-template-columns: 1fr; }
+  .dash-side { flex-direction: row; flex-wrap: wrap; }
+  .dash-stat { flex: 1; min-width: 140px; }
+}

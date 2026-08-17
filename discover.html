@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发现 · 悦动健康</title>
+<meta name="theme-color" content="#3b82f6">
+<link rel="stylesheet" href="assets/css/style.css?v=40">
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="主题">🌙</button>
+      <button class="icon-btn" onclick="location.href='index.html'" title="首页">🏠</button>
+    </div>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <div class="container">
+    <h1>🧭 发现</h1>
+    <p>热门计划 · 精选文章 · 实用工具，发现健康生活</p>
+  </div>
+</header>
+
+<section class="section-sm">
+  <div class="container">
+    <!-- 工具快捷入口 -->
+    <h2 class="section-title" style="font-size:1.2rem">🛠️ 实用工具</h2>
+    <div class="grid grid-4" style="margin-top:18px">
+      <a href="bmi.html" class="card card-hover text-center" style="padding:20px"><div style="font-size:2rem">📊</div><b class="small" style="margin-top:6px;display:block">BMI 计算</b></a>
+      <a href="calorie.html" class="card card-hover text-center" style="padding:20px"><div style="font-size:2rem">🔥</div><b class="small" style="margin-top:6px;display:block">卡路里</b></a>
+      <a href="foods.html" class="card card-hover text-center" style="padding:20px"><div style="font-size:2rem">🥗</div><b class="small" style="margin-top:6px;display:block">食物库</b></a>
+      <a href="plans.html" class="card card-hover text-center" style="padding:20px"><div style="font-size:2rem">💪</div><b class="small" style="margin-top:6px;display:block">计划</b></a>
+    </div>
+
+    <!-- 热门计划 -->
+    <h2 class="section-title" style="font-size:1.2rem;margin-top:36px">🔥 热门计划</h2>
+    <div class="grid grid-3" id="hotPlans" style="margin-top:18px"></div>
+
+    <!-- 精选文章 -->
+    <h2 class="section-title" style="font-size:1.2rem;margin-top:36px">📖 精选文章</h2>
+    <div class="grid grid-3" id="hotArticles" style="margin-top:18px"></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯</div>
+  </div>
+</footer>
+
+<script src="assets/js/storage.js?v=40"></script>
+<script src="assets/js/data.js?v=40"></script>
+<script src="assets/js/supabase-config.js?v=40"></script>
+<script src="assets/js/app.js?v=40"></script>
+<script>
+(function () {
+  'use strict';
+  function esc(s) { return String(s || '').replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  document.addEventListener('DOMContentLoaded', function () {
+    // 热门计划
+    var plans = window.YDJK_DATA.PLANS;
+    document.getElementById('hotPlans').innerHTML = plans.map(function (p) {
+      return '<a href="plans.html" class="card card-hover"><div class="flex-between"><div class="card-title" style="margin:0">' + p.emoji + ' ' + esc(p.name) + '</div><span class="tag ' + p.color + '">' + p.weekly + '</span></div>' +
+        '<div class="card-sub mt-1">' + esc(p.desc) + '</div></a>';
+    }).join('');
+    // 精选文章（云端）
+    var artEl = document.getElementById('hotArticles');
+    if (window.YD_CLOUD) {
+      window.YD_CLOUD.loadArticles().then(function (arts) {
+        if (arts && arts.length) {
+          artEl.innerHTML = arts.slice(0, 3).map(function (a) {
+            return '<a href="articles.html" class="card card-hover article-card"><div class="a-meta"><span class="tag blue">' + esc(a.cat) + '</span><span>⏱ ' + (a.read_time || 5) + ' 分钟</span></div>' +
+              '<div class="a-title">' + esc(a.title) + '</div><div class="a-excerpt">' + esc(a.excerpt) + '</div></a>';
+          }).join('');
+        }
+      }).catch(function () {});
+    }
+  });
+})();
+</script>
+</body>
+</html>

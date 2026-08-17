@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="悦动健康">
-<link rel="stylesheet" href="assets/css/style.css?v=39">
+<link rel="stylesheet" href="assets/css/style.css?v=40">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="悦动健康">
 <meta property="og:locale" content="zh_CN">
@@ -211,11 +211,11 @@
     </div>
     <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
   </div>
-</footer><script src="assets/js/supabase-config.js?v=39"></script>
-<script src="assets/js/storage.js?v=39"></script>
-<script src="assets/js/data.js?v=39"></script>
-<script src="assets/js/charts.js?v=39"></script>
-<script src="assets/js/app.js?v=39"></script>
+</footer><script src="assets/js/supabase-config.js?v=40"></script>
+<script src="assets/js/storage.js?v=40"></script>
+<script src="assets/js/data.js?v=40"></script>
+<script src="assets/js/charts.js?v=40"></script>
+<script src="assets/js/app.js?v=40"></script>
 <!-- 饮食记录编辑弹窗 -->
 <div class="modal-overlay" id="mealEditModal">
   <div class="modal" style="max-width:460px">
@@ -247,10 +247,63 @@
   </div>
 </div>
 
-<script src="assets/js/pages/tracker.js?v=39"></script><script>
+<script src="assets/js/pages/tracker.js?v=40"></script><script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('sw.js').catch(function () {});
   });
 }
-</script></body></html>
+</script>
+<!-- 底部 Tab 导航（移动端 App 式） -->
+<nav class="tab-bar">
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="discover" href="discover.html"><span class="tab-ico">🧭</span><span class="tab-lbl">发现</span></a>
+  <button class="tab-plus" id="tabPlusBtn" aria-label="快速记录"><span>＋</span></button>
+  <a class="tab-item" data-tab="tracker" href="tracker.html"><span class="tab-ico">📊</span><span class="tab-lbl">记录</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
+</nav>
+
+<!-- 快速记录面板 -->
+<div class="modal-overlay" id="quickModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">⚡ 快速记录</div>
+    <div class="modal-sub">随手记，养成习惯更简单</div>
+    <div class="quick-grid">
+      <button class="quick-btn" onclick="location.href='foods.html'"><span class="qb-ico">🍽️</span><b>记一餐</b><small>查询食物热量</small></button>
+      <button class="quick-btn" onclick="location.href='tracker.html#workout'"><span class="qb-ico">🏃</span><b>运动打卡</b><small>记录今日运动</small></button>
+      <button class="quick-btn" onclick="location.href='tracker.html#weight'"><span class="qb-ico">⚖️</span><b>记录体重</b><small>追踪体重变化</small></button>
+      <button class="quick-btn" onclick="location.href='tracker.html'"><span class="qb-ico">💧</span><b>饮水打卡</b><small>补充水分</small></button>
+    </div>
+  </div>
+</div>
+
+<style>
+.tab-bar{display:none}
+@media(max-width:900px){
+  .tab-bar{
+    position:fixed;bottom:0;left:0;right:0;z-index:150;
+    display:flex;align-items:center;justify-content:space-around;
+    background:var(--surface);border-top:1px solid var(--border);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    backdrop-filter:blur(14px);
+  }
+  .tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;color:var(--muted);font-size:.68rem;font-weight:700;text-decoration:none;border-radius:12px;transition:color .2s}
+  .tab-item .tab-ico{font-size:1.25rem;line-height:1}
+  .tab-item.active{color:var(--primary)}
+  .tab-plus{
+    width:52px;height:52px;border-radius:50%;border:none;margin-top:-22px;
+    background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-size:1.6rem;
+    box-shadow:0 8px 24px rgba(139,92,246,.45);display:grid;place-items:center;cursor:pointer;
+    transition:transform .2s;
+  }
+  .tab-plus:active{transform:scale(.92)}
+  body{padding-bottom:64px}
+  .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  .quick-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 12px;border:1px solid var(--border);border-radius:16px;background:var(--surface-2);cursor:pointer;transition:all .2s}
+  .quick-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
+  .qb-ico{font-size:1.8rem}
+  .quick-btn b{font-size:.9rem}
+  .quick-btn small{font-size:.7rem;color:var(--muted)}
+}
+</style>
+</body></html>

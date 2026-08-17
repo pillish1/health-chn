@@ -312,6 +312,31 @@
     setTimeout(function () { openModal('onboardModal'); }, force ? 0 : 500);
   }
 
+  /* ---------- 底部 Tab 导航 ---------- */
+  function initTabBar() {
+    var path = location.pathname.split('/').pop() || 'index.html';
+    var map = { 'index.html': 'home', 'discover.html': 'discover', 'tracker.html': 'tracker', 'profile.html': 'profile' };
+    var active = map[path];
+    document.querySelectorAll('.tab-item').forEach(function (t) {
+      if (t.dataset.tab === active) t.classList.add('active');
+    });
+    var plus = document.getElementById('tabPlusBtn');
+    if (plus) plus.addEventListener('click', function () { openModal('quickModal'); });
+    // 锚点滚动（tracker#workout / #weight）
+    if (path === 'tracker.html' && location.hash) {
+      var target = location.hash.slice(1);
+      setTimeout(function () {
+        var el = target === 'workout' ? document.querySelector('.card .card-title') : null;
+        if (target === 'workout' && document.getElementById('todayCheckin')) {
+          document.getElementById('todayCheckin').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        if (target === 'weight' && document.getElementById('weightInput')) {
+          document.getElementById('weightInput').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
+    }
+  }
+
   /* ---------- 登录状态导航 ---------- */
   function initAuthNav() {
     var actions = document.querySelector('.nav-actions');
@@ -650,6 +675,7 @@
     initCrossTab();
     initInstallPrompt();
     initAuthNav();
+    initTabBar();
     // 已登录时自动拉取云端最新数据
     if (window.YDJK && window.YDJK.isCloudLogged && window.YDJK.isCloudLogged()) {
       window.YDJK.cloudPull().then(function (merged) {

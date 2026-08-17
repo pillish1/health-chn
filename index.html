@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="悦动健康">
-<link rel="stylesheet" href="assets/css/style.css?v=39">
+<link rel="stylesheet" href="assets/css/style.css?v=40">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="悦动健康">
 <meta property="og:locale" content="zh_CN">
@@ -63,37 +63,35 @@
 </nav>
 
 <!-- Hero -->
-<header class="hero">
-  <div class="container hero-inner">
-    <div class="hero-text">
-      <h1>管理健康，<br>从<span class="grad">记录每一天</span>开始</h1>
-      <p class="lead">BMI 计算 · 卡路里管理 · 科学运动计划 · 253 种食物热量——把健康变成看得见的数字，让坚持有迹可循。</p>
-      <div class="hero-cta">
-        <a href="tracker.html" class="btn btn-primary btn-lg">🚀 开始健康之旅</a>
-        <a href="plans.html" class="btn btn-outline btn-lg">📋 查看运动计划</a>
+<header class="hero" style="padding:40px 0 56px">
+  <div class="container">
+    <div class="hero-welcome" id="welcomeMini"></div>
+    <div class="dash-grid">
+      <!-- 左：今日仪表盘 -->
+      <div class="dash-main">
+        <div class="dash-title">
+          <h1 style="font-size:1.35rem;font-weight:900">今日状态</h1>
+          <span class="muted small" id="dashDate"></span>
+        </div>
+        <div class="dash-rings">
+          <div class="dash-ring" id="ringMeal" title="今日摄入"></div>
+          <div class="dash-ring" id="ringWorkout" title="今日运动"></div>
+          <div class="dash-ring" id="ringWater" title="今日饮水"></div>
+        </div>
+        <div class="dash-quick">
+          <button class="btn btn-primary btn-sm" onclick="location.href='foods.html'">🍽️ 记一餐</button>
+          <button class="btn btn-outline btn-sm" onclick="location.href='tracker.html#workout'">🏃 打卡</button>
+          <button class="btn btn-ghost btn-sm" onclick="location.href='tracker.html#weight'">⚖️ 称重</button>
+        </div>
       </div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="num">250+<small> 食物</small></div><div class="lbl">热量数据</div></div>
-        <div class="hero-stat"><div class="num">30+<small> 动作</small></div><div class="lbl">标准动作库</div></div>
-        <div class="hero-stat"><div class="num">3<small> 套</small></div><div class="lbl">科学计划</div></div>
-        <div class="hero-stat"><div class="num">100%<small> 本地</small></div><div class="lbl">数据隐私</div></div>
-      </div>
-      <div class="step-guide">
-        <div class="step-item"><span class="step-num">1</span><div><b>建立健康档案</b><p>30 秒完成身体评估</p></div><a class="step-link" href="javascript:void(0)" onclick="window.YDJK_UI.openProfileEditor()">去设置</a></div>
-        <div class="step-item"><span class="step-num">2</span><div><b>选择运动计划</b><p>按目标匹配科学方案</p></div><a class="step-link" href="plans.html">去选择</a></div>
-        <div class="step-item"><span class="step-num">3</span><div><b>每日记录打卡</b><p>数据可视化见证变化</p></div><a class="step-link" href="tracker.html">去记录</a></div>
-      </div>
-    </div>
-    <div class="hero-art">
-      <div class="hero-card">
-        <span class="hero-badge">今日面板</span>
-        <div class="hc-title"><span>今日状态</span><span id="heroDate"></span></div>
-        <div id="heroRing" class="hero-ring-box"></div>
-        <div id="heroProfileMeta" class="text-center mt-1 small muted"></div>
-        <div id="heroActions" class="mt-2 action-list"></div>
-        <div id="heroCta" class="mt-2 text-center"></div>
+      <!-- 右：数据速览 -->
+      <div class="dash-side">
+        <div class="dash-stat" id="statBmi"><b>--</b><span>BMI</span></div>
+        <div class="dash-stat" id="statKcal"><b>--</b><span>今日摄入</span></div>
+        <div class="dash-stat" id="statStreak"><b>0</b><span>连续打卡</span></div>
       </div>
     </div>
+    <div id="welcomeBar" style="max-width:760px;margin:20px auto 0"></div>
   </div>
 </header>
 
@@ -334,12 +332,12 @@
   </div>
 </div>
 
-<script src="assets/js/supabase-config.js?v=39"></script>
-<script src="assets/js/storage.js?v=39"></script>
-<script src="assets/js/data.js?v=39"></script>
-<script src="assets/js/charts.js?v=39"></script>
-<script src="assets/js/app.js?v=39"></script>
-<script src="assets/js/pages/home.js?v=39"></script>
+<script src="assets/js/supabase-config.js?v=40"></script>
+<script src="assets/js/storage.js?v=40"></script>
+<script src="assets/js/data.js?v=40"></script>
+<script src="assets/js/charts.js?v=40"></script>
+<script src="assets/js/app.js?v=40"></script>
+<script src="assets/js/pages/home.js?v=40"></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
@@ -347,5 +345,58 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+
+<!-- 底部 Tab 导航（移动端 App 式） -->
+<nav class="tab-bar">
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="discover" href="discover.html"><span class="tab-ico">🧭</span><span class="tab-lbl">发现</span></a>
+  <button class="tab-plus" id="tabPlusBtn" aria-label="快速记录"><span>＋</span></button>
+  <a class="tab-item" data-tab="tracker" href="tracker.html"><span class="tab-ico">📊</span><span class="tab-lbl">记录</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
+</nav>
+
+<!-- 快速记录面板 -->
+<div class="modal-overlay" id="quickModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">⚡ 快速记录</div>
+    <div class="modal-sub">随手记，养成习惯更简单</div>
+    <div class="quick-grid">
+      <button class="quick-btn" onclick="location.href='foods.html'"><span class="qb-ico">🍽️</span><b>记一餐</b><small>查询食物热量</small></button>
+      <button class="quick-btn" onclick="location.href='tracker.html#workout'"><span class="qb-ico">🏃</span><b>运动打卡</b><small>记录今日运动</small></button>
+      <button class="quick-btn" onclick="location.href='tracker.html#weight'"><span class="qb-ico">⚖️</span><b>记录体重</b><small>追踪体重变化</small></button>
+      <button class="quick-btn" onclick="location.href='tracker.html'"><span class="qb-ico">💧</span><b>饮水打卡</b><small>补充水分</small></button>
+    </div>
+  </div>
+</div>
+
+<style>
+.tab-bar{display:none}
+@media(max-width:900px){
+  .tab-bar{
+    position:fixed;bottom:0;left:0;right:0;z-index:150;
+    display:flex;align-items:center;justify-content:space-around;
+    background:var(--surface);border-top:1px solid var(--border);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    backdrop-filter:blur(14px);
+  }
+  .tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;color:var(--muted);font-size:.68rem;font-weight:700;text-decoration:none;border-radius:12px;transition:color .2s}
+  .tab-item .tab-ico{font-size:1.25rem;line-height:1}
+  .tab-item.active{color:var(--primary)}
+  .tab-plus{
+    width:52px;height:52px;border-radius:50%;border:none;margin-top:-22px;
+    background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-size:1.6rem;
+    box-shadow:0 8px 24px rgba(139,92,246,.45);display:grid;place-items:center;cursor:pointer;
+    transition:transform .2s;
+  }
+  .tab-plus:active{transform:scale(.92)}
+  body{padding-bottom:64px}
+  .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  .quick-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 12px;border:1px solid var(--border);border-radius:16px;background:var(--surface-2);cursor:pointer;transition:all .2s}
+  .quick-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
+  .qb-ico{font-size:1.8rem}
+  .quick-btn b{font-size:.9rem}
+  .quick-btn small{font-size:.7rem;color:var(--muted)}
+}
+</style>
 </body>
 </html>
