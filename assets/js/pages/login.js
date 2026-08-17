@@ -63,7 +63,9 @@
       else setMsg('⚠️ 登录成功，但数据同步失败，稍后自动重试', true);
       // 标记已登录
       localStorage.setItem('ydjk:cloud-logged', '1');
-      setTimeout(function () { location.href = 'tracker.html'; }, 900);
+      // 未建档 → 引导建档；已建档 → 追踪页
+      var hasProfile = YDJK.getProfile();
+      setTimeout(function () { location.href = hasProfile ? 'tracker.html' : 'index.html?setup=1'; }, 900);
     } catch (e) {
       setMsg('⚠️ 登录成功，数据同步异常：' + e.message);
       localStorage.setItem('ydjk:cloud-logged', '1');

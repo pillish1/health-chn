@@ -1446,3 +1446,13 @@ html[data-theme="dark"] .today-pick { background: linear-gradient(120deg, rgba(1
 html[data-theme="dark"] .kb-item:hover { background: var(--surface-2); }
 html[data-theme="dark"] .report-tab { background: var(--surface-2); border-color: var(--border); }
 html[data-theme="dark"] .photo-name { background: linear-gradient(transparent, rgba(0,0,0,.7)); }
+
+.quick-actions { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; padding: 2px 0 8px; }
+.qa-btn {
+  flex: none; display: flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-2); font-size: .82rem; font-weight: 700; text-decoration: none;
+  transition: all .2s;
+}
+.qa-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+.qa-btn span { font-size: 1rem; }

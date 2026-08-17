@@ -105,6 +105,10 @@
   document.addEventListener('DOMContentLoaded', function () {
     renderDashboard();
     renderTasks();
+    // 登录后引导建档
+    if (location.search.indexOf('setup=1') >= 0 && !YDJK.getProfile() && window.YDJK_UI) {
+      setTimeout(function () { window.YDJK_UI.openProfileEditor(); }, 600);
+    }
     renderWeek();
     renderHot();
     renderArticles();

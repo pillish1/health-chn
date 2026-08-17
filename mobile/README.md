@@ -39,3 +39,27 @@ npx cap open android
 - 网页代码在 webDir: ..（health-chn 根目录）
 - 本地通知插件已配置（App 内提醒）
 - 云端同步通过 Supabase（已就绪）
+
+
+## 环境检测（打包前）
+运行以下命令确认环境：
+\`\`\`bash
+node --version     # 需 16+
+java -version      # 需 17+（Android Gradle 要求）
+echo $env:ANDROID_HOME  # 应指向 Android SDK
+\`\`\`
+
+### 安装 Android SDK（如未安装）
+1. 下载 Android Studio：https://developer.android.com/studio
+2. 安装时勾选 "Android SDK" 和 "Android Virtual Device"
+3. 完成后 SDK 位于 %LOCALAPPDATA%\\Android\\Sdk
+
+### 生成 APK
+\`\`\`bash
+cd D:\\health-chn\\mobile
+npm install
+npx cap add android
+npx cap sync
+npx cap open android
+# Android Studio 中：Build → Build App Bundle(s) / APK(s)
+\`\`\`
