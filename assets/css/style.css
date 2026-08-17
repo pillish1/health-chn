@@ -1426,3 +1426,7 @@ html[data-theme="dark"] .hero-card {
 
 /* 通知开关行 hover */
 .list-row { padding: 12px 4px; }
+
+.report-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+.report-tab { padding: 10px 24px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-weight: 700; font-size: .88rem; cursor: pointer; transition: all .2s; }
+.report-tab.active { background: linear-gradient(135deg,#3b82f6,#8b5cf6); color: #fff; border-color: transparent; }

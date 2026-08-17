@@ -1,0 +1,17 @@
+{
+  "appId": "com.yuedong.health",
+  "appName": "悦动健康",
+  "webDir": "..",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1000,
+      "backgroundColor": "#3b82f6"
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon"
+    }
+  }
+}
