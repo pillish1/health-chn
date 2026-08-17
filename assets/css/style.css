@@ -1439,3 +1439,10 @@ html[data-theme="dark"] .hero-card {
 .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .photo-cell { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; }
 .photo-name { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,.6)); color: #fff; font-size: .7rem; padding: 14px 6px 5px; }
+
+html[data-theme="dark"] .m-header .m-search { background: var(--surface-2); color: var(--muted); }
+html[data-theme="dark"] .dash-main, html[data-theme="dark"] .dash-stat { background: var(--surface); border-color: var(--border); }
+html[data-theme="dark"] .today-pick { background: linear-gradient(120deg, rgba(139,92,246,.15), rgba(59,130,246,.08)), var(--surface); }
+html[data-theme="dark"] .kb-item:hover { background: var(--surface-2); }
+html[data-theme="dark"] .report-tab { background: var(--surface-2); border-color: var(--border); }
+html[data-theme="dark"] .photo-name { background: linear-gradient(transparent, rgba(0,0,0,.7)); }

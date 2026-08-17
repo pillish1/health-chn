@@ -46,8 +46,10 @@
 
     var html = '<div class="card mb-3">' +
       '<div class="flex-between flex-wrap">' +
+      '<div class="flex gap-md" style="gap:16px;align-items:center">' +
+      '<div id="planProgress" style="width:76px;height:76px;flex:none"></div>' +
       '<div><div class="card-title" style="margin:0">' + pl.emoji + ' ' + esc(pl.name) + (isCustom ? ' <span class="tag purple">自定义</span>' : '') + '</div>' +
-      '<div class="card-sub mt-1">' + esc(pl.desc) + '</div></div>' +
+      '<div class="card-sub mt-1">' + esc(pl.desc) + '</div></div></div>' +
       '<div class="flex gap-sm flex-wrap">' +
       '<span class="tag ' + (pl.color || 'gray') + '">' + (pl.level || '自定义') + '</span>' +
       '<span class="tag gray">' + (pl.weekly || '自定义') + '</span>' +
@@ -74,6 +76,11 @@
           }).join('') + '</div>') + '</div>';
     }).join('') + '</div>';
 
+    // 周完成率环
+    var progEl = document.getElementById('planProgress');
+    if (progEl && window.YDJK_CHARTS) {
+      YDJK_CHARTS.donutChart(progEl, { value: doneCount, max: 7, unit: '/7', label: '本周', size: 76, thickness: 10 });
+    }
     var content = document.getElementById('planContent');
     content.innerHTML = html;
     content.querySelectorAll('.day-check').forEach(function (btn) {

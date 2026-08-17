@@ -74,6 +74,18 @@
       { name: '碳水化合物', gram: m.carbs, kcal: Math.round(m.carbs * 4), color: '#f59e0b', pct: goal === 'cut' ? 40 : goal === 'bulk' ? 50 : 45 },
       { name: '脂肪', gram: m.fat, kcal: Math.round(m.fat * 9), color: '#ef4444', pct: goal === 'cut' ? 25 : goal === 'bulk' ? 20 : 25 }
     ];
+    // 食物参考
+    var foodRef = document.getElementById('foodRef');
+    if (foodRef) {
+      var refs = [
+        { icon: '🍗', name: '鸡胸肉', gram: Math.round(m.protein / 24.6 * 100), note: '约 ' + Math.round(m.protein / 24.6 * 100) + 'g 提供全天蛋白' },
+        { icon: '🍚', name: '米饭', gram: Math.round(m.carbs / 25.9 * 100), note: '约 ' + Math.round(m.carbs / 25.9 * 100) + 'g 提供全天碳水' },
+        { icon: '🥜', name: '花生', gram: Math.round(m.fat / 48 * 100), note: '约 ' + Math.round(m.fat / 48 * 100) + 'g 提供全天脂肪' }
+      ];
+      foodRef.innerHTML = '<div class="grid grid-3">' + refs.map(function (f) {
+        return '<div class="card" style="padding:14px;text-align:center"><div style="font-size:1.6rem">' + f.icon + '</div><b class="small">' + f.name + '</b><div class="muted small">' + f.note + '</div></div>';
+      }).join('') + '</div>';
+    }
     document.getElementById('macroList').innerHTML = macros.map(function (mm) {
       return '<div class="mb-2">' +
         '<div class="flex-between small" style="margin-bottom:6px"><span><b>' + mm.name + '</b> <span class="muted">' + mm.kcal + ' kcal · ' + mm.pct + '%</span></span><b>' + mm.gram + ' g</b></div>' +
