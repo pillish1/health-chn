@@ -1317,3 +1317,42 @@ html[data-theme="dark"] .hero-card {
   .input { padding: 12px 14px !important; }
   .btn { padding: 10px 20px !important; }
 }
+
+
+/* ============ 桌面端优化 v42（>900px） ============ */
+@media (min-width: 901px) {
+  /* 首页 hero：桌面大横幅（移动端已精简为仪表盘） */
+  .hero { padding: 72px 0 64px; }
+  .dash-main { padding: 32px; }
+  .dash-rings .dash-ring { max-width: 150px; }
+  
+  /* 容器加宽一点（桌面信息多） */
+  .container { max-width: 1200px; }
+  
+  /* 功能导览 3 列 */
+  .grid-3 { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  
+  /* 卡片间距呼吸感 */
+  .section { padding: 72px 0; }
+  .card { padding: 28px; }
+  
+  /* 首页各区块更舒展 */
+  .hero-stat .num { font-size: 2rem; }
+  .section-title { font-size: 2rem; }
+  
+  /* 桌面端 hover 完善 */
+  .kb-item:hover, .card-hover:hover { transform: translateY(-6px); }
+  
+  /* 追踪页双列平衡 */
+  .grid-2 { grid-template-columns: 1fr 1fr; gap: 20px; }
+}
+
+/* 两端通用：修复 grid 定义在媒体查询外被覆盖的问题 */
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 900px) {
+  .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-2 { grid-template-columns: 1fr !important; }
+}
