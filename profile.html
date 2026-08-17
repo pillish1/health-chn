@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人资料 · 悦动健康</title>
+<meta name="theme-color" content="#3b82f6">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="assets/css/style.css?v=34">
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="主题">🌙</button>
+      <button class="icon-btn" onclick="history.back()" title="返回">←</button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>👤 个人资料</h1>
+    <p>管理你的账号信息</p>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container" style="max-width:640px">
+    <div id="profileGate" class="card text-center">
+      <p class="muted">请先登录</p>
+      <button class="btn btn-primary" onclick="location.href='login.html'">去登录 →</button>
+    </div>
+
+    <div id="profilePanel" style="display:none">
+      <!-- 账号信息 -->
+      <div class="card mb-3">
+        <div class="card-title">📧 账号信息</div>
+        <div class="list-row"><div class="lr-main"><b class="small">邮箱</b></div><div class="lr-side" id="pEmail"></div></div>
+        <div class="list-row"><div class="lr-main"><b class="small">注册时间</b></div><div class="lr-side" id="pCreated"></div></div>
+        <div class="list-row"><div class="lr-main"><b class="small">最近登录</b></div><div class="lr-side" id="pLastSignIn"></div></div>
+      </div>
+
+      <!-- 修改密码 -->
+      <div class="card mb-3">
+        <div class="card-title">🔑 修改密码</div>
+        <div class="field"><label>新密码</label><input class="input" type="password" id="np1" placeholder="至少 6 位" autocomplete="new-password"></div>
+        <div class="field"><label>确认新密码</label><input class="input" type="password" id="np2" placeholder="再次输入" autocomplete="new-password"></div>
+        <button class="btn btn-primary btn-block" id="changePw">更新密码</button>
+      </div>
+
+      <!-- 数据管理 -->
+      <div class="card mb-3">
+        <div class="card-title">☁️ 云数据</div>
+        <p class="text-2 small">你的记录（体重/打卡/饮食/计划）保存在云端，登录任意设备即可查看。</p>
+        <div class="flex gap-sm">
+          <button class="btn btn-outline btn-sm" id="btnSyncNow">🔄 立即同步</button>
+          <button class="btn btn-ghost btn-sm" onclick="location.href='about.html'">本地备份</button>
+        </div>
+        <div class="small muted mt-2" id="syncStatus"></div>
+      </div>
+
+      <!-- 退出 -->
+      <button class="btn btn-danger btn-block" id="btnLogout">🚪 退出登录</button>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/storage.js?v=34"></script>
+<script src="assets/js/supabase-config.js?v=34"></script>
+<script src="assets/js/app.js?v=34"></script>
+<script src="assets/js/pages/profile.js?v=34"></script>
+</body>
+</html>

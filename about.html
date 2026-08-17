@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于本站 · 隐私与免责 · 悦动健康</title>
+<meta name="description" content="了解悦动健康的产品理念、数据隐私说明与免责声明。">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="悦动健康">
+<link rel="stylesheet" href="assets/css/style.css?v=34">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="悦动健康">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="关于本站 · 隐私与免责 · 悦动健康">
+<meta property="og:description" content="了解悦动健康的产品理念、数据隐私说明与免责声明。">
+<meta property="og:image" content="icons/icon-512.png">
+<meta name="twitter:card" content="summary">
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="tracker.html">健康追踪</a>
+      <a href="plans.html">运动计划</a>
+      <a href="foods.html">食物热量</a>
+      <a href="articles.html">健康知识</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题">🌙</button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单">☰</button>
+    </div>
+  </div>
+</nav>
+<header class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>关于</span></div>
+    <h1>ℹ️ 关于悦动健康</h1>
+    <p>一个把「科学运动 + 均衡饮食 + 数据追踪」串起来的健康管理平台。</p>
+  </div>
+</header>
+
+<section class="section-sm">
+  <div class="container" style="max-width:820px">
+    <div class="card mb-3">
+      <div class="card-title">🏃 关于本站</div>
+      <p class="text-2">悦动健康是一个纯前端的健康管理工具，覆盖健康管理的完整闭环：</p>
+      <div class="mt-2">
+        <div class="list-row"><div class="lr-main"><span class="icon-badge green" style="width:38px;height:38px;font-size:1.1rem">1️⃣</span><div><div class="lr-title">评估</div><div class="lr-sub">建立健康档案，计算 BMI、BMR、TDEE</div></div></div></div>
+        <div class="list-row"><div class="lr-main"><span class="icon-badge orange" style="width:38px;height:38px;font-size:1.1rem">2️⃣</span><div><div class="lr-title">规划</div><div class="lr-sub">根据目标推荐运动计划与每日热量预算</div></div></div></div>
+        <div class="list-row"><div class="lr-main"><span class="icon-badge blue" style="width:38px;height:38px;font-size:1.1rem">3️⃣</span><div><div class="lr-title">执行</div><div class="lr-sub">每日训练打卡、饮食记录、饮水打卡</div></div></div></div>
+        <div class="list-row"><div class="lr-main"><span class="icon-badge purple" style="width:38px;height:38px;font-size:1.1rem">4️⃣</span><div><div class="lr-title">复盘</div><div class="lr-sub">体重趋势图、打卡热力图、摄入统计，让变化看得见</div></div></div></div>
+      </div>
+    </div>
+
+    <div class="card mb-3" id="privacy">
+      <div class="card-title">🔒 数据隐私</div>
+      <p class="text-2">本站为纯静态网站，<b>所有数据只保存在你自己的浏览器 localStorage 中</b>，不会上传到任何服务器，也没有任何追踪脚本。</p>
+      <ul class="mt-2" style="list-style:disc;margin-left:20px;color:var(--text-2)">
+        <li>健康档案、体重记录、打卡数据、饮食记录、饮水记录全部本地存储</li>
+        <li>清除浏览器数据即清除本站记录</li>
+        <li>可通过浏览器开发者工具查看本地存储内容</li>
+      </ul>
+    </div>
+
+    <div class="card mb-3" id="disclaimer">
+      <div class="card-title">⚠️ 免责声明</div>
+      <p class="text-2">本站所有计算与建议（BMI、卡路里、运动计划、营养建议等）均为<b>一般性健康科普信息</b>，不构成医疗诊断或治疗建议。食物热量数据为常见估算值，可能与实际存在差异。</p>
+      <ul class="mt-2" style="list-style:disc;margin-left:20px;color:var(--text-2)">
+        <li>如有慢性疾病、孕期、伤病或长期服药，请先咨询医生或专业营养师</li>
+        <li>运动中出现不适请立即停止</li>
+        <li>未成年人请在家长或专业人士指导下使用</li>
+      </ul>
+    </div>
+
+    <div class="card mb-3" id="data-manage">
+      <div class="card-title">🗄️ 数据备份与恢复</div>
+      <p class="text-2">所有记录保存在当前浏览器本地。升级设备或清理浏览器前，<b>请先导出备份</b>；换设备后导入即可完整恢复，无需重新记录。</p>
+      <div class="flex gap-sm mt-2 flex-wrap">
+        <button class="btn btn-primary btn-sm" id="btnExport">⬇️ 导出备份</button>
+        <button class="btn btn-outline btn-sm" id="btnImport">⬆️ 导入备份</button>
+        <button class="btn btn-danger btn-sm" id="btnClear">🗑️ 清空全部数据</button>
+      </div>
+      <input type="file" id="importFile" accept=".json,.txt" class="hidden">
+      <div id="dataStatus" class="small muted mt-2">当前设备共 <b id="dataCount">0</b> 条本地记录</div>
+    </div>
+  </div>
+</section>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:var(--text)"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+        <p class="f-desc">科学运动 + 均衡饮食 + 数据追踪，一站式私人健康管理平台。所有数据仅保存在你的浏览器本地。</p>
+      </div>
+      <div><h4>工具</h4><a href="bmi.html">BMI 计算</a><a href="calorie.html">卡路里计算</a><a href="foods.html">食物热量库</a></div>
+      <div><h4>健康</h4><a href="plans.html">运动计划</a><a href="tracker.html">健康追踪</a><a href="articles.html">健康知识</a></div>
+      <div><h4>关于</h4><a href="about.html">关于本站</a><a href="about.html#privacy">隐私说明</a><a href="about.html#disclaimer">免责声明</a></div>
+    </div>
+    <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
+  </div>
+</footer><script src="assets/js/supabase-config.js?v=34"></script>
+<script src="assets/js/storage.js?v=34"></script>
+<script src="assets/js/data.js?v=34"></script>
+<script src="assets/js/charts.js?v=34"></script>
+<script src="assets/js/app.js?v=34"></script><script src="assets/js/pages/data-manage.js?v=34"></script><script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    if (!localStorage.getItem('ydjk:sw-off')) {
+      localStorage.setItem('ydjk:sw-off', '1');
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+  });
+}
+</script></body></html>

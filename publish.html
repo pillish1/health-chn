@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发布文章 · 悦动健康</title>
+<meta name="theme-color" content="#3b82f6">
+<link rel="stylesheet" href="assets/css/style.css?v=34">
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题">🌙</button>
+      <button class="icon-btn" id="backBtn" title="返回" onclick="history.back()">←</button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>📝 发布健康文章</h1>
+    <p>文章发布后将立即出现在健康知识页（需管理员权限）</p>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container" style="max-width:760px">
+    <div id="adminCheck" class="alert warn">正在验证管理员权限…</div>
+    <div id="pubForm" style="display:none">
+      <div class="field"><label>标题</label><input class="input" id="aTitle" maxlength="60" placeholder="文章标题"></div>
+      <div class="grid grid-3" style="gap:12px">
+        <div class="field" style="margin:0"><label>分类</label>
+          <select class="input" id="aCat"><option>训练基础</option><option>营养饮食</option><option>恢复管理</option><option>健康科普</option><option>健身问答</option></select></div>
+        <div class="field" style="margin:0"><label>日期</label><input class="input" type="date" id="aDate"></div>
+        <div class="field" style="margin:0"><label>阅读(分钟)</label><input class="input" type="number" id="aRead" min="1" max="60" value="5"></div>
+      </div>
+      <div class="field"><label>摘要</label><input class="input" id="aExcerpt" maxlength="80" placeholder="一句话摘要"></div>
+      <div class="field"><label>正文 <span class="muted">（支持 HTML 标签，如 &lt;p&gt;段落&lt;/p&gt;）</span></label>
+        <textarea class="input" id="aBody" rows="10" placeholder="<p>第一段内容</p>&#10;<p>第二段内容</p>"></textarea></div>
+      <div class="flex gap-sm">
+        <button class="btn btn-ghost" onclick="history.back()">取消</button>
+        <button class="btn btn-primary" id="pubSave" style="flex:1">🚀 发布文章</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/storage.js?v=34"></script>
+<script src="assets/js/supabase-config.js?v=34"></script>
+<script src="assets/js/app.js?v=34"></script>
+<script>
+(function () {
+  'use strict';
+  document.addEventListener('DOMContentLoaded', function () {
+    var checkEl = document.getElementById('adminCheck');
+    var form = document.getElementById('pubForm');
+    var cloud = window.YD_CLOUD;
+    if (!cloud || !cloud.isLoggedIn()) {
+      checkEl.className = 'alert warn';
+      checkEl.innerHTML = '请先登录后发布文章。<a href="login.html" style="font-weight:700">去登录 →</a>';
+      return;
+    }
+    cloud.isAdmin().then(function (isAdmin) {
+      if (isAdmin) {
+        checkEl.className = 'alert success';
+        checkEl.innerHTML = '✅ 管理员已验证，可以发布文章';
+        form.style.display = 'block';
+        document.getElementById('aDate').value = window.YDJK ? window.YDJK.today() : new Date().toISOString().slice(0, 10);
+      } else {
+        checkEl.className = 'alert danger';
+        checkEl.innerHTML = '❌ 你没有发布权限（仅管理员可发布）';
+      }
+    }).catch(function () {
+      checkEl.className = 'alert danger';
+      checkEl.innerHTML = '权限验证失败，请重试';
+    });
+    document.getElementById('pubSave').addEventListener('click', async function () {
+      var title = document.getElementById('aTitle').value.trim();
+      var body = document.getElementById('aBody').value.trim();
+      if (!title || !body) { window.YDJK_UI.toast('请填写标题和正文', 'err'); return; }
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = '发布中…';
+      var article = {
+        title: title,
+        cat: document.getElementById('aCat').value,
+        date: document.getElementById('aDate').value,
+        read_time: Number(document.getElementById('aRead').value) || 5,
+        excerpt: document.getElementById('aExcerpt').value.trim() || title,
+        body: body,
+        published: true
+      };
+      var r = await cloud.saveArticle(article);
+      if (r.ok) {
+        window.YDJK_UI.toast('✅ 文章已发布');
+        setTimeout(function () { location.href = 'articles.html'; }, 900);
+      } else {
+        btn.disabled = false;
+        btn.textContent = '🚀 发布文章';
+        window.YDJK_UI.toast('❌ 发布失败：' + ((r.data && r.data.message) || '权限不足'), 'err');
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

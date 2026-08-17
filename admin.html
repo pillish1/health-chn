@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理后台 · 悦动健康</title>
+<meta name="theme-color" content="#3b82f6">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="assets/css/style.css?v=34">
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康"></span>悦动<span class="hl">健康</span> · 管理后台</a>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="主题">🌙</button>
+      <button class="icon-btn" onclick="location.href='index.html'" title="返回网站">🏠</button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>🛠️ 管理后台</h1>
+    <p>用户数据概览 · 内容管理 · 系统状态（仅管理员可见）</p>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container">
+    <div id="adminGate">
+      <div class="card text-center" style="max-width:480px;margin:0 auto">
+        <div style="font-size:2.5rem">🔐</div>
+        <h2 style="margin:12px 0 8px">管理员验证</h2>
+        <p class="muted small" id="gateMsg">请登录管理员账号</p>
+        <button class="btn btn-primary btn-lg mt-2" onclick="location.href='login.html'">去登录 →</button>
+      </div>
+    </div>
+
+    <div id="adminPanel" style="display:none">
+      <!-- 系统统计 -->
+      <div class="stat-grid" id="sysStats"></div>
+
+      <!-- 用户列表 -->
+      <div class="card mt-3">
+        <div class="card-title">👥 用户数据列表</div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>用户</th><th>档案</th><th>体重记录</th><th>打卡天数</th><th>饮食记录</th><th>更新时间</th></tr></thead>
+            <tbody id="userRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 文章管理 -->
+      <div class="card mt-3">
+        <div class="flex-between flex-wrap">
+          <div class="card-title" style="margin:0">📝 云端文章管理</div>
+          <button class="btn btn-primary btn-sm" onclick="location.href='publish.html'">＋ 发布新文章</button>
+        </div>
+        <div id="articleList" class="mt-2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="assets/js/storage.js?v=34"></script>
+<script src="assets/js/supabase-config.js?v=34"></script>
+<script src="assets/js/app.js?v=34"></script>
+<script src="assets/js/pages/admin.js?v=34"></script>
+</body>
+</html>

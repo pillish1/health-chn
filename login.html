@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录 · 悦动健康</title>
+<meta name="description" content="登录悦动健康，多设备同步你的健康数据。">
+<meta name="theme-color" content="#3b82f6">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="悦动健康">
+<link rel="stylesheet" href="assets/css/style.css?v=34">
+</head>
+<body>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="tracker.html">健康追踪</a>
+      <a href="plans.html">运动计划</a>
+      <a href="foods.html">食物热量</a>
+      <a href="articles.html">健康知识</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题">🌙</button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单">☰</button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero" style="min-height:52vh;display:flex;align-items:center;padding:40px 0">
+  <div class="container">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <div class="auth-head">
+          <span class="auth-logo"><img src="icons/icon-192.png" alt="悦动健康"></span>
+          <h1 id="authTitle">欢迎回来</h1>
+          <p id="authSub">登录后，你的健康数据将云端同步，多设备随时查看</p>
+        </div>
+        <div class="field">
+          <label>邮箱</label>
+          <input class="input" type="email" id="authEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="field">
+          <label>密码</label>
+          <input class="input" type="password" id="authPassword" placeholder="至少 6 位" autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary btn-block btn-lg" id="authSubmit">登 录</button>
+        <div class="auth-switch" id="forgotRow">
+          <button class="btn-link" id="forgotPw">忘记密码？</button>
+        </div>
+        <div class="auth-switch">
+          <span class="muted small">还没有账号？</span>
+          <button class="btn-link" id="authToggle">立即注册 →</button>
+        </div>
+        <div id="authMsg" class="small muted text-center mt-2"></div>
+      </div>
+      <div class="auth-features">
+        <h3>登录后你能获得</h3>
+        <div class="af-item"><span>☁️</span><div><b>云端同步</b><p>体重、打卡、饮食记录跨设备同步</p></div></div>
+        <div class="af-item"><span>🔐</span><div><b>数据私有</b><p>每个用户只能看到自己的数据</p></div></div>
+        <div class="af-item"><span>📊</span><div><b>成就保留</b><p>连续打卡、成就徽章永久保存</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
+  </div>
+</footer>
+
+<script src="assets/js/storage.js?v=34"></script>
+<script src="assets/js/supabase-config.js?v=34"></script>
+<script src="assets/js/app.js?v=34"></script>
+<script src="assets/js/pages/login.js?v=34"></script>
+</body>
+</html>

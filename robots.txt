@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 部署上线后请将 sitemap 地址替换为你的正式域名
+Sitemap: https://pillish1.github.io/health-chn/sitemap.xml

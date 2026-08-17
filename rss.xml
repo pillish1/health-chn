@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>悦动健康 · 健康知识库</title>
+    <link>https://pillish1.github.io/health-chn/articles.html</link>
+    <description>训练、营养、恢复的健康科普干货，实时更新。</description>
+    <language>zh-cn</language>
+        <item>
+      <title>为什么热身比训练本身更重要？</title>
+      <link>https://pillish1.github.io/health-chn/articles.html#article-warmup</link>
+      <guid>https://pillish1.github.io/health-chn/articles.html#article-warmup</guid>
+      <category>训练基础</category>
+      <pubDate>Sun, 09 Aug 2026 16:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>蛋白质到底怎么吃？一文讲透</title>
+      <link>https://pillish1.github.io/health-chn/articles.html#article-protein</link>
+      <guid>https://pillish1.github.io/health-chn/articles.html#article-protein</guid>
+      <category>营养饮食</category>
+      <pubDate>Fri, 07 Aug 2026 16:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>睡不好，练了也白练：睡眠与恢复的真相</title>
+      <link>https://pillish1.github.io/health-chn/articles.html#article-sleep</link>
+      <guid>https://pillish1.github.io/health-chn/articles.html#article-sleep</guid>
+      <category>恢复管理</category>
+      <pubDate>Tue, 04 Aug 2026 16:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>BMI 正常就健康吗？别被单一指标骗了</title>
+      <link>https://pillish1.github.io/health-chn/articles.html#article-bmi-limit</link>
+      <guid>https://pillish1.github.io/health-chn/articles.html#article-bmi-limit</guid>
+      <category>健康科普</category>
+      <pubDate>Wed, 29 Jul 2026 16:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>每天 8 杯水是科学还是迷信？</title>
+      <link>https://pillish1.github.io/health-chn/articles.html#article-hydration</link>
+      <guid>https://pillish1.github.io/health-chn/articles.html#article-hydration</guid>
+      <category>营养饮食</category>
+      <pubDate>Tue, 21 Jul 2026 16:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>动作标准 vs 大重量：新手最容易踩的坑</title>
+      <link>https://pillish1.github.io/health-chn/articles.html#article-form</link>
+      <guid>https://pillish1.github.io/health-chn/articles.html#article-form</guid>
+      <category>训练基础</category>
+      <pubDate>Tue, 14 Jul 2026 16:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>
