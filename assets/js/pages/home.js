@@ -56,6 +56,24 @@
     renderWelcome();
   }
 
+  /* 体重趋势迷你图 */
+  function renderWeightTrend() {
+    var el = document.getElementById('homeWeightChart');
+    if (!el) return;
+    var ws = YDJK.getWeights();
+    var last = ws.slice(-14);
+    if (!last.length) {
+      el.innerHTML = '<div class="muted small" style="padding:20px;text-align:center">记录体重后，这里会显示你的趋势</div>';
+      return;
+    }
+    YDJK_CHARTS.lineChart(el, {
+      labels: last.map(function (w) { return w.date.slice(5); }),
+      values: last.map(function (w) { return w.weight; }),
+      unit: ' kg', color: '#10b981',
+      target: YDJK.getWeightGoal() || undefined
+    });
+  }
+
   /* 今日任务清单 */
   function renderTasks() {
     var el = document.getElementById('todayTasks');
@@ -180,6 +198,6 @@
     render();
   }
 
-  window.onProfileSaved = function () { renderDashboard(); renderWeek(); renderHot(); renderTasks(); };
-  window.onDataChanged = function () { renderDashboard(); renderWeek(); renderHot(); renderTasks(); };
+  window.onProfileSaved = function () { renderDashboard(); renderWeek(); renderHot(); renderTasks(); renderWeightTrend(); };
+  window.onDataChanged = function () { renderDashboard(); renderWeek(); renderHot(); renderTasks(); renderWeightTrend(); };
 })();

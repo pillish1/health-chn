@@ -11,7 +11,12 @@
       "backgroundColor": "#3b82f6"
     },
     "LocalNotifications": {
-      "smallIcon": "ic_stat_icon"
-    }
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#3b82f6"
+    },
+    "CapacitorStorage": {
+      "web": true
+    },
+    "Share": {}
   }
 }
