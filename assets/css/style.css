@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    悦动健康 · 设计系统 v2
    ============================================================ */
 :root {
@@ -464,19 +464,6 @@ html[data-theme="dark"] .alert.danger { color: #fca5a5; }
 .search-box .input { padding-left: 44px; border-radius: var(--radius-full); }
 .search-box .s-ico { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); }
 
-/* ============ 文章 ============ */
-.article-card .a-meta { display: flex; gap: 14px; font-size: .8rem; color: var(--muted); margin-bottom: 10px; }
-.article-card .a-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; line-height: 1.4; }
-.article-card .a-title a { color: var(--text); }
-.article-card .a-title a:hover { color: var(--primary); }
-.article-card .a-excerpt { color: var(--text-2); font-size: .92rem; }
-.article-body { max-width: 760px; margin: 0 auto; }
-.article-body h2 { font-size: 1.4rem; margin: 34px 0 14px; }
-.article-body h3 { font-size: 1.15rem; margin: 26px 0 10px; }
-.article-body p { margin-bottom: 16px; color: var(--text-2); }
-.article-body ul { list-style: disc; margin: 0 0 16px 22px; color: var(--text-2); }
-.article-body blockquote { border-left: 4px solid var(--primary); background: var(--primary-soft); padding: 14px 18px; border-radius: 0 10px 10px 0; margin: 18px 0; color: var(--text-2); }
-
 /* ============ 页脚 ============ */
 .footer { background: var(--surface); border-top: 1px solid var(--border); padding: 48px 0 30px; margin-top: 72px; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 36px; }
@@ -603,38 +590,6 @@ body { font-variant-numeric: tabular-nums; }
 }
 .fav-btn:hover { border-color: var(--danger); color: var(--danger); transform: scale(1.1); }
 .fav-btn.faved { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
-
-
-/* ============ 我的计划横幅 ============ */
-.myplan-banner {
-  display: flex; align-items: center; gap: 18px;
-  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
-  color: #fff; border-radius: 20px; padding: 20px 24px;
-  box-shadow: 0 10px 26px rgba(124, 58, 237, .35);
-  cursor: pointer; margin-bottom: 24px; position: relative; overflow: hidden;
-  transition: transform .2s var(--ease), box-shadow .2s;
-}
-.myplan-banner::after {
-  content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px;
-  border-radius: 50%; background: rgba(255, 255, 255, .08); pointer-events: none;
-}
-.myplan-banner:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(124, 58, 237, .45); }
-.myplan-banner .mpb-icon { font-size: 2.4rem; flex: none; filter: drop-shadow(0 2px 6px rgba(0,0,0,.2)); }
-.myplan-banner .mpb-text { flex: 1; min-width: 0; }
-.myplan-banner .mpb-text b { font-size: 1.1rem; display: block; letter-spacing: -.01em; }
-.myplan-banner .mpb-text span { font-size: .83rem; opacity: .88; display: block; margin-top: 3px; }
-.myplan-banner .mpb-count { font-size: .76rem; opacity: .75; margin-top: 5px; }
-.myplan-banner .mpb-btn {
-  background: #fff; color: #4f46e5; font-weight: 800; padding: 10px 24px;
-  border-radius: var(--radius-full); font-size: .92rem; border: none; cursor: pointer;
-  white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.15); flex: none;
-  transition: transform .15s;
-}
-.myplan-banner .mpb-btn:hover { transform: scale(1.05); }
-@media (max-width: 560px) {
-  .myplan-banner { flex-wrap: wrap; padding: 16px; }
-  .myplan-banner .mpb-btn { width: 100%; }
-}
 
 
 /* ============ 打印样式 ============ */
@@ -1062,62 +1017,6 @@ body{animation:pageIn .3s var(--ease) .18s both}
   .modal-overlay.sheet .modal { max-width: 520px; border-radius: 24px; padding: 30px; }
 }
 
-/* ============ 打磨 v9：成就墙 ============ */
-.ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 10px; }
-.ach-item {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 12px 6px; border-radius: 14px; border: 1px solid var(--border);
-}
-
-
-/* ============ 知识库布局（articles） ============ */
-.kb-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
-.kb-head-text h1 { margin: 0 0 6px; font-size: 1.5rem; font-weight: 900; }
-.kb-head-text p { margin: 0; color: var(--muted); font-size: .88rem; }
-.kb-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
-.kb-main { min-width: 0; }
-.kb-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-.kb-sort { display: flex; gap: 6px; }
-.kb-sort-btn {
-  padding: 6px 14px; border-radius: 99px;
-  border: 1px solid var(--border);
-  background: var(--surface-2); color: var(--muted);
-  font-size: .82rem; font-weight: 700; cursor: pointer;
-  transition: all .2s;
-}
-.kb-sort-btn.active {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  color: #fff; border-color: transparent;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, .3);
-}
-.kb-list { display: grid; gap: 14px; }
-.kb-side { position: sticky; top: calc(var(--nav-h) + 16px); display: grid; gap: 14px; }
-.kb-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 16px; padding: 18px;
-}
-.kb-card-title { font-weight: 800; font-size: .95rem; margin-bottom: 12px; }
-.kb-card .a-meta { margin-bottom: 8px; }
-@media (max-width: 900px) {
-  .kb-layout { grid-template-columns: 1fr; }
-  .kb-side { position: static; grid-template-columns: 1fr; }
-}
-
-/* ============ 报告页 Tabs ============ */
-.report-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-.report-tab {
-  padding: 8px 22px; border-radius: 99px;
-  border: 1px solid var(--border);
-  background: var(--surface-2); color: var(--muted);
-  font-size: .9rem; font-weight: 700; cursor: pointer;
-  transition: all .2s;
-}
-.report-tab.active {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  color: #fff; border-color: transparent;
-  box-shadow: 0 4px 14px rgba(139, 92, 246, .35);
-}
-
 /* ============ 最近食用（foods） ============ */
 .recent-foods { display: flex; flex-wrap: wrap; gap: 8px; }
 .recent-list { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -1128,80 +1027,6 @@ body{animation:pageIn .3s var(--ease) .18s both}
   transition: all .2s;
 }
 .recent-chip:hover { border-color: var(--primary); background: var(--primary-soft); }
-
-
-/* ============ 登录 / 注册页（App 化） ============ */
-.auth-wrap {
-  display: grid;
-  grid-template-columns: minmax(320px, 420px) 1fr;
-  gap: 48px;
-  align-items: center;
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 20px 0;
-}
-.auth-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 32px 28px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, .08);
-}
-.auth-head { text-align: center; margin-bottom: 24px; }
-.auth-logo {
-  display: inline-grid; place-items: center;
-  width: 64px; height: 64px; border-radius: 18px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  box-shadow: 0 8px 24px rgba(139, 92, 246, .35);
-  margin-bottom: 14px;
-  overflow: hidden;
-}
-.auth-logo img { width: 100%; height: 100%; object-fit: cover; }
-.auth-head h1 { font-size: 1.5rem; font-weight: 900; margin: 0 0 6px; }
-.auth-head p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.6; }
-.auth-switch { text-align: center; margin-top: 14px; }
-.auth-features { padding: 10px 0; }
-.auth-features h3 { font-size: 1.15rem; font-weight: 800; margin: 0 0 20px; }
-.af-item {
-  display: flex; gap: 14px; align-items: flex-start;
-  padding: 14px 0;
-  border-bottom: 1px dashed var(--border);
-}
-.af-item:last-child { border-bottom: none; }
-.af-item > span { font-size: 1.6rem; flex: none; }
-.af-item b { display: block; margin-bottom: 3px; }
-.af-item p { margin: 0; color: var(--muted); font-size: .82rem; }
-@media (max-width: 900px) {
-  .auth-wrap { grid-template-columns: 1fr; gap: 8px; padding: 8px 0; }
-  .auth-features { display: none; }
-  .auth-card { padding: 28px 22px; border-radius: 18px; }
-}
-
-/* ============ 记录页筛选 Tabs ============ */
-.tracker-tabs {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-.tracker-tab {
-  padding: 7px 16px;
-  border-radius: 99px;
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--muted);
-  font-size: .85rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all .2s;
-}
-.tracker-tab:hover { border-color: var(--primary); color: var(--text); }
-.tracker-tab.active {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 4px 14px rgba(139, 92, 246, .35);
-}
 
 
 /* ============ 首页今日仪表盘（App 化） ============ */
@@ -1243,46 +1068,6 @@ body{animation:pageIn .3s var(--ease) .18s both}
 }
 
 
-/* ============ 成就页补充 ============ */
-.ach-overview {
-  display: grid; place-items: center; gap: 6px;
-  padding: 28px 20px;
-  background: linear-gradient(135deg, var(--primary-soft), var(--surface-2));
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-.ach-item { position: relative; }
-.ach-icon { font-size: 1.6rem; line-height: 1; }
-.ach-name { font-size: .74rem; font-weight: 700; text-align: center; line-height: 1.3; }
-.ach-progress { width: 100%; height: 4px; border-radius: 99px; background: var(--border); overflow: hidden; }
-.ach-progress .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 99px; }
-.ach-tip { font-size: .66rem; color: var(--muted); text-align: center; }
-
-/* ============ 记录页快捷入口 ============ */
-.quick-actions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 18px; }
-.qa-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 14px 8px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  color: var(--text); text-decoration: none;
-  font-size: .8rem; font-weight: 700;
-  transition: all .2s;
-}
-.qa-btn span { font-size: 1.4rem; }
-.qa-btn:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(139, 92, 246, .15); }
-
-/* ============ 记录页分节 ============ */
-.tracker-sec { margin-bottom: 24px; }
-@media (max-width: 900px) {
-  .quick-actions { grid-template-columns: repeat(5, 1fr); gap: 6px; }
-  .qa-btn { padding: 10px 4px; font-size: .72rem; }
-}
-
-
 /* ============ 移动端 App 头部（m-header） ============ */
 .m-header {
   display: none;
@@ -1321,40 +1106,6 @@ body{animation:pageIn .3s var(--ease) .18s both}
   cursor: pointer; text-decoration: none;
 }
 .btn-link:hover { text-decoration: underline; }
-
-/* ============ 首页欢迎语 ============ */
-.hero-welcome { text-align: center; margin-bottom: 20px; }
-
-/* ============ 登录页 v2（手机号+微信） ============ */
-.auth-tabs { display: flex; gap: 6px; margin-bottom: 20px; background: var(--surface-2); padding: 4px; border-radius: 12px; }
-.auth-tab {
-  flex: 1; padding: 9px 10px; border: none; border-radius: 9px;
-  background: transparent; color: var(--muted);
-  font-size: .86rem; font-weight: 700; cursor: pointer;
-  transition: all .2s;
-}
-.auth-tab.active { background: var(--surface); color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-.auth-divider {
-  display: flex; align-items: center; gap: 12px;
-  margin: 22px 0 14px;
-  color: var(--muted); font-size: .76rem;
-}
-.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
-.social-login { display: flex; justify-content: center; }
-.social-btn {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 22px; border-radius: 99px;
-  border: 1px solid var(--border); background: var(--surface-2);
-  color: var(--text); font-size: .88rem; font-weight: 700; cursor: pointer;
-  transition: all .2s;
-}
-.social-btn:hover { border-color: var(--primary); background: var(--primary-soft); }
-.social-btn .sb-ico { font-size: 1.15rem; }
-.social-btn.wechat .sb-ico { color: #07c160; }
-.sb-badge {
-  font-size: .66rem; font-weight: 700; padding: 2px 8px;
-  border-radius: 99px; background: var(--border); color: var(--muted);
-}
 
 /* ============ 首页 v2（对标主流健康App） ============ */
 .streak-chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border-radius: 99px; background: var(--surface-2); border: 1px solid var(--border); font-size: .78rem; font-weight: 700; color: var(--muted); }
@@ -1435,7 +1186,6 @@ body{animation:pageIn .3s var(--ease) .18s both}
 .task-ico { font-size: 1.1rem !important; }
 .task-sub { font-size: .72rem !important; }
 #weekRate .card { padding: 12px 14px !important; }
-.guest-only .grid-3, .guest-only .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .feature-card { padding: 14px !important; }
 .feature-card .icon-badge { width: 38px; height: 38px; font-size: 1.15rem; border-radius: 11px; }
 .feature-card .card-title { font-size: .9rem; }
@@ -1450,7 +1200,6 @@ body{animation:pageIn .3s var(--ease) .18s both}
 /* ============ 绉诲姩绔竷灞€淇 v62.2锛堟渶楂樹紭鍏堢骇锛?============ */
 @media (max-width: 640px) {
   /* 鍔熻兘瀵艰寮哄埗 2 鍒楃揣鍑?*/
-  .guest-only .grid-3, .guest-only .grid-4, .section.guest-only .grid-3, .section.guest-only .grid-4, .section-sm.guest-only .grid-3 { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
   /* 鍔熻兘鍗＄墖瓒呯揣鍑戯細妯悜甯冨眬 */
   .feature-card { flex-direction: row; align-items: center; gap: 12px !important; padding: 12px 14px !important; border-radius: 14px !important; }
   .feature-card .icon-badge { width: 40px; height: 40px; flex: none; }
@@ -1474,7 +1223,6 @@ body{animation:pageIn .3s var(--ease) .18s both}
   /* dash-side 涓ゅ崱妯帓 */
   .dash-side { grid-template-columns: 1fr 1fr !important; }
   /* 鏁版嵁瑙佽瘉婕旂ず鍖哄潡绉诲姩绔殣钘忥紙瀵圭敤鎴锋棤浠峰€硷級 */
-  .section-sm.guest-only:last-of-type { display: none !important; }
   /* 涓轰粈涔堥€夋嫨鎴戜滑 2 鍒?*/
   .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
   /* hero 椤堕儴鍘嬬缉 */
@@ -1485,9 +1233,7 @@ body{animation:pageIn .3s var(--ease) .18s both}
 /* ============ 绉诲姩绔簿绠€ v62.3 ============ */
 @media (max-width: 900px) {
   /* 绉诲姩绔殣钘忎綆棰戣惀閿€鍖哄潡锛岃仛鐒︽牳蹇冨姛鑳?*/
-  .section.guest-only[style*="background"], .section-sm.guest-only:last-of-type { display: none !important; }
   /* 棣栭〉鍔熻兘瀵艰 2 鍒楋紙瑕嗙洊 640 鏂偣鍗曞垪锛?*/
-  .guest-only .grid-3, .guest-only .grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
   /* 鍘嬬缉鍚勫尯鍧楅棿璺?*/
   .section { padding: 24px 0 !important; }
   .section-sm { padding: 16px 0 !important; }

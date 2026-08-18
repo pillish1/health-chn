@@ -41,14 +41,9 @@
       color: '#10b981'
     });
 
-    /* 数据速览（dash-meta） */
-    var bmi = p ? YDJK.calcBMI(p.height, weight) : null;
+    /* 数据速览 */
     var sc = document.getElementById('statStreak');
     if (sc) sc.textContent = streak;
-    var statKcalEl = document.getElementById('statKcal');
-    if (statKcalEl) statKcalEl.textContent = Math.round(meal.kcal) + ' / ' + Math.round(goalCal);
-    var statBmiEl = document.getElementById('statBmi');
-    if (statBmiEl) statBmiEl.textContent = bmi ? bmi.toFixed(1) : '--';
     // 每日目标（个性化：建档后显示热量+营养素）
     var dgEl = document.getElementById('dailyGoal');
     if (dgEl) {
@@ -90,24 +85,6 @@
   }
 
   /* 体重趋势迷你图 */
-  function renderWeightTrend() {
-    var el = document.getElementById('homeWeightChart');
-    if (!el) return;
-    var ws = YDJK.getWeights();
-    var last = ws.slice(-14);
-    if (!last.length) {
-      el.innerHTML = '<div class="muted small" style="padding:20px;text-align:center">记录体重后，这里会显示你的趋势</div>';
-      return;
-    }
-    YDJK_CHARTS.lineChart(el, {
-      labels: last.map(function (w) { return w.date.slice(5); }),
-      values: last.map(function (w) { return w.weight; }),
-      unit: ' kg', color: '#10b981',
-      target: YDJK.getWeightGoal() || undefined
-    });
-  }
-
-  /* 今日任务清单 */
   function renderTasks() {
     var el = document.getElementById('todayTasks');
     if (!el) return;
@@ -174,20 +151,16 @@
   }
 
 
-  /* 访客/用户差异化：营销区块仅访客可见 */
+  /* 新用户引导：无任何数据时显示欢迎卡 */
   function applyGuestMode() {
-    var isLogged = false; // 本地模式：无登录
     var hasData = false;
     try {
-      hasData = !!YDJK.getProfile() || YDJK.getWeights().length > 0 ||
+      hasData = !!YDJK.getProfile() ||
         Object.keys(YDJK.getCheckins() || {}).length > 0 ||
+        Object.keys(YDJK.getAllWorkouts() || {}).length > 0 ||
         (function () { for (var i = 0; i < localStorage.length; i++) { if ((localStorage.key(i) || '').indexOf('ydjk:meals:') === 0) return true; } return false; })();
     } catch (e) {}
-    var isGuest = !isLogged && !hasData;
-    document.querySelectorAll('.guest-only').forEach(function (el) {
-      el.style.display = isGuest ? '' : 'none';
-    });
-    // 访客时在欢迎区显示注册引导
+    var isGuest = !hasData;
     if (isGuest) {
       var wm = document.getElementById('welcomeMini');
       if (wm && !wm.innerHTML.trim()) {
@@ -214,49 +187,6 @@
       setTimeout(function () { window.YDJK_UI.openProfileEditor(); }, 600);
     }
   });
-
-  function renderWeek() {
-    var p = YDJK.getProfile();
-    var plan = DATA.PLANS[0];
-    var myPlans = YDJK.getMyPlans();
-    if (myPlans.length) plan = myPlans[0];
-    else if (p) { var f = DATA.PLANS.find(function (x) { return x.goal === p.goal; }); if (f) plan = f; }
-    var today = YDJK.today();
-    var week = YDJK.weekDates(today);
-    var todayIdx = week.indexOf(today);
-    var wrap = document.getElementById('weekPreview');
-    if (!wrap) return;
-    wrap.innerHTML = plan.days.map(function (d, i) {
-      var isToday = i === todayIdx;
-      var done = false;
-      var c = YDJK.getCheckin(week[i]);
-      if (c && c.plan === plan.id) done = true;
-      return '<div class="card card-hover" style="' + (isToday ? 'border:2px solid var(--primary)' : '') + (done ? ';background:var(--primary-soft)' : '') + '">' +
-        '<div class="flex-between"><span class="tag ' + (isToday ? 'blue' : done ? 'green' : 'gray') + '">' + d.day + (isToday ? ' · 今天' : '') + (done ? ' ✓' : '') + '</span><span class="small muted">' + d.focus + '</span></div>' +
-        '<div class="mt-2">' + d.items.slice(0, 4).map(function (it) {
-          return '<div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">' + esc(it[0]) + '</span><b class="mono small" style="color:var(--primary-dark)">' + esc(it[1]) + '</b></div>';
-        }).join('') + '</div></div>';
-    }).join('');
-  }
-
-  function renderHot() {
-    var wrap = document.getElementById('hotScroll');
-    if (!wrap) return;
-    var p = YDJK.getProfile();
-    var plan = DATA.PLANS[0];
-    var myPlans = YDJK.getMyPlans();
-    if (myPlans.length) plan = myPlans[0];
-    else if (p) { var f = DATA.PLANS.find(function (x) { return x.goal === p.goal; }); if (f) plan = f; }
-    var html = '<div class="hot-card dark" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff">' +
-      '<div class="hot-tag">⭐ 为你推荐</div><div class="hot-title">' + plan.emoji + ' ' + esc(plan.name) + '</div>' +
-      '<div class="hot-desc">' + esc(plan.desc) + '</div><a class="hot-link" href="plans.html">查看计划 →</a></div>';
-    DATA.PLANS.forEach(function (pl) {
-      if (pl.id === plan.id) return;
-      html += '<div class="hot-card"><div class="hot-tag">' + pl.emoji + '</div><div class="hot-title">' + esc(pl.name) + '</div>' +
-        '<div class="hot-desc">' + esc(pl.desc) + '</div><a class="hot-link" href="plans.html">查看计划 →</a></div>';
-    });
-    wrap.innerHTML = html;
-  }
 
   window.onProfileSaved = function () { renderDashboard(); renderTasks(); renderWeekRate(); };
   window.onDataChanged = function () { renderDashboard(); renderTasks(); renderWeekRate(); };

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    悦动健康 · 通用 UI app.js
    主题切换 / 导航 / Toast / Modal / 档案引导 / 动效
    ============================================================ */
@@ -278,9 +278,6 @@
       createdAt: (existing && existing.createdAt) || new Date().toISOString()
     };
     YDJK.saveProfile(profile);
-    var today = YDJK.today();
-    var hasToday = YDJK.getWeights().some(function (w) { return w.date === today; });
-    if (!hasToday) YDJK.addWeight(today, weight);
     closeModal('onboardModal');
     toast(isEdit ? '✅ 健康档案已更新' : '✅ 健康档案已建立');
     if (typeof window.onProfileSaved === 'function') window.onProfileSaved(profile);
@@ -302,7 +299,7 @@
     if (force !== true) {
       var hasAnyData = false;
       try {
-        hasAnyData = !!window.YDJK.getProfile() || window.YDJK.getWeights().length > 0 || Object.keys(window.YDJK.getCheckins() || {}).length > 0;
+        hasAnyData = !!window.YDJK.getProfile() || Object.keys(window.YDJK.getCheckins() || {}).length > 0;
         for (var i = 0; i < localStorage.length; i++) { if ((localStorage.key(i) || '').indexOf('ydjk:meals:') === 0) { hasAnyData = true; break; } }
       } catch (e) {}
       var page = location.pathname.split('/').pop() || 'index.html';
