@@ -12,14 +12,19 @@
     document.documentElement.setAttribute('data-theme', t);
     var btn = document.getElementById('themeToggle');
     if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
-    if (window.YDJK) YDJK.setTheme(t);
+    // 仅显式选择时写入存储（auto 模式不落盘）
+    if (t === 'dark' || t === 'light') {
+      if (window.YDJK) YDJK.setTheme(t);
+    }
   }
   function initTheme() {
     var saved = null;
     try { saved = localStorage.getItem('ydjk:theme'); } catch (e) {}
     var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+    var t = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', t);
     var btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
     if (btn) btn.addEventListener('click', function () {
       var cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       applyTheme(cur);
@@ -401,11 +406,26 @@
       n.onclick = function () { window.focus(); n.close(); };
     } catch (e) {}
   }
-  /* 定时提醒（喝水/打卡/用餐）——基于可配置时段 */
+  /* 定时提醒（喝水/打卡/用餐）——基于可配置时段
+     App（Capacitor）：原生排程，系统级触发（后台/锁屏也能提醒）
+     Web（PWA）：轮询兜底 */
   function scheduleReminders() {
     if (notifTimer) { clearInterval(notifTimer); notifTimer = null; }
     var cfg = getReminderCfg();
     if (!cfg.enabled) return;
+    var cap = capNotifPlugin();
+    // App：取消旧排程，计算未来 48 小时内的提醒时间点，一次性排程
+    if (cap) {
+      try {
+        cap.cancel({ notifications: [{ id: 9001 }, { id: 9002 }, { id: 9003 }] });
+        var scheduleList = buildScheduleList(cfg);
+        if (scheduleList.length) {
+          cap.schedule({ notifications: scheduleList });
+        }
+        return; // App 端依赖原生排程，无需轮询
+      } catch (e) {}
+    }
+    // Web：每 30 秒轮询（PWA 前台运行）
     notifTimer = setInterval(function () {
       var now = new Date();
       var h = now.getHours();
@@ -435,6 +455,43 @@
         if (mealTimes[h] && m === 0) fireNotif('🍽️ ' + mealTimes[h] + '时间', '记得记录今天的' + mealTimes[h] + '，营养均衡很重要', 'meal-' + h);
       }
     }, 30000);
+  }
+  /* 构建未来 48 小时的原生提醒排程列表 */
+  function buildScheduleList(cfg) {
+    var list = [];
+    var start = new Date();
+    var end = new Date(start.getTime() + 48 * 3600 * 1000);
+    var ts = start.getTime();
+    var step = 30 * 60 * 1000;
+    var idBase = 9100;
+    for (var t = ts; t <= end.getTime(); t += step) {
+      var d = new Date(t);
+      var h = d.getHours();
+      var m = d.getMinutes();
+      var min = h * 60 + m;
+      var at = null;
+      var title = '';
+      var body = '';
+      if (cfg.water) {
+        var ws = (typeof cfg.waterStart === 'number' ? cfg.waterStart : 9);
+        var we = (typeof cfg.waterEnd === 'number' ? cfg.waterEnd : 21);
+        var wInt = (typeof cfg.waterInterval === 'number' && cfg.waterInterval > 0 ? cfg.waterInterval : 2);
+        if (m === 0 && min >= ws * 60 && min <= we * 60 && (min - ws * 60) % (wInt * 60) === 0) {
+          at = t; title = '💧 该喝水啦'; body = '起来喝杯水，保持水分充足';
+        }
+      }
+      if (!at && cfg.checkin && h === (typeof cfg.checkinHour === 'number' ? cfg.checkinHour : 20) && m === 0) {
+        at = t; title = '🏃 今天还没运动'; body = '来 30 分钟运动，完成今天的打卡吧';
+      }
+      if (!at && cfg.meal) {
+        var mealTimes = { 7: ['🍽️ 早餐时间', '记得记录今天的早餐'], 12: ['🍽️ 午餐时间', '记得记录今天的午餐'], 18: ['🍽️ 晚餐时间', '记得记录今天的晚餐'] };
+        if (mealTimes[h] && m === 0) { at = t; title = mealTimes[h][0]; body = mealTimes[h][1]; }
+      }
+      if (at) {
+        list.push({ id: idBase + (at / step), title: title, body: body, schedule: { at: new Date(at) }, smallIcon: 'ic_stat_icon', iconColor: '#3b82f6' });
+      }
+    }
+    return list;
   }
   function getReminderCfg() {
     try { return JSON.parse(localStorage.getItem('ydjk:reminders') || '{"enabled":false,"water":true,"checkin":true,"meal":false,"waterStart":9,"waterEnd":21,"waterInterval":2,"checkinHour":20}'); }

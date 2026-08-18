@@ -104,11 +104,16 @@
     document.getElementById('rmCheckin').checked = cfg.checkin !== false;
     document.getElementById('rmMeal').checked = !!cfg.meal;
     function saveCfg() {
+      var cur = window.YDJK_UI.getReminderCfg();
       window.YDJK_UI.setReminderCfg({
         enabled: document.getElementById('rmEnable').checked,
         water: document.getElementById('rmWater').checked,
         checkin: document.getElementById('rmCheckin').checked,
-        meal: document.getElementById('rmMeal').checked
+        meal: document.getElementById('rmMeal').checked,
+        waterStart: typeof cur.waterStart === 'number' ? cur.waterStart : 9,
+        waterEnd: typeof cur.waterEnd === 'number' ? cur.waterEnd : 21,
+        waterInterval: typeof cur.waterInterval === 'number' ? cur.waterInterval : 2,
+        checkinHour: typeof cur.checkinHour === 'number' ? cur.checkinHour : 20
       });
     }
     ['rmEnable', 'rmWater', 'rmCheckin', 'rmMeal'].forEach(function (id) {
@@ -195,7 +200,7 @@
           localStorage.removeItem('ydjk:theme');
           var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
           document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-          window.YDJK.setTheme(prefersDark ? 'dark' : 'light');
+          // 不调用 YDJK.setTheme：避免写入 localStorage，保持跟随系统
         } else {
           localStorage.setItem('ydjk:theme', v);
           document.documentElement.setAttribute('data-theme', v);
