@@ -1,4 +1,4 @@
-/* 登录/注册页逻辑 v3：仅手机号验证码（未注册手机号自动注册） */
+/* 登录/注册页逻辑 v4：仅手机号 + 密码（未注册手机号自动创建账号） */
 (function () {
   'use strict';
   var YDJK = window.YDJK;
@@ -11,48 +11,36 @@
   /* ---------- 手机号工具 ---------- */
   function validPhone(p) { return /^1[3-9]\d{9}$/.test(p); }
   function phoneToEmail(phone) { return 'u' + phone + '@ydjk.phone'; }
-  function derivePwd(phone) { return 'yd' + phone.slice(-6) + '#p'; }
 
-  /* 发送验证码：调试模式本地生成并显示；真实短信接入点在此替换为 API 调用 */
-  function sendSmsCode(phone) {
-    var code = String(Math.floor(100000 + Math.random() * 900000));
-    try { localStorage.setItem('ydjk:sms-code', JSON.stringify({ phone: phone, code: code, ts: Date.now() })); } catch (e) {}
-    // 调试模式：验证码直接显示（上线接入短信服务后删除此行）
-    setMsg('📱 调试模式，验证码：' + code + '（正式上线后将以短信发送）', true);
-    return code;
-  }
-  function verifySmsCode(phone, input) {
-    try {
-      var rec = JSON.parse(localStorage.getItem('ydjk:sms-code') || 'null');
-      if (!rec || rec.phone !== phone) return { ok: false, msg: '请先获取验证码' };
-      if (Date.now() - rec.ts > 10 * 60 * 1000) return { ok: false, msg: '验证码已过期，请重新获取' };
-      if (rec.code !== input) return { ok: false, msg: '验证码错误' };
-      localStorage.removeItem('ydjk:sms-code');
-      return { ok: true };
-    } catch (e) { return { ok: false, msg: '验证码校验失败' }; }
-  }
-
-  /* 手机号登录（验证码校验通过后，用映射邮箱登录/注册） */
-  async function phoneLogin(phone, code) {
-    var v = verifySmsCode(phone, code);
-    if (!v.ok) { setMsg('❌ ' + v.msg); return; }
+  /* 手机号登录/注册：
+     先尝试登录 → 失败则自动注册（新手机号）→ 再登录 */
+  async function phoneAuth(phone, pwd) {
     var email = phoneToEmail(phone);
-    var pwd = derivePwd(phone);
     var cloud = window.YD_CLOUD;
-    // 先尝试登录
     var r = await cloud.login(email, pwd);
-    if (!r.ok) {
-      // 未注册 → 自动注册（mailer_autoconfirm=true 无需验证邮箱）
-      var reg = await cloud.register(email, pwd);
-      if (!reg.ok) { setMsg('❌ 账号创建失败：' + ((reg.data && (reg.data.msg || reg.data.error_description)) || '请重试')); return; }
-      r = await cloud.login(email, pwd);
-    }
     if (r.ok && r.data && r.data.access_token) {
-      // 记录手机号关联
       try { localStorage.setItem('ydjk:phone', phone); } catch (e) {}
       await afterLogin(r.data.user, phone);
+      return;
+    }
+    // 登录失败 → 尝试自动注册（未注册手机号）
+    var reg = await cloud.register(email, pwd);
+    if (reg.ok) {
+      var r2 = await cloud.login(email, pwd);
+      if (r2.ok && r2.data && r2.data.access_token) {
+        try { localStorage.setItem('ydjk:phone', phone); } catch (e) {}
+        await afterLogin(r2.data.user, phone);
+        return;
+      }
+      setMsg('❌ 注册成功但登录失败，请重试');
+      return;
+    }
+    // 注册失败：判断是已注册（密码错）还是其他错误
+    var msg = (reg.data && (reg.data.msg || reg.data.error_description)) || '操作失败';
+    if (/already|registered|exists|duplicate|已注册/i.test(msg)) {
+      setMsg('❌ 该手机号已注册，密码不正确');
     } else {
-      setMsg('❌ 登录失败，请重试');
+      setMsg('❌ ' + msg);
     }
   }
 
@@ -137,35 +125,31 @@
       return;
     }
 
-    /* 获取验证码 */
-    var sendBtn = document.getElementById('sendCode');
-    var countdown = null;
-    sendBtn.addEventListener('click', function () {
-      var phone = document.getElementById('authPhone').value.trim();
-      if (!validPhone(phone)) { setMsg('❌ 请输入正确的 11 位手机号'); return; }
-      sendSmsCode(phone);
-      var sec = 60;
-      sendBtn.disabled = true;
-      sendBtn.textContent = sec + 's 后重发';
-      countdown = setInterval(function () {
-        sec--;
-        if (sec <= 0) {
-          clearInterval(countdown);
-          sendBtn.disabled = false;
-          sendBtn.textContent = '获取验证码';
-        } else {
-          sendBtn.textContent = sec + 's 后重发';
-        }
-      }, 1000);
+    /* 显示/隐藏密码 */
+    var pwdToggle = document.getElementById('pwdToggle');
+    if (pwdToggle) pwdToggle.addEventListener('click', function () {
+      var pwdInput = document.getElementById('authPwd');
+      var show = pwdInput.type === 'password';
+      pwdInput.type = show ? 'text' : 'password';
+      pwdToggle.textContent = show ? '🙈 隐藏' : '👁️ 显示';
     });
 
-    /* 手机号登录提交 */
+    /* 手机号 + 密码 登录/注册 */
     document.getElementById('authSubmit').addEventListener('click', async function () {
       var phone = document.getElementById('authPhone').value.trim();
-      var code = document.getElementById('authCode').value.trim();
+      var pwd = document.getElementById('authPwd').value;
       if (!validPhone(phone)) { setMsg('❌ 请输入正确的 11 位手机号'); return; }
-      if (!/^\d{6}$/.test(code)) { setMsg('❌ 请输入 6 位验证码'); return; }
-      await phoneLogin(phone, code);
+      if (pwd.length < 6) { setMsg('❌ 密码至少 6 位'); return; }
+      var submit = document.getElementById('authSubmit');
+      submit.disabled = true;
+      submit.textContent = '登录中…';
+      try {
+        await phoneAuth(phone, pwd);
+      } catch (e) {
+        setMsg('❌ 网络异常，请重试');
+      }
+      submit.disabled = false;
+      submit.textContent = '登录 / 注册';
     });
   });
 })();
