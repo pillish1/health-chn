@@ -58,13 +58,7 @@
 <nav class="navbar">
   <div class="nav-inner">
     <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
-    <div class="nav-links">
-      <a href="index.html">首页</a>
-      <a href="plans.html">健康追踪</a>
-      <a href="plans.html">运动计划</a>
-      <a href="foods.html">食物热量</a>
-      
-    </div>
+    <div class="nav-links">`n      <a href="index.html">首页</a>`n      <a href="foods.html">饮食记录</a>`n      <a href="plans.html">运动记录</a>`n    </div>
     <div class="nav-actions">
       <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
       <button class="icon-btn nav-toggle" id="navToggle" title="菜单"><i class="ic" data-icon="menu"></i></button>
@@ -72,7 +66,9 @@
   </div>
 </nav>
 
-<!-- 首页（与其他页面统一的 page-hero 风格） -->
+<header class="page-hero" style="padding-bottom:24px">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>今日状态</span></div>
     <div class="flex-between flex-wrap" style="gap:10px">
       <div>
         <h1 style="margin:0"><i class="ic" data-icon="home"></i> 首页</h1>
@@ -113,6 +109,7 @@
       <div class="dash-tip-title"><i class="ic" data-icon="tip"></i> 今日建议</div>
       <div class="dash-tip-body" id="dashTipBody">记录数据后，这里会给你专属建议</div>
     </div>
+  </div>
 </header>
 
 <footer class="footer">
@@ -124,9 +121,8 @@
       </div>
       <div>
         <h4>核心功能</h4>
-        <a href="foods.html">记一餐</a>
-        <a href="plans.html">运动计划</a>
-        <a href="plans.html">健康记录</a>
+        <a href="foods.html">饮食记录</a>
+        <a href="plans.html">运动记录</a>
       </div>
       <div>
         <h4>关于</h4>
