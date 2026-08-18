@@ -107,6 +107,7 @@
   ];
 
   function renderCheckin() {
+    if (!document.getElementById('todayCheckin')) return;
     var c = YDJK.getCheckin(viewDate) || { types: [], minutes: 0 };
     var chips = ALL_ACTIONS.map(function (a) {
       var on = (c.types || []).indexOf(a.id) !== -1;
@@ -163,6 +164,7 @@
   /* ---------- 打卡日历 ---------- */
   var calYear = null, calMonth = null;
   function renderCalendar() {
+    if (!document.getElementById('monthLabel') || !document.getElementById('calHeatmap')) return;
     var now = new Date();
     if (calYear === null) { calYear = now.getFullYear(); calMonth = now.getMonth() + 1; }
     var y = calYear, m = calMonth;
@@ -183,6 +185,8 @@
 
   /* ---------- 饮食记录 ---------- */
   function renderMeals() {
+    if (!document.getElementById('mealList')) return;
+    if (!document.getElementById('mealEmpty')) return;
     var meals = YDJK.getMeals(viewDate);
     var s = YDJK.mealSummary(viewDate);
     var empty = document.getElementById('mealEmpty');
@@ -537,29 +541,6 @@
     var wgInp = document.getElementById('weightGoalInput');
     if (wgInp) wgInp.addEventListener('keydown', function (e) { if (e.key === 'Enter' && wgSave) wgSave.click(); });
 
-    // 手动加餐
-    document.getElementById('manualType').innerHTML = DATA.MEAL_TYPES.map(function (t) {
-      return '<option value="' + t.id + '">' + t.emoji + ' ' + t.label + '</option>';
-    }).join('');
-    document.getElementById('manualAdd').addEventListener('click', function () {
-      var name = document.getElementById('manualName').value.trim();
-      var kcal = Number(document.getElementById('manualKcal').value) || 0;
-      if (!name || kcal <= 0) { YDJK_UI.toast('请填写食物名称和热量', 'err'); return; }
-      YDJK.addMeal(viewDate, {
-        type: document.getElementById('manualType').value, name: name, kcal: kcal,
-        protein: Number(document.getElementById('manualP').value) || 0,
-        carbs: Number(document.getElementById('manualC').value) || 0,
-        fat: Number(document.getElementById('manualF').value) || 0
-      });
-      document.getElementById('manualName').value = '';
-      document.getElementById('manualKcal').value = '';
-      document.getElementById('manualP').value = '';
-      document.getElementById('manualC').value = '';
-      document.getElementById('manualF').value = '';
-      renderMeals(); renderStats(); renderWeekSummary();
-      YDJK_UI.toast('✅ 已记录：' + name);
-    });
-
     // 跨标签页数据变更 → 刷新
     window.onDataChanged = function () {
       renderStats(); renderWeight(); renderCheckin(); renderCalendar(); renderMeals(); renderWater(); renderWeekSummary(); renderTotals(); renderAchievements(); renderDateNav(); renderCloudBadge();
@@ -571,16 +552,6 @@
       if (na) na.classList.add('hidden');
       renderStats();
     };
-
-    // 热力图月份导航
-    document.getElementById('calPrev').addEventListener('click', function () {
-      calMonth--; if (calMonth < 1) { calMonth = 12; calYear--; }
-      renderCalendar();
-    });
-    document.getElementById('calNext').addEventListener('click', function () {
-      calMonth++; if (calMonth > 12) { calMonth = 1; calYear++; }
-      renderCalendar();
-    });
 
     // 饮水
     document.querySelectorAll('.water-add').forEach(function (b) {

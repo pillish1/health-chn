@@ -57,9 +57,9 @@
 </nav>
 <header class="page-hero">
   <div class="container">
-    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>身体记录</span></div>
-    <h1>⚖️ 身体记录</h1>
-    <p>记录体重与饮水，追踪身体变化趋势</p>
+    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>健康追踪</span></div>
+    <h1>📈 健康追踪</h1>
+    <p>记录 → 可视化 → 复盘。把每天的运动、饮食、体重数据沉淀下来，让变化看得见。</p>
   </div>
 </header>
 
@@ -74,10 +74,11 @@
     </div>
     <div id="healthTip" class="mb-3" style="max-width:760px"></div>
     <div class="quick-actions">
-      <a class="qa-btn" href="#weight"><span>⚖️</span>体重</a>
-      <a class="qa-btn" href="#water"><span>💧</span>饮水</a>
+      <a class="qa-btn" href="foods.html"><span>🍽️</span>记餐</a>
+      <a class="qa-btn" href="#workout"><span>🏃</span>打卡</a>
+      <a class="qa-btn" href="#weight"><span>⚖️</span>称重</a>
       <a class="qa-btn" href="plans.html"><span>💪</span>运动</a>
-      <a class="qa-btn" href="foods.html"><span>🍽️</span>饮食</a>
+      <a class="qa-btn" href="foods.html"><span>🍽️</span>记餐</a>
     </div>
     <!-- 今日概览 -->
     <div class="stat-grid" id="trackerStats">
@@ -143,8 +144,69 @@
           <div id="weightList" class="small"></div>
         </div>
 
-        </div><div class="tracker-sec"><!-- 右列：饮食 + 饮水 -->
+        </div><div class="tracker-sec"><!-- 运动打卡 -->
+        <div class="card">
+          <div class="card-title">🏃 今日运动打卡</div>
+          <div id="todayCheckin"></div>
+          <div class="mt-3">
+            <div class="flex-between" style="margin-bottom:10px">
+              <b class="small">打卡热力图</b>
+              <div class="cal-nav">
+                <button id="calPrev" title="上个月" aria-label="上个月">‹</button>
+                <span class="small muted" id="monthLabel" style="min-width:90px;text-align:center"></span>
+                <button id="calNext" title="下个月" aria-label="下个月">›</button>
+              </div>
+            </div>
+            <div id="calHeatmap"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右列：饮食 + 饮水 -->
       <div>
+        </div><div class="tracker-sec"><!-- 饮食记录 -->
+        <div class="card mb-3">
+          <div class="flex-between">
+            <div class="card-title" style="margin:0">🍽️ 今日饮食</div>
+            <div class="flex gap-sm" style="gap:8px">
+              <button class="btn btn-ghost btn-sm" id="btnPhotoAlbum">📷 相册</button>
+              <a href="foods.html" class="btn btn-outline btn-sm">+ 记一餐</a>
+            </div>
+          </div>
+          <div id="photoAlbum" style="display:none;margin:10px 0"></div>
+          <div id="mealList" class="mt-2"></div>
+          <div id="mealEmpty" class="empty mt-2 hidden"><div class="e-icon">🍽️</div><div class="e-title">今天还没有饮食记录</div><div class="e-desc">去食物热量库记一餐，或手动添加</div></div>
+          <div class="alert success mt-2" id="mealTotal"></div>
+        </div>
+
+        <!-- 手动加餐 -->
+        <div class="card mb-3">
+          <div class="card-title">✍️ 手动添加饮食</div>
+          <div class="grid grid-2" style="gap:12px">
+            <div class="field" style="margin:0">
+              <label>餐次</label>
+              <select class="input" id="manualType"></select>
+            </div>
+            <div class="field" style="margin:0">
+              <label>食物名称</label>
+              <input class="input" id="manualName" placeholder="如：一碗面条">
+            </div>
+            <div class="field" style="margin:0">
+              <label>热量 (kcal)</label>
+              <input class="input" type="number" id="manualKcal" min="0" placeholder="0">
+            </div>
+            <div class="field" style="margin:0">
+              <label>蛋白/碳水/脂肪 (g)</label>
+              <div class="flex gap-sm">
+                <input class="input" type="number" id="manualP" placeholder="蛋白" style="padding:10px 8px">
+                <input class="input" type="number" id="manualC" placeholder="碳水" style="padding:10px 8px">
+                <input class="input" type="number" id="manualF" placeholder="脂肪" style="padding:10px 8px">
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block mt-2" id="manualAdd">保存记录</button>
+        </div>
+
         </div><div class="tracker-sec"><!-- 饮水 -->
         <div class="card">
           <div class="card-title">💧 饮水打卡</div>

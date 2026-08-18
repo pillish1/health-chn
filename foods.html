@@ -74,6 +74,39 @@
       </div>
     </div>
 
+    <!-- 今日饮食记录（今天吃了什么） -->
+    <div class="card mb-3">
+      <div class="flex-between" style="margin-bottom:12px">
+        <div class="card-title" style="margin:0">🍽️ 今日饮食记录</div>
+        <button class="btn btn-outline btn-sm" id="btnManualMeal" type="button">✍️ 手动添加</button>
+      </div>
+      <div id="mealList"></div>
+      <div id="mealEmpty" class="empty hidden"><div class="e-icon">🍽️</div><div class="e-title">今天还没有饮食记录</div><div class="e-desc">从下方搜索食物点击「记一餐」，或手动添加</div></div>
+      <div class="alert success mt-2" id="mealTotal" style="display:none"></div>
+    </div>
+
+    <!-- 手动添加饮食弹窗 -->
+    <div class="modal-overlay" id="manualMealModal">
+      <div class="modal" style="max-width:480px">
+        <div class="modal-title">✍️ 手动添加饮食</div>
+        <div class="modal-sub">记录一份没有在食物库中的食物</div>
+        <div class="field"><label>餐次</label><select class="input" id="manualType"></select></div>
+        <div class="field"><label>食物名称</label><input class="input" id="manualName" placeholder="如：一碗面条"></div>
+        <div class="field"><label>热量 (kcal)</label><input class="input" type="number" id="manualKcal" min="0" placeholder="0"></div>
+        <div class="field"><label>蛋白 / 碳水 / 脂肪 (g)</label>
+          <div class="flex gap-sm">
+            <input class="input" type="number" id="manualP" placeholder="蛋白" style="padding:10px 8px">
+            <input class="input" type="number" id="manualC" placeholder="碳水" style="padding:10px 8px">
+            <input class="input" type="number" id="manualF" placeholder="脂肪" style="padding:10px 8px">
+          </div>
+        </div>
+        <div class="flex gap-sm mt-2">
+          <button class="btn btn-ghost" style="flex:1" onclick="window.YDJK_UI.closeModal('manualMealModal')">取消</button>
+          <button class="btn btn-primary" id="manualAdd" style="flex:1">保存记录</button>
+        </div>
+      </div>
+    </div>
+
     <div id="weekOverview" class="week-overview mb-3"></div>
     <div class="search-box">
       <span class="s-ico">🔍</span>

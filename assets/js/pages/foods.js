@@ -245,7 +245,79 @@
     });
     // 保存时附带照片
     window._mealPhotoData = function () { return photoData; };
-    window.onDataChanged = function () { renderSummary(); renderWeekOverview(); };
+    window.onDataChanged = function () { renderSummary(); renderWeekOverview(); renderMealList(); };
     document.getElementById('mealSave').addEventListener('click', saveMeal);
+
+    // 今日饮食记录列表
+    renderMealList();
+    document.getElementById('btnManualMeal').addEventListener('click', function () {
+      document.getElementById('manualType').innerHTML = DATA.MEAL_TYPES.map(function (t) {
+        return '<option value="' + t.id + '">' + t.emoji + ' ' + t.label + '</option>';
+      }).join('');
+      document.getElementById('manualName').value = '';
+      document.getElementById('manualKcal').value = '';
+      document.getElementById('manualP').value = '';
+      document.getElementById('manualC').value = '';
+      document.getElementById('manualF').value = '';
+      window.YDJK_UI.openModal('manualMealModal');
+    });
+    document.getElementById('manualAdd').addEventListener('click', function () {
+      var name = document.getElementById('manualName').value.trim();
+      var kcal = Number(document.getElementById('manualKcal').value) || 0;
+      if (!name || kcal <= 0) { window.YDJK_UI.toast('请填写食物名称和热量', 'err'); return; }
+      YDJK.addMeal(YDJK.today(), {
+        type: document.getElementById('manualType').value,
+        name: name, kcal: kcal,
+        protein: Number(document.getElementById('manualP').value) || 0,
+        carbs: Number(document.getElementById('manualC').value) || 0,
+        fat: Number(document.getElementById('manualF').value) || 0
+      });
+      window.YDJK_UI.closeModal('manualMealModal');
+      window.YDJK_UI.toast('✅ 已记录');
+      renderMealList();
+      renderSummary();
+      renderWeekOverview();
+    });
   });
+
+  /* 今日饮食记录列表（今天吃了什么） */
+  function renderMealList() {
+    var list = document.getElementById('mealList');
+    if (!list) return;
+    var today = YDJK.today();
+    var meals = YDJK.getMeals(today);
+    var empty = document.getElementById('mealEmpty');
+    var total = document.getElementById('mealTotal');
+    if (!meals.length) {
+      list.innerHTML = '';
+      if (empty) empty.classList.remove('hidden');
+      if (total) total.style.display = 'none';
+      return;
+    }
+    if (empty) empty.classList.add('hidden');
+    var sum = 0;
+    list.innerHTML = meals.map(function (m) {
+      sum += m.kcal;
+      var typeName = '';
+      var mt = DATA.MEAL_TYPES.find(function (t) { return t.id === m.type; });
+      if (mt) typeName = mt.emoji + ' ' + mt.label;
+      return '<div class="list-row">' +
+        '<div class="lr-main"><span class="small">' + esc(typeName) + '</span> <b class="small">' + esc(m.name) + '</b></div>' +
+        '<div class="lr-side"><b>' + m.kcal + ' kcal</b>' +
+        '<button class="btn btn-ghost btn-xs js-del-meal" data-id="' + m.id + '" style="margin-left:8px">✕</button></div></div>';
+    }).join('');
+    list.querySelectorAll('.js-del-meal').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        YDJK.removeMeal(today, btn.dataset.id);
+        renderMealList();
+        renderSummary();
+        renderWeekOverview();
+        window.YDJK_UI.toast('已删除该记录');
+      });
+    });
+    if (total) {
+      total.style.display = 'block';
+      total.textContent = '今日共 ' + meals.length + ' 餐 · ' + Math.round(sum) + ' kcal';
+    }
+  }
 })();

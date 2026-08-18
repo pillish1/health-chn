@@ -146,6 +146,28 @@
     body.innerHTML = sug.map(function (s) { return '<p style="margin:0 0 6px">· ' + esc(s) + '</p>'; }).join('');
   }
 
+  /* ---------- 运动日历 ---------- */
+  var calYear = null, calMonth = null;
+  function renderCalendar() {
+    var now = new Date();
+    if (calYear === null) { calYear = now.getFullYear(); calMonth = now.getMonth() + 1; }
+    var y = calYear, m = calMonth;
+    var ml = document.getElementById('monthLabel');
+    if (ml) ml.textContent = y + ' 年 ' + m + ' 月';
+    var all = YDJK.getCheckins();
+    var data = {};
+    Object.keys(all).forEach(function (d) {
+      if (d.indexOf(String(y) + '-' + String(m).padStart(2, '0')) !== 0) return;
+      var c = all[d];
+      var lv = 0;
+      if (c.types && c.types.length) lv += Math.min(2, c.types.length);
+      if (c.minutes && c.minutes > 0) lv += 1;
+      data[d] = Math.min(4, lv);
+    });
+    var hm = document.getElementById('calHeatmap');
+    if (hm) YDJK_CHARTS.calendarHeatmap(hm, y, m, data);
+  }
+
   /* ---------- 动作参考库 ---------- */
   var currentMuscle = 'all';
   var currentActionQ = '';
@@ -205,6 +227,12 @@
     document.getElementById('clearWorkout').addEventListener('click', clearWorkout);
     var min = document.getElementById('workoutMinutes');
     min.addEventListener('input', updateMinVal);
+    // 运动日历
+    renderCalendar();
+    var calP = document.getElementById('calPrev');
+    var calN = document.getElementById('calNext');
+    if (calP) calP.addEventListener('click', function () { calMonth--; if (calMonth < 1) { calMonth = 12; calYear--; } renderCalendar(); });
+    if (calN) calN.addEventListener('click', function () { calMonth++; if (calMonth > 12) { calMonth = 1; calYear++; } renderCalendar(); });
     // 动作库
     renderMuscleTabs();
     renderActions();

@@ -98,6 +98,19 @@
       <div class="small muted mt-2" id="weekWorkoutDetail"></div>
     </div>
 
+    <!-- 运动日历（历史记录） -->
+    <div class="card mb-3">
+      <div class="flex-between" style="margin-bottom:10px">
+        <div class="card-title" style="margin:0">📅 运动日历</div>
+        <div class="cal-nav">
+          <button id="calPrev" title="上个月" aria-label="上个月">‹</button>
+          <span class="small muted" id="monthLabel" style="min-width:90px;text-align:center"></span>
+          <button id="calNext" title="下个月" aria-label="下个月">›</button>
+        </div>
+      </div>
+      <div id="calHeatmap"></div>
+    </div>
+
     <!-- 运动建议（基于记录生成） -->
     <div class="card mb-3" id="suggestCard">
       <div class="card-title">💡 运动建议</div>
