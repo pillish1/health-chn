@@ -1,11 +1,10 @@
 /* ============================================================
    悦动健康 · Service Worker（离线缓存 + 自动更新）
    ============================================================ */
-var CACHE = 'yuedong-health-v74';
+var CACHE = 'yuedong-health-v75';
 var ASSETS = [
   './',
   './index.html',
-  './tracker.html',
   './foods.html',
   './plans.html',
   './profile.html',
@@ -14,26 +13,30 @@ var ASSETS = [
   './about.html',
   './404.html',
   './manifest.json',
-  './assets/css/style.css?v=74',
-  './assets/js/storage.js?v=74',
-  './assets/js/data.js?v=74',
-  './assets/js/charts.js?v=74',
-  './assets/js/app.js?v=74',
-  './assets/js/supabase-config.js?v=74',
-  './assets/js/pages/home.js?v=74',
-  './assets/js/pages/tracker.js?v=74',
-  './assets/js/pages/foods.js?v=74',
-  './assets/js/pages/plans.js?v=74',
-  './assets/js/pages/login.js?v=74',
-  './assets/js/pages/profile.js?v=74',
+  './assets/css/style.css?v=90',
+  './assets/js/supabase-config.js?v=90',
+  './assets/js/storage.js?v=90',
+  './assets/js/data.js?v=90',
+  './assets/js/charts.js?v=90',
+  './assets/js/app.js?v=90',
+  './assets/js/pages/home.js?v=90',
+  './assets/js/pages/foods.js?v=90',
+  './assets/js/pages/plans.js?v=90',
+  './assets/js/pages/login.js?v=90',
+  './assets/js/pages/profile.js?v=90',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/favicon-32.png'
 ];
 
 self.addEventListener('install', function (e) {
+  // 逐条预缓存：个别资源 404 不影响整体安装（避免旧版引用已删除页面导致 install 失败）
   e.waitUntil(
-    caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }).then(function () { return self.skipWaiting(); })
+    caches.open(CACHE).then(function (c) {
+      return Promise.all(ASSETS.map(function (u) {
+        return c.add(u).catch(function () {});
+      }));
+    }).then(function () { return self.skipWaiting(); })
   );
 });
 

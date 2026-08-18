@@ -991,6 +991,21 @@ html[data-theme="dark"] .hero-card {
 .section .grid-4 .card:hover { transform: translateY(-5px); box-shadow: 0 14px 36px rgba(139, 92, 246, .15); }
 
 
+
+
+/* ============ 薄荷健康式底部弹层（记餐） ============ */
+.modal-overlay.sheet { align-items: flex-end; padding: 0; }
+.modal-overlay.sheet .modal {
+  width: 100%; max-width: 100%; max-height: 92vh;
+  border-radius: 24px 24px 0 0; margin: 0;
+  padding: 26px 20px calc(26px + env(safe-area-inset-bottom));
+}
+.modal-overlay.sheet .modal-title { font-size: 1.15rem; }
+@media (min-width: 640px) {
+  .modal-overlay.sheet { align-items: center; padding: 20px; }
+  .modal-overlay.sheet .modal { max-width: 520px; border-radius: 24px; padding: 30px; }
+}
+
 /* ============ 打磨 v9：成就墙 ============ */
 .ach-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 1fr)); gap: 10px; }
 .ach-item {

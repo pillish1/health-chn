@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="悦动健康">
-<link rel="stylesheet" href="assets/css/style.css?v=62">
+<link rel="stylesheet" href="assets/css/style.css?v=90">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="悦动健康">
 <meta property="og:locale" content="zh_CN">
@@ -80,7 +80,7 @@
         <div class="card-title" style="margin:0">🍽️ 今日饮食记录</div>
         <div class="flex gap-sm" style="gap:8px">
           <button class="btn btn-outline btn-sm" id="btnManualMeal" type="button">✍️ 手动</button>
-          <button class="btn btn-primary btn-sm" id="btnPickFood" type="button">＋ 记一餐</button>
+          <button class="btn btn-primary btn-sm" id="btnPickFood" type="button" onclick="if(window.YDJK_UI)window.YDJK_UI.openModal('foodPickerModal');setTimeout(function(){var i=document.getElementById('foodSearch');if(i)i.focus();},100)">＋ 记一餐</button>
         </div>
       </div>
       <div id="mealList"></div>
@@ -115,7 +115,7 @@
 </section>
 
 <!-- 记餐弹窗（搜索 + 分类 + 食物列表） -->
-<div class="modal-overlay" id="foodPickerModal">
+<div class="modal-overlay sheet" id="foodPickerModal">
   <div class="modal" style="max-width:520px">
     <div class="modal-title">🍽️ 记一餐</div>
     <div class="search-box" style="margin:0 0 12px">
@@ -147,7 +147,7 @@
 </div>
 
 <!-- 记餐弹窗 -->
-<div class="modal-overlay" id="mealModal">
+<div class="modal-overlay sheet" id="mealModal">
   <div class="modal">
     <div class="modal-title" id="mealModalTitle">记一餐</div>
     <div class="modal-sub" id="mealModalSub"></div>
@@ -183,11 +183,11 @@
     </div>
     <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
   </div>
-</footer><script src="assets/js/supabase-config.js?v=62"></script>
-<script src="assets/js/storage.js?v=62"></script>
-<script src="assets/js/data.js?v=62"></script>
-<script src="assets/js/charts.js?v=62"></script>
-<script src="assets/js/app.js?v=62"></script><script src="assets/js/pages/foods.js?v=62"></script><script>
+</footer><script src="assets/js/supabase-config.js?v=90"></script>
+<script src="assets/js/storage.js?v=90"></script>
+<script src="assets/js/data.js?v=90"></script>
+<script src="assets/js/charts.js?v=90"></script>
+<script src="assets/js/app.js?v=90"></script><script src="assets/js/pages/foods.js?v=90"></script><script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
     navigator.serviceWorker.register('sw.js').catch(function () {});

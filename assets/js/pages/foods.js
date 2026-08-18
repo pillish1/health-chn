@@ -95,8 +95,11 @@
 
   /* ---------- 食物网格 ---------- */
   function renderFoods() {
-    var q = document.getElementById('foodSearch').value.trim().toLowerCase();
-    var sort = document.getElementById('sortSel').value;
+    var searchEl = document.getElementById('foodSearch');
+    var sortEl = document.getElementById('sortSel');
+    if (!searchEl || !sortEl) return;
+    var q = searchEl.value.trim().toLowerCase();
+    var sort = sortEl.value;
     var list = DATA.FOODS.filter(function (f) {
       if (currentCat === 'fav') { if (!YDJK.isFav(f.name)) return false; }
       else if (currentCat !== 'all' && f.cat !== currentCat) return false;
@@ -110,13 +113,14 @@
     else if (sort === 'kcal-desc') list.sort(function (a, b) { return b.kcal - a.kcal; });
     else if (sort === 'protein-desc') list.sort(function (a, b) { return b.protein - a.protein; });
     var grid = document.getElementById('foodGrid');
+    if (!grid) return;
     if (!list.length) {
       grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="e-icon">🥗</div><div class="e-title">没有找到该食物</div><div class="e-desc">换个关键词试试</div></div>';
       return;
     }
     grid.innerHTML = list.map(function (f) {
       var faved = YDJK.isFav(f.name);
-      return '<div class="card card-hover food-card">' +
+      return '<div class="card card-hover food-card" data-name="' + esc(f.name) + '" data-kcal="' + f.kcal + '" data-p="' + f.protein + '" data-c="' + f.carbs + '" data-f="' + f.fat + '">' +
         '<div class="f-head"><div><div class="f-name">' + esc(f.name) + '</div><div class="f-cat">' + f.cat + '</div></div>' +
         '<div class="flex gap-sm" style="gap:10px;align-items:center"><button class="fav-btn js-fav' + (faved ? ' faved' : '') + '" data-name="' + esc(f.name) + '" title="' + (faved ? '取消收藏' : '收藏') + '" aria-label="收藏 ' + esc(f.name) + '">' + (faved ? '♥' : '♡') + '</button>' +
         '<div class="f-kcal">' + f.kcal + '<small style="font-weight:600"> kcal/100g</small></div></div></div>' +
@@ -211,83 +215,115 @@
     renderMealList();
     renderWeekOverview();
   }
+  function safe(fn) {
+    try { fn(); } catch (e) { if (window.console) console.error('[foods]', e); }
+  }
 
   document.addEventListener('DOMContentLoaded', function () {
-    renderSummary();
-    renderWeekOverview();
-    renderRecent();
-    renderCats();
-    renderFoods();
-    // 记一餐 → 打开搜索弹窗
-    var pickBtn = document.getElementById('btnPickFood');
-    if (pickBtn) pickBtn.addEventListener('click', function () {
-      window.YDJK_UI.openModal('foodPickerModal');
-      setTimeout(function () {
-        var i = document.getElementById('foodSearch');
-        if (i) i.focus();
-      }, 100);
+    // 分步初始化：任一步出错都不影响其它功能绑定
+    safe(renderSummary);
+    safe(renderWeekOverview);
+    safe(renderRecent);
+    safe(renderCats);
+    safe(renderFoods);
+
+    // 食物网格：整卡可点 = 记一餐（薄荷健康式），事件委托不随重渲染丢失
+    var grid = document.getElementById('foodGrid');
+    if (grid) grid.addEventListener('click', function (e) {
+      var card = e.target.closest ? e.target.closest('.food-card') : null;
+      if (!card) return;
+      if (e.target.closest('.js-fav') || e.target.closest('.js-meal')) return;
+      openMealModal(card.dataset);
     });
-    document.getElementById('foodSearch').addEventListener('input', renderFoods);
-    document.getElementById('sortSel').addEventListener('change', renderFoods);
-    document.getElementById('kcalRange').addEventListener('change', function () {
-      currentKcal = document.getElementById('kcalRange').value;
-      renderFoods();
+
+    safe(function () {
+      var s = document.getElementById('foodSearch');
+      if (s) s.addEventListener('input', renderFoods);
     });
-    document.getElementById('mealGram').addEventListener('input', updateMealCalc);
+    safe(function () {
+      var s = document.getElementById('sortSel');
+      if (s) s.addEventListener('change', renderFoods);
+    });
+    safe(function () {
+      var k = document.getElementById('kcalRange');
+      if (k) k.addEventListener('change', function () {
+        currentKcal = k.value;
+        renderFoods();
+      });
+    });
+    safe(function () {
+      var g = document.getElementById('mealGram');
+      if (g) g.addEventListener('input', updateMealCalc);
+    });
 
     // 拍照记餐（存本地缩略图）
-    var photoInput = document.getElementById('mealPhotoInput');
-    var photoData = null;
-    var btnPhoto = document.getElementById('btnPhoto');
-    if (btnPhoto) btnPhoto.addEventListener('click', function () { photoInput.click(); });
-    if (photoInput) photoInput.addEventListener('change', function () {
-      var file = photoInput.files[0];
-      if (!file) return;
-      if (file.size > 2 * 1024 * 1024) { YDJK_UI.toast('图片需小于 2MB', 'err'); return; }
-      var reader = new FileReader();
-      reader.onload = function () {
-        photoData = reader.result;
-        var pImg = document.getElementById('mealPhotoImg'); if (pImg) pImg.src = photoData;
-        var pPrev = document.getElementById('mealPhotoPreview'); if (pPrev) pPrev.style.display = 'block';
-        YDJK_UI.toast('📷 照片已添加');
-      };
-      reader.readAsDataURL(file);
-      photoInput.value = '';
+    safe(function () {
+      var photoInput = document.getElementById('mealPhotoInput');
+      var photoData = null;
+      var btnPhoto = document.getElementById('btnPhoto');
+      if (btnPhoto) btnPhoto.addEventListener('click', function () { if (photoInput) photoInput.click(); });
+      if (photoInput) photoInput.addEventListener('change', function () {
+        var file = photoInput.files[0];
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) { YDJK_UI.toast('图片需小于 2MB', 'err'); return; }
+        var reader = new FileReader();
+        reader.onload = function () {
+          photoData = reader.result;
+          var pImg = document.getElementById('mealPhotoImg'); if (pImg) pImg.src = photoData;
+          var pPrev = document.getElementById('mealPhotoPreview'); if (pPrev) pPrev.style.display = 'block';
+          YDJK_UI.toast('📷 照片已添加');
+        };
+        reader.readAsDataURL(file);
+        photoInput.value = '';
+      });
+      // 保存时附带照片
+      window._mealPhotoData = function () { return photoData; };
     });
-    // 保存时附带照片
-    window._mealPhotoData = function () { return photoData; };
     window.onDataChanged = function () { renderSummary(); renderWeekOverview(); renderMealList(); };
-    document.getElementById('mealSave').addEventListener('click', saveMeal);
+    safe(function () {
+      var ms = document.getElementById('mealSave');
+      if (ms) ms.addEventListener('click', saveMeal);
+    });
 
     // 今日饮食记录列表
-    renderMealList();
-    document.getElementById('btnManualMeal').addEventListener('click', function () {
-      document.getElementById('manualType').innerHTML = DATA.MEAL_TYPES.map(function (t) {
-        return '<option value="' + t.id + '">' + t.emoji + ' ' + t.label + '</option>';
-      }).join('');
-      document.getElementById('manualName').value = '';
-      document.getElementById('manualKcal').value = '';
-      document.getElementById('manualP').value = '';
-      document.getElementById('manualC').value = '';
-      document.getElementById('manualF').value = '';
-      window.YDJK_UI.openModal('manualMealModal');
-    });
-    document.getElementById('manualAdd').addEventListener('click', function () {
-      var name = document.getElementById('manualName').value.trim();
-      var kcal = Number(document.getElementById('manualKcal').value) || 0;
-      if (!name || kcal <= 0) { window.YDJK_UI.toast('请填写食物名称和热量', 'err'); return; }
-      YDJK.addMeal(YDJK.today(), {
-        type: document.getElementById('manualType').value,
-        name: name, kcal: kcal,
-        protein: Number(document.getElementById('manualP').value) || 0,
-        carbs: Number(document.getElementById('manualC').value) || 0,
-        fat: Number(document.getElementById('manualF').value) || 0
+    safe(renderMealList);
+    safe(function () {
+      var b = document.getElementById('btnManualMeal');
+      if (b) b.addEventListener('click', function () {
+        var mt = document.getElementById('manualType');
+        if (mt) mt.innerHTML = DATA.MEAL_TYPES.map(function (t) {
+          return '<option value="' + t.id + '">' + t.emoji + ' ' + t.label + '</option>';
+        }).join('');
+        ['manualName', 'manualKcal', 'manualP', 'manualC', 'manualF'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        window.YDJK_UI.openModal('manualMealModal');
       });
-      window.YDJK_UI.closeModal('manualMealModal');
-      window.YDJK_UI.toast('✅ 已记录');
-      renderMealList();
-      renderSummary();
-      renderWeekOverview();
+    });
+    safe(function () {
+      var a = document.getElementById('manualAdd');
+      if (a) a.addEventListener('click', function () {
+        var nameEl = document.getElementById('manualName');
+        var kcalEl = document.getElementById('manualKcal');
+        var name = nameEl ? nameEl.value.trim() : '';
+        var kcal = Number(kcalEl ? kcalEl.value : 0) || 0;
+        if (!name || kcal <= 0) { window.YDJK_UI.toast('请填写食物名称和热量', 'err'); return; }
+        var typeEl = document.getElementById('manualType');
+        var pEl = document.getElementById('manualP'), cEl = document.getElementById('manualC'), fEl = document.getElementById('manualF');
+        YDJK.addMeal(YDJK.today(), {
+          type: typeEl ? typeEl.value : 'breakfast',
+          name: name, kcal: kcal,
+          protein: Number(pEl ? pEl.value : 0) || 0,
+          carbs: Number(cEl ? cEl.value : 0) || 0,
+          fat: Number(fEl ? fEl.value : 0) || 0
+        });
+        window.YDJK_UI.closeModal('manualMealModal');
+        window.YDJK_UI.toast('✅ 已记录');
+        renderMealList();
+        renderSummary();
+        renderWeekOverview();
+      });
     });
   });
 
