@@ -14,15 +14,20 @@
     var p = YDJK.getProfile();
     var weight = p ? p.weight : 60;
 
-    /* 目标热量 */
+    /* 基础代谢 + 目标热量（个体化：Mifflin-St Jeor） */
+    var bmr = Math.round(YDJK.calcBMR({ gender: (p && p.gender) || 'male', age: (p && p.age) || 28, height: (p && p.height) || 170, weight: weight }));
+    var actFactor = 1.55;
+    if (p) {
+      var lv = DATA.ACTIVITY_LEVELS.filter(function (x) { return x.id === p.activity; })[0];
+      if (lv) actFactor = lv.factor;
+    }
     var goalCal = 2000;
     if (p) {
-      var bmr = YDJK.calcBMR({ gender: p.gender, age: p.age, height: p.height, weight: weight });
       var tdee = YDJK.calcTDEE(bmr, p.activity);
       goalCal = YDJK.goalCalories(tdee, p.goal);
     }
 
-    /* 摄入 / 消耗 */
+    /* 摄入 / 总消耗（基础代谢 + 日常活动 + 运动） */
     var meal = YDJK.mealSummary(today);
     var intake = Math.round(meal.kcal);
     var workouts = YDJK.getWorkouts(today);
@@ -32,7 +37,9 @@
       var mins = (Number(w.minutes) || 0) > 0 ? Number(w.minutes) : (w.sets ? w.sets * 3 : 20);
       burn += Math.round(met * 3.5 * weight / 200 * mins);
     });
-    var net = intake - burn;
+    var activityBurn = Math.round(bmr * (actFactor - 1)); // 日常活动消耗
+    var totalBurn = bmr + activityBurn + burn;            // 今日总消耗
+    var net = intake - totalBurn;
     var streak = YDJK.checkinStreak();
 
     /* 摄入环 */
@@ -47,7 +54,9 @@
     var iEl = document.getElementById('eiIntake');
     if (iEl) iEl.textContent = intake;
     var bEl = document.getElementById('eiBurn');
-    if (bEl) bEl.textContent = burn;
+    if (bEl) bEl.textContent = totalBurn;
+    var dEl = document.getElementById('eiDetail');
+    if (dEl) dEl.innerHTML = '基础代谢 ' + bmr + ' · 日常活动 ' + activityBurn + ' · 运动 ' + burn + (p ? '' : ' <span class="muted">· 建档后更准</span>');
     var nEl = document.getElementById('eiNet');
     if (nEl) { nEl.textContent = net; nEl.style.color = net > 0 ? 'var(--danger)' : (net < 0 ? '#10b981' : 'var(--text)'); }
     var netTag = document.getElementById('netTag');

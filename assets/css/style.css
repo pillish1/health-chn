@@ -1139,6 +1139,8 @@ html[data-theme="dark"] .meal-item:hover, html[data-theme="dark"] .wk-item:hover
 .net-tag.green{background:#e6f9f0;color:#0d9f6e}
 .net-tag.red{background:var(--danger-soft);color:var(--danger)}
 .ei-row{flex-wrap:wrap}
+
+.ei-detail{font-size:.68rem;color:var(--muted);line-height:1.5;padding-left:2px}
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
 .modal-overlay.sheet .modal {
