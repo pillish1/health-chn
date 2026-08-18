@@ -63,13 +63,25 @@
       else setMsg('⚠️ 登录成功，但数据同步失败，稍后自动重试', true);
       // 标记已登录
       localStorage.setItem('ydjk:cloud-logged', '1');
-      // 未建档 → 引导建档；已建档 → 追踪页
+      // 未建档 → 引导建档；已建档 → 回来源页（或首页）
       var hasProfile = YDJK.getProfile();
-      setTimeout(function () { location.href = hasProfile ? 'tracker.html' : 'index.html?setup=1'; }, 900);
+      var back = '';
+      try {
+        var rp = new URLSearchParams(location.search).get('back');
+        if (rp && rp.indexOf('http') !== 0) back = rp;
+      } catch (e) {}
+      var target;
+      if (!hasProfile) target = 'index.html?setup=1';
+      else if (back) target = back;
+      else target = 'tracker.html';
+      setTimeout(function () { location.href = target; }, 900);
     } catch (e) {
       setMsg('⚠️ 登录成功，数据同步异常：' + e.message);
       localStorage.setItem('ydjk:cloud-logged', '1');
-      setTimeout(function () { location.href = 'tracker.html'; }, 1200);
+      var hasP = YDJK.getProfile();
+      var back = '';
+      try { var rp = new URLSearchParams(location.search).get('back'); if (rp && rp.indexOf('http') !== 0) back = rp; } catch (e) {}
+      setTimeout(function () { location.href = hasP ? (back || 'tracker.html') : 'index.html?setup=1'; }, 1200);
     }
   }
 

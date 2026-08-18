@@ -995,6 +995,137 @@ html[data-theme="dark"] .hero-card {
 .ach-item {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   padding: 12px 6px; border-radius: 14px; border: 1px solid var(--border);
-  background: var(--surface-2); text-align: center; transition: all .2s;
+
+
+/* ============ 知识库布局（articles） ============ */
+.kb-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.kb-head-text h1 { margin: 0 0 6px; font-size: 1.5rem; font-weight: 900; }
+.kb-head-text p { margin: 0; color: var(--muted); font-size: .88rem; }
+.kb-layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
+.kb-main { min-width: 0; }
+.kb-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.kb-sort { display: flex; gap: 6px; }
+.kb-sort-btn {
+  padding: 6px 14px; border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--muted);
+  font-size: .82rem; font-weight: 700; cursor: pointer;
+  transition: all .2s;
 }
-.ach-item.got {
+.kb-sort-btn.active {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: #fff; border-color: transparent;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, .3);
+}
+.kb-list { display: grid; gap: 14px; }
+.kb-side { position: sticky; top: calc(var(--nav-h) + 16px); display: grid; gap: 14px; }
+.kb-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 18px;
+}
+.kb-card-title { font-weight: 800; font-size: .95rem; margin-bottom: 12px; }
+.kb-card .a-meta { margin-bottom: 8px; }
+@media (max-width: 900px) {
+  .kb-layout { grid-template-columns: 1fr; }
+  .kb-side { position: static; grid-template-columns: 1fr; }
+}
+
+/* ============ 报告页 Tabs ============ */
+.report-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.report-tab {
+  padding: 8px 22px; border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--muted);
+  font-size: .9rem; font-weight: 700; cursor: pointer;
+  transition: all .2s;
+}
+.report-tab.active {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: #fff; border-color: transparent;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, .35);
+}
+
+/* ============ 最近食用（foods） ============ */
+.recent-foods { display: flex; flex-wrap: wrap; gap: 8px; }
+.recent-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.recent-chip {
+  padding: 6px 14px; border-radius: 99px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  font-size: .82rem; color: var(--text); cursor: pointer;
+  transition: all .2s;
+}
+.recent-chip:hover { border-color: var(--primary); background: var(--primary-soft); }
+
+
+/* ============ 登录 / 注册页（App 化） ============ */
+.auth-wrap {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) 1fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+.auth-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .08);
+}
+.auth-head { text-align: center; margin-bottom: 24px; }
+.auth-logo {
+  display: inline-grid; place-items: center;
+  width: 64px; height: 64px; border-radius: 18px;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, .35);
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.auth-logo img { width: 100%; height: 100%; object-fit: cover; }
+.auth-head h1 { font-size: 1.5rem; font-weight: 900; margin: 0 0 6px; }
+.auth-head p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.6; }
+.auth-switch { text-align: center; margin-top: 14px; }
+.auth-features { padding: 10px 0; }
+.auth-features h3 { font-size: 1.15rem; font-weight: 800; margin: 0 0 20px; }
+.af-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.af-item:last-child { border-bottom: none; }
+.af-item > span { font-size: 1.6rem; flex: none; }
+.af-item b { display: block; margin-bottom: 3px; }
+.af-item p { margin: 0; color: var(--muted); font-size: .82rem; }
+@media (max-width: 900px) {
+  .auth-wrap { grid-template-columns: 1fr; gap: 8px; padding: 8px 0; }
+  .auth-features { display: none; }
+  .auth-card { padding: 28px 22px; border-radius: 18px; }
+}
+
+/* ============ 记录页筛选 Tabs ============ */
+.tracker-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.tracker-tab {
+  padding: 7px 16px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+}
+.tracker-tab:hover { border-color: var(--primary); color: var(--text); }
+.tracker-tab.active {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, .35);
+}
