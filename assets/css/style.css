@@ -1129,6 +1129,16 @@ html[data-theme="dark"] .meal-item:hover, html[data-theme="dark"] .wk-item:hover
 .wk-sel-kcal{color:var(--accent);font-weight:800;flex:none}
 .wk-sel-total{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:.85rem;color:var(--text-2)}
 .wk-sel-total b{color:var(--accent)}
+
+/* 能量信息行图标 + 净摄入状态标签 */
+.ei-ico{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.9rem;flex:none;margin-right:2px}
+.ei-ico.blue{background:var(--info-soft);color:var(--info)}
+.ei-ico.green{background:#e6f9f0;color:#0d9f6e}
+.ei-ico.purple{background:var(--purple-soft);color:var(--purple)}
+.net-tag{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--surface-2);color:var(--muted);flex:none;margin-left:auto}
+.net-tag.green{background:#e6f9f0;color:#0d9f6e}
+.net-tag.red{background:var(--danger-soft);color:var(--danger)}
+.ei-row{flex-wrap:wrap}
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
 .modal-overlay.sheet .modal {

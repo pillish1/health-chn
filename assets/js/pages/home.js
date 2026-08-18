@@ -49,7 +49,13 @@
     var bEl = document.getElementById('eiBurn');
     if (bEl) bEl.textContent = burn;
     var nEl = document.getElementById('eiNet');
-    if (nEl) { nEl.textContent = net; nEl.style.color = net > 0 ? 'var(--danger)' : 'var(--text)'; }
+    if (nEl) { nEl.textContent = net; nEl.style.color = net > 0 ? 'var(--danger)' : (net < 0 ? '#10b981' : 'var(--text)'); }
+    var netTag = document.getElementById('netTag');
+    if (netTag) {
+      if (net < 0) { netTag.textContent = '热量缺口 🔥 减脂中'; netTag.className = 'net-tag green'; }
+      else if (net > 0) { netTag.textContent = '热量盈余 · 需控制'; netTag.className = 'net-tag red'; }
+      else { netTag.textContent = '收支平衡'; netTag.className = 'net-tag'; }
+    }
 
     /* 连续天数 */
     var sc = document.getElementById('statStreak');
