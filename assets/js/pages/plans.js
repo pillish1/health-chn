@@ -200,6 +200,7 @@
         if (selectedActions[id]) delete selectedActions[id];
         else selectedActions[id] = { sets: 3, reps: 10, weight: '' };
         renderActionGrid();
+        renderSelected();
       });
     });
     // 组次输入
@@ -210,6 +211,7 @@
         if (inp.classList.contains('wk-sets')) selectedActions[id].sets = Number(inp.value) || 3;
         if (inp.classList.contains('wk-reps')) selectedActions[id].reps = Number(inp.value) || 10;
         if (inp.classList.contains('wk-weight')) selectedActions[id].weight = inp.value;
+        renderSelected();
       });
     });
   }
@@ -248,8 +250,38 @@
         else selectedActions[id] = { sets: 3, reps: 10, weight: '' };
         renderFavList();
         renderActionGrid();
+        renderSelected();
       });
     });
+  }
+  /* 已选动作汇总（含预计消耗，记录前即可看到） */
+  function renderSelected() {
+    var wrap = document.getElementById('wkSelected');
+    if (!wrap) return;
+    var ids = Object.keys(selectedActions);
+    if (!ids.length) { wrap.innerHTML = ''; return; }
+    var p = YDJK.getProfile();
+    var kg = (p && p.weight) || 60;
+    var total = 0;
+    var html = ids.map(function (id) {
+      var a = DATA.ACTIONS.find(function (x) { return x.id === id; });
+      var s = selectedActions[id];
+      var name = a ? a.name : id;
+      var sets = s.sets || 3;
+      var mins = sets * 3; // 每组约 3 分钟
+      var met = 5;
+      if (a) {
+        if (MET_CARDIO[a.name]) met = MET_CARDIO[a.name];
+        else if (a.muscle === 'cardio') met = 7;
+        else if (MET_MUSCLE[a.muscle]) met = MET_MUSCLE[a.muscle];
+      }
+      var kcal = Math.round(met * 3.5 * kg / 200 * mins);
+      total += kcal;
+      return '<div class="wk-sel-item">' +
+        '<span><b>' + esc(name) + '</b> <small>' + sets + '×' + (s.reps || 10) + (s.weight ? ' · ' + s.weight + 'kg' : '') + '</small></span>' +
+        '<span class="wk-sel-kcal">约 ' + kcal + ' kcal</span></div>';
+    }).join('');
+    wrap.innerHTML = html + '<div class="wk-sel-total">共 ' + ids.length + ' 项 · 预计消耗 <b>约 ' + total + ' kcal</b></div>';
   }
   function saveWorkout() {
     var date = document.getElementById('wkDate').value || currentDate;

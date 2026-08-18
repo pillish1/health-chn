@@ -1123,6 +1123,12 @@ html[data-theme="dark"] .meal-item:hover, html[data-theme="dark"] .wk-item:hover
 
 
 .intake-tip{font-size:.68rem;color:var(--muted);text-align:center;margin-top:12px;opacity:.75}
+
+.wk-sel-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 10px;background:var(--surface-2);border-radius:10px;margin-bottom:6px;font-size:.82rem}
+.wk-sel-item small{color:var(--muted)}
+.wk-sel-kcal{color:var(--accent);font-weight:800;flex:none}
+.wk-sel-total{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);font-size:.85rem;color:var(--text-2)}
+.wk-sel-total b{color:var(--accent)}
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
 .modal-overlay.sheet .modal {
