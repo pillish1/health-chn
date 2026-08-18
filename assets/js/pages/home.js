@@ -173,7 +173,33 @@
     }
   }
 
+  /* 访客/用户差异化：营销区块仅访客可见 */
+  function applyGuestMode() {
+    var cloud = window.YD_CLOUD;
+    var isLogged = cloud && cloud.isLoggedIn();
+    var hasData = false;
+    try {
+      hasData = !!YDJK.getProfile() || YDJK.getWeights().length > 0 ||
+        Object.keys(YDJK.getCheckins() || {}).length > 0 ||
+        (function () { for (var i = 0; i < localStorage.length; i++) { if ((localStorage.key(i) || '').indexOf('ydjk:meals:') === 0) return true; } return false; })();
+    } catch (e) {}
+    var isGuest = !isLogged && !hasData;
+    document.querySelectorAll('.guest-only').forEach(function (el) {
+      el.style.display = isGuest ? '' : 'none';
+    });
+    // 访客时在欢迎区显示注册引导
+    if (isGuest) {
+      var wm = document.getElementById('welcomeMini');
+      if (wm && !wm.innerHTML.trim()) {
+        wm.innerHTML = '<div class="alert info"><span>👋</span><span style="flex:1">登录后数据云端同步，多设备随时查看。</span>' +
+          '<button class="btn btn-primary btn-sm" onclick="location.href=\'login.html\'">登录 / 注册</button></div>';
+      }
+    }
+    return isGuest;
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    applyGuestMode();
     renderDashboard();
     renderTasks();
     // 登录后引导建档
