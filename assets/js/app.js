@@ -298,6 +298,22 @@
   }
 
   function initOnboarding(force) {
+    // 全新用户引导：无档案无数据且未跳过 → 跳欢迎页
+    if (force !== true) {
+      var hasAnyData = false;
+      try {
+        hasAnyData = !!window.YDJK.getProfile() || window.YDJK.getWeights().length > 0 || Object.keys(window.YDJK.getCheckins() || {}).length > 0;
+        for (var i = 0; i < localStorage.length; i++) { if ((localStorage.key(i) || '').indexOf('ydjk:meals:') === 0) { hasAnyData = true; break; } }
+      } catch (e) {}
+      var page = location.pathname.split('/').pop() || 'index.html';
+      var skipped = false;
+      try { skipped = localStorage.getItem('ydjk:onboard-dismissed') === '1'; } catch (e) {}
+      if (!hasAnyData && !skipped && page !== 'welcome.html' && page !== 'login.html') {
+        location.href = 'welcome.html';
+        return;
+      }
+    }
+
     var modal = document.getElementById('onboardModal');
     if (!modal) return;
     // 自动弹出仅首次访问；主动打开（force）不受限

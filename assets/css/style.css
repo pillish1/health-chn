@@ -1432,3 +1432,11 @@ html[data-theme="dark"] .hero-card {
   .dash-ring { min-width: 0 !important; flex: 1 1 0 !important; }
   .dash-ring svg { max-width: 100% !important; }
 }
+
+/* ============ 娆㈣繋寮曞鍗?============ */
+.welcome-card { display: flex; flex-direction: column; gap: 14px; padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow-sm); }
+.wc-top { display: flex; align-items: center; gap: 14px; }
+.wc-emoji { font-size: 2rem; width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, #eff6ff, #ede9fe); display: grid; place-items: center; flex: none; }
+.wc-top b { font-size: 1rem; display: block; }
+.wc-top p { font-size: .8rem; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+.wc-actions { display: flex; gap: 8px; flex-wrap: wrap; }

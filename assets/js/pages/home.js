@@ -53,6 +53,14 @@
     if (statKcalEl) statKcalEl.textContent = Math.round(meal.kcal) + ' / ' + Math.round(goalCal);
     var statBmiEl = document.getElementById('statBmi');
     if (statBmiEl) statBmiEl.textContent = bmi ? bmi.toFixed(1) : '--';
+    // 无档案时优先显示建档引导
+    var hasProfile = !!p;
+    if (!hasProfile) {
+      var tipBody2 = document.getElementById('dashTipBody');
+      if (tipBody2) {
+        tipBody2.innerHTML = '<a href="index.html?setup=1" style="color:var(--primary);font-weight:700">先建立健康档案，让记录更有意义 →</a>';
+      }
+    } else {
     // 今日建议（基于数据动态生成）
     var tipBody = document.getElementById('dashTipBody');
     if (tipBody) {
@@ -64,6 +72,7 @@
       if (water < waterGoal * 0.6) tips.push('饮水还差 ' + (waterGoal - water) + ' ml，记得补水 💧');
       if (!tips.length) tips.push('今日各项指标都很棒，继续保持！🌟');
       tipBody.textContent = tips[0];
+    }
     }
 
     /* 欢迎语/登录 */
@@ -205,8 +214,9 @@
     if (isGuest) {
       var wm = document.getElementById('welcomeMini');
       if (wm && !wm.innerHTML.trim()) {
-        wm.innerHTML = '<div class="alert info"><span>👋</span><span style="flex:1">登录后数据云端同步，多设备随时查看。</span>' +
-          '<button class="btn btn-primary btn-sm" onclick="location.href=\'login.html\'">登录 / 注册</button></div>';
+        wm.innerHTML = '<div class="welcome-card"><div class="wc-top"><span class="wc-emoji">👋</span><div><b>欢迎来到悦动健康</b><p>先建立你的健康档案，让所有计算为你量身定制</p></div></div>' +
+          '<div class="wc-actions"><button class="btn btn-primary btn-sm" onclick="location.href=\'index.html?setup=1\'">⚡ 30秒建立档案</button>' +
+          '<button class="btn btn-ghost btn-sm" onclick="location.href=\'login.html\'">登录已有账号</button></div></div>';
       }
     }
     return isGuest;
