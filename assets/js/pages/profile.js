@@ -136,7 +136,7 @@
     // 退出登录
     var logoutBtn = document.getElementById('btnLogout');
     if (logoutBtn) logoutBtn.addEventListener('click', function () {
-      window.YDJK_UI.confirmDialog({ title: '退出登录？', message: '本地数据会保留，下次登录自动同步。', okText: '退出', danger: true, icon: '👋' }).then(function (ok) {
+      window.YDJK_UI.confirmDialog({ title: '退出登录？', message: '本地数据会保留，下次登录自动同步。', okText: '退出', danger: true, icon: (window.YDJK_ICON ? window.YDJK_ICON('logout') : '👋') }).then(function (ok) {
         if (!ok) return;
         cloud.logout();
         try { localStorage.removeItem('ydjk:cloud-logged'); } catch (e) {}

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -13,9 +13,9 @@
 <!-- 移动端 App 头 -->
 <div class="m-header">
   <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
-  <div class="m-search">🔍 搜索健康知识、计划…</div>
+  <div class="m-search"><i class="ic" data-icon="search"></i> 搜索健康知识、计划…</div>
   <div class="m-actions">
-    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的">👤</button>
+    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的"><i class="ic" data-icon="user"></i></button>
   </div>
 </div>
 
@@ -30,7 +30,7 @@
   <div class="nav-inner">
     <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康"></span>悦动<span class="hl">健康</span></a>
     <div class="nav-actions">
-      <button class="icon-btn" id="themeToggle" title="主题">🌙</button>
+      <button class="icon-btn" id="themeToggle" title="主题"><i class="ic" data-icon="moon"></i></button>
       <button class="icon-btn" onclick="history.back()" title="返回">←</button>
     </div>
   </div>
@@ -38,7 +38,7 @@
 
 <section class="page-hero">
   <div class="container">
-    <h1>👤 个人资料</h1>
+    <h1><i class="ic" data-icon="user"></i> 个人资料</h1>
     <p>管理你的账号信息</p>
   </div>
 </section>
@@ -53,22 +53,22 @@
     <div id="profilePanel" style="display:none">
       <!-- 头像昵称 -->
       <div class="card mb-3">
-        <div class="card-title">🖼️ 个人形象</div>
+        <div class="card-title"><i class="ic" data-icon="photo"></i> 个人形象</div>
         <div class="flex gap-md" style="align-items:center;margin-bottom:16px">
           <div id="avatarPreview" style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:3px solid var(--primary);display:grid;place-items:center;font-size:1.8rem;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-weight:800;flex:none"></div>
           <div>
             <input type="file" id="avatarInput" accept="image/*" style="display:none">
-            <button class="btn btn-outline btn-sm" id="btnUploadAvatar">📷 上传头像</button>
+            <button class="btn btn-outline btn-sm" id="btnUploadAvatar"><i class="ic" data-icon="camera"></i> 上传头像</button>
             <div class="small muted mt-1">支持 JPG/PNG，最大 2MB</div>
           </div>
         </div>
         <div class="field"><label>昵称</label><input class="input" id="nicknameInput" maxlength="20" placeholder="给自己起个昵称"></div>
-        <button class="btn btn-primary btn-block" id="btnSaveProfile">💾 保存资料</button>
+        <button class="btn btn-primary btn-block" id="btnSaveProfile"><i class="ic" data-icon="save"></i> 保存资料</button>
       </div>
 
       <!-- 账号信息 -->
       <div class="card mb-3">
-        <div class="card-title">📧 账号信息</div>
+        <div class="card-title"><i class="ic" data-icon="mail"></i> 账号信息</div>
         <div class="list-row"><div class="lr-main"><b class="small">邮箱</b></div><div class="lr-side" id="pEmail"></div></div>
         <div class="list-row"><div class="lr-main"><b class="small">注册时间</b></div><div class="lr-side" id="pCreated"></div></div>
         <div class="list-row"><div class="lr-main"><b class="small">最近登录</b></div><div class="lr-side" id="pLastSignIn"></div></div>
@@ -76,18 +76,18 @@
 
       <!-- 数据管理 -->
       <div class="card mb-3">
-        <div class="card-title">☁️ 云数据</div>
+        <div class="card-title"><i class="ic" data-icon="cloud"></i> 云数据</div>
         <p class="text-2 small">你的记录（体重/打卡/饮食/计划）保存在云端，登录任意设备即可查看。</p>
         <div class="flex gap-sm">
-          <button class="btn btn-outline btn-sm" id="btnSyncNow">🔄 立即同步</button>
-          <button class="btn btn-ghost btn-sm" id="btnExportData">📤 导出数据</button>
+          <button class="btn btn-outline btn-sm" id="btnSyncNow"><i class="ic" data-icon="refresh"></i> 立即同步</button>
+          <button class="btn btn-ghost btn-sm" id="btnExportData"><i class="ic" data-icon="upload"></i> 导出数据</button>
         </div>
         <div class="small muted mt-2" id="syncStatus"></div>
-        <div class="small muted mt-1">💡 导出为 JSON 文件，可离线保存或迁移到其他设备</div>
+        <div class="small muted mt-1"><i class="ic" data-icon="tip"></i> 导出为 JSON 文件，可离线保存或迁移到其他设备</div>
       </div>
 
       <!-- 退出 -->
-      <button class="btn btn-danger btn-block" id="btnLogout">🚪 退出登录</button>
+      <button class="btn btn-danger btn-block" id="btnLogout"><i class="ic" data-icon="logout"></i> 退出登录</button>
     </div>
   </div>
 </section>
@@ -99,12 +99,13 @@
 
 <!-- 底部 Tab 导航（移动端 App 式） -->
 <nav class="tab-bar">
-  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
-  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico">🍽️</span><span class="tab-lbl">饮食</span></a>
-  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">运动</span></a>
-  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico"><i class="ic" data-icon="home"></i></span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico"><i class="ic" data-icon="food"></i></span><span class="tab-lbl">饮食</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico"><i class="ic" data-icon="workout"></i></span><span class="tab-lbl">运动</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico"><i class="ic" data-icon="user"></i></span><span class="tab-lbl">我的</span></a>
 </nav>
 
 
+<script src="assets/js/icons.js?v=90"></script>
 </body>
 </html>

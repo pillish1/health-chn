@@ -131,7 +131,8 @@
       var pwdInput = document.getElementById('authPwd');
       var show = pwdInput.type === 'password';
       pwdInput.type = show ? 'text' : 'password';
-      pwdToggle.textContent = show ? '🙈 隐藏' : '👁️ 显示';
+      var txt = document.getElementById('pwdToggleTxt');
+      if (txt) txt.textContent = show ? '隐藏' : '显示';
     });
 
     /* 手机号 + 密码 登录/注册 */

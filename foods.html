@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -26,9 +26,9 @@
 <!-- 移动端 App 头 -->
 <div class="m-header">
   <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
-  <div class="m-search">🔍 搜索健康知识、计划…</div>
+  <div class="m-search"><i class="ic" data-icon="search"></i> 搜索健康知识、计划…</div>
   <div class="m-actions">
-    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的">👤</button>
+    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的"><i class="ic" data-icon="user"></i></button>
   </div>
 </div>
 
@@ -50,15 +50,15 @@
       
     </div>
     <div class="nav-actions">
-      <button class="icon-btn" id="themeToggle" title="切换主题">🌙</button>
-      <button class="icon-btn nav-toggle" id="navToggle" title="菜单">☰</button>
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单"><i class="ic" data-icon="menu"></i></button>
     </div>
   </div>
 </nav>
 <header class="page-hero">
   <div class="container">
     <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>食物热量</span></div>
-    <h1>🥗 食物热量库</h1>
+    <h1><i class="ic" data-icon="meal"></i> 食物热量库</h1>
     <p>查询常见食物的热量与营养，点击「记一餐」即可把食物计入今日摄入（数据仅存本地）。</p>
   </div>
 </header>
@@ -67,7 +67,7 @@
   <div class="container">
     <!-- 今日摄入摘要 -->
     <div class="card mb-3">
-      <div class="card-title">📊 今日摄入</div>
+      <div class="card-title"><i class="ic" data-icon="stats"></i> 今日摄入</div>
       <div id="foodSummary" class="grid grid-2" style="align-items:center">
         <div id="calRing" style="display:flex;justify-content:center"></div>
         <div id="macroBar"></div>
@@ -77,21 +77,21 @@
     <!-- 今日饮食记录（今天吃了什么） -->
     <div class="card mb-3">
       <div class="flex-between" style="margin-bottom:12px">
-        <div class="card-title" style="margin:0">🍽️ 今日饮食记录</div>
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="food"></i> 今日饮食记录</div>
         <div class="flex gap-sm" style="gap:8px">
-          <button class="btn btn-outline btn-sm" id="btnManualMeal" type="button">✍️ 手动</button>
+          <button class="btn btn-outline btn-sm" id="btnManualMeal" type="button"><i class="ic" data-icon="edit"></i> 手动</button>
           <button class="btn btn-primary btn-sm" id="btnPickFood" type="button" onclick="if(window.YDJK_UI)window.YDJK_UI.openModal('foodPickerModal');setTimeout(function(){var i=document.getElementById('foodSearch');if(i)i.focus();},100)">＋ 记一餐</button>
         </div>
       </div>
       <div id="mealList"></div>
-      <div id="mealEmpty" class="empty hidden"><div class="e-icon">🍽️</div><div class="e-title">今天还没有饮食记录</div><div class="e-desc">点「记一餐」，搜索食物记下今天吃的</div></div>
+      <div id="mealEmpty" class="empty hidden"><div class="e-icon"><i class="ic" data-icon="food"></i></div><div class="e-title">今天还没有饮食记录</div><div class="e-desc">点「记一餐」，搜索食物记下今天吃的</div></div>
       <div class="alert success mt-2" id="mealTotal" style="display:none"></div>
     </div>
 
     <!-- 手动添加饮食弹窗 -->
     <div class="modal-overlay" id="manualMealModal">
       <div class="modal" style="max-width:480px">
-        <div class="modal-title">✍️ 手动添加饮食</div>
+        <div class="modal-title"><i class="ic" data-icon="edit"></i> 手动添加饮食</div>
         <div class="modal-sub">记录一份没有在食物库中的食物</div>
         <div class="field"><label>餐次</label><select class="input" id="manualType"></select></div>
         <div class="field"><label>食物名称</label><input class="input" id="manualName" placeholder="如：一碗面条"></div>
@@ -117,9 +117,9 @@
 <!-- 记餐弹窗（搜索 + 分类 + 食物列表） -->
 <div class="modal-overlay sheet" id="foodPickerModal">
   <div class="modal" style="max-width:520px">
-    <div class="modal-title">🍽️ 记一餐</div>
+    <div class="modal-title"><i class="ic" data-icon="food"></i> 记一餐</div>
     <div class="search-box" style="margin:0 0 12px">
-      <span class="s-ico">🔍</span>
+      <span class="s-ico"><i class="ic" data-icon="search"></i></span>
       <input class="input" id="foodSearch" placeholder="搜索食物，如：鸡胸肉、米饭、苹果…" autocomplete="off">
     </div>
     <div class="flex gap-sm flex-wrap" style="margin-bottom:10px">
@@ -166,7 +166,7 @@
     <div class="alert success" id="mealCalc"></div>
     <div class="flex gap-sm" style="gap:10px">
       <button type="button" class="btn btn-ghost" onclick="window.YDJK_UI.closeModal('mealModal')" style="flex:1">取消</button>
-      <button class="btn btn-primary" id="mealSave" style="flex:1">✅ 加入今日记录</button>
+      <button class="btn btn-primary" id="mealSave" style="flex:1"><i class="ic" data-icon="check"></i> 加入今日记录</button>
     </div>
   </div>
 </div>
@@ -196,11 +196,12 @@ if ('serviceWorker' in navigator) {
 </script>
 <!-- 底部 Tab 导航（移动端 App 式） -->
 <nav class="tab-bar">
-  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
-  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico">🍽️</span><span class="tab-lbl">饮食</span></a>
-  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">运动</span></a>
-  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico"><i class="ic" data-icon="home"></i></span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico"><i class="ic" data-icon="food"></i></span><span class="tab-lbl">饮食</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico"><i class="ic" data-icon="workout"></i></span><span class="tab-lbl">运动</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico"><i class="ic" data-icon="user"></i></span><span class="tab-lbl">我的</span></a>
 </nav>
 
 
+<script src="assets/js/icons.js?v=90"></script>
 </body></html>

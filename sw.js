@@ -19,6 +19,7 @@ var ASSETS = [
   './assets/js/data.js?v=90',
   './assets/js/charts.js?v=90',
   './assets/js/app.js?v=90',
+  './assets/js/icons.js?v=90',
   './assets/js/pages/home.js?v=90',
   './assets/js/pages/foods.js?v=90',
   './assets/js/pages/plans.js?v=90',

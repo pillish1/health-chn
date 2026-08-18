@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -61,13 +61,13 @@ h1 { font-size: 2rem; font-weight: 900; letter-spacing: -.03em; margin-bottom: 1
 </head>
 <body>
 <div class="wrap">
-  <div class="logo">🏃</div>
+  <div class="logo"><i class="ic" data-icon="run"></i></div>
   <h1>悦动健康</h1>
   <p class="sub">记录饮食 · 坚持运动 · 看见改变<br>你的私人健康管理助手</p>
   <div class="features">
-    <div class="feat"><div class="ico">🥗</div><div><b>科学饮食记录</b><span>253 种食物热量库，边吃边算</span></div></div>
-    <div class="feat"><div class="ico">💪</div><div><b>运动计划与打卡</b><span>30+ 动作库，轻松养成习惯</span></div></div>
-    <div class="feat"><div class="ico">📊</div><div><b>数据趋势追踪</b><span>体重、热量、打卡，一目了然</span></div></div>
+    <div class="feat"><div class="ico"><i class="ic" data-icon="meal"></i></div><div><b>科学饮食记录</b><span>253 种食物热量库，边吃边算</span></div></div>
+    <div class="feat"><div class="ico"><i class="ic" data-icon="workout"></i></div><div><b>运动计划与打卡</b><span>30+ 动作库，轻松养成习惯</span></div></div>
+    <div class="feat"><div class="ico"><i class="ic" data-icon="stats"></i></div><div><b>数据趋势追踪</b><span>体重、热量、打卡，一目了然</span></div></div>
   </div>
   <div class="actions">
     <button class="btn btn-primary" onclick="startSetup()">立即开始 →</button>
@@ -86,5 +86,6 @@ function skipSetup() {
   location.href = 'index.html';
 }
 </script>
+<script src="assets/js/icons.js?v=90"></script>
 </body>
 </html>

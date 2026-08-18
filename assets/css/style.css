@@ -1029,6 +1029,22 @@ html[data-theme="dark"] .hero-card {
 body{animation:pageIn .3s var(--ease) .18s both}
 @keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
+/* ============ 图标库 .ic（SVG 线性图标） ============ */
+.ic{display:inline-flex;align-items:center;justify-content:center;width:1.25em;height:1.25em;vertical-align:-0.22em;flex:none}
+.ic svg{width:100%;height:100%;display:block}
+.icon-btn .ic,.tab-ico .ic{width:1.15rem;height:1.15rem}
+@media(max-width:900px){
+  .tab-ico .ic{width:1.25rem;height:1.25rem}
+}
+
+
+/* ============ 图标库 SVG 尺寸适配（JS 动态注入场景） ============ */
+.icon-btn svg{width:1.15rem;height:1.15rem;flex:none}
+.btn svg{width:1.05em;height:1.05em;vertical-align:-.14em;flex:none}
+.modal-title svg,.card-title svg,.dg-title svg,.dash-tip-title svg,.streak-chip svg,.task-ico svg,.ds-item svg,.alert span svg{width:1.1em;height:1.1em;vertical-align:-.18em;flex:none}
+.m-icon svg,.s-icon svg,.af-item > span svg,.ib-icon svg,.wc-emoji svg{width:1.5rem;height:1.5rem;flex:none}
+.e-icon svg{width:2.2rem;height:2.2rem;flex:none}
+
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
 .modal-overlay.sheet .modal {

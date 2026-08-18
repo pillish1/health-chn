@@ -39,7 +39,7 @@
         return '<div class="mb-2"><div class="flex-between small" style="margin-bottom:6px"><span><b>' + mm.name + '</b> <span class="muted">' + mm.v + ' / ' + t + ' g</span></span><b>' + pct + '%</b></div>' +
           '<div class="progress"><div class="progress-bar" style="width:' + pct + '%;background:' + mm.color + '"></div></div></div>';
       }).join('') +
-      '<div class="small muted mt-2">💡 数值为每 100g 可食部的常见估算值，实际以包装标签为准。</div>';
+      '<div class="small muted mt-2">' + (window.YDJK_ICON ? window.YDJK_ICON('tip') : '💡') + ' 数值为每 100g 可食部的常见估算值，实际以包装标签为准。</div>';
   }
 
   /* ---------- 本周摄入概览 ---------- */
@@ -59,7 +59,7 @@
     var pct = goal ? Math.round(avg / goal * 100) : 0;
     el.innerHTML = '<div class="card" style="padding:14px 18px">' +
       '<div class="flex-between flex-wrap" style="gap:8px">' +
-      '<div><b class="small">📊 本周摄入</b><div class="small muted">记录 ' + days + ' 天 · 日均 ' + avg + ' kcal</div></div>' +
+      '<div><b class="small">' + (window.YDJK_ICON ? window.YDJK_ICON('stats') : '📊') + ' 本周摄入</b><div class="small muted">记录 ' + days + ' 天 · 日均 ' + avg + ' kcal</div></div>' +
       '<div style="min-width:120px"><div class="progress" style="height:8px"><div class="progress-bar" style="width:' + Math.min(100, pct) + '%' + (pct > 100 ? ';background:linear-gradient(90deg,#f87171,#ef4444)' : '') + '"></div></div>' +
       '<div class="small muted mt-1" style="text-align:right">目标 ' + Math.round(goal) + ' kcal · ' + pct + '%</div></div></div></div>';
   }
@@ -69,7 +69,7 @@
     var recent = [];
     try { recent = JSON.parse(localStorage.getItem('ydjk:recent-foods') || '[]'); } catch (e) {}
     if (!recent.length) { el.innerHTML = ''; return; }
-    el.innerHTML = '<div class="small muted mb-1">🕐 最近使用</div>' +
+    el.innerHTML = '<div class="small muted mb-1">' + (window.YDJK_ICON ? window.YDJK_ICON('clock') : '🕐') + ' 最近使用</div>' +
       '<div class="recent-list">' + recent.map(function (r) {
         return '<button class="recent-chip" data-name="' + esc(r.name) + '" data-kcal="' + r.kcal + '" data-p="' + r.protein + '" data-c="' + r.carbs + '" data-f="' + r.fat + '">' + esc(r.name) + '</button>';
       }).join('') + '</div>';
@@ -115,7 +115,7 @@
     var grid = document.getElementById('foodGrid');
     if (!grid) return;
     if (!list.length) {
-      grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="e-icon">🥗</div><div class="e-title">没有找到该食物</div><div class="e-desc">换个关键词试试</div></div>';
+      grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><div class="e-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('meal') : '🥗') + '</div><div class="e-title">没有找到该食物</div><div class="e-desc">换个关键词试试</div></div>';
       return;
     }
     grid.innerHTML = list.map(function (f) {
@@ -125,7 +125,7 @@
         '<div class="flex gap-sm" style="gap:10px;align-items:center"><button class="fav-btn js-fav' + (faved ? ' faved' : '') + '" data-name="' + esc(f.name) + '" title="' + (faved ? '取消收藏' : '收藏') + '" aria-label="收藏 ' + esc(f.name) + '">' + (faved ? '♥' : '♡') + '</button>' +
         '<div class="f-kcal">' + f.kcal + '<small style="font-weight:600"> kcal/100g</small></div></div></div>' +
         '<div class="f-macro"><span class="macro-chip">蛋白 ' + f.protein + 'g</span><span class="macro-chip">碳水 ' + f.carbs + 'g</span><span class="macro-chip">脂肪 ' + f.fat + 'g</span></div>' +
-        '<button class="btn btn-primary btn-sm btn-block f-action js-meal" data-name="' + esc(f.name) + '" data-kcal="' + f.kcal + '" data-p="' + f.protein + '" data-c="' + f.carbs + '" data-f="' + f.fat + '">🍽️ 记一餐</button></div>';
+        '<button class="btn btn-primary btn-sm btn-block f-action js-meal" data-name="' + esc(f.name) + '" data-kcal="' + f.kcal + '" data-p="' + f.protein + '" data-c="' + f.carbs + '" data-f="' + f.fat + '">' + (window.YDJK_ICON ? window.YDJK_ICON('food') : '🍽️') + ' 记一餐</button></div>';
     }).join('');
     grid.querySelectorAll('.js-meal').forEach(function (btn) {
       btn.addEventListener('click', function () { openMealModal(btn.dataset); });
@@ -153,7 +153,7 @@
   /* ---------- 记餐弹窗 ---------- */
   function openMealModal(f) {
     currentFood = f;
-    document.getElementById('mealModalTitle').textContent = '🍽️ ' + f.name;
+    document.getElementById('mealModalTitle').innerHTML = (window.YDJK_ICON ? window.YDJK_ICON('food') : '🍽️') + ' ' + esc(f.name);
     var typeGroup = document.getElementById('mealTypeGroup');
     typeGroup.innerHTML = DATA.MEAL_TYPES.map(function (t, i) {
       return '<div class="radio-pill"><input type="radio" name="mealType" id="mt-' + t.id + '" value="' + t.id + '"' + (i === 0 ? ' checked' : '') + '><label for="mt-' + t.id + '">' + t.emoji + ' ' + t.label + '</label></div>';

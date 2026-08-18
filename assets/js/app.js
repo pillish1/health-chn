@@ -11,7 +11,7 @@
   function applyTheme(t) {
     document.documentElement.setAttribute('data-theme', t);
     var btn = document.getElementById('themeToggle');
-    if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+    if (btn) btn.innerHTML = window.YDJK_ICON ? window.YDJK_ICON(t === 'dark' ? 'sun' : 'moon') : (t === 'dark' ? '☀️' : '🌙');
     // 仅显式选择时写入存储（auto 模式不落盘）
     if (t === 'dark' || t === 'light') {
       if (window.YDJK) YDJK.setTheme(t);
@@ -24,7 +24,7 @@
     var t = saved || (prefersDark ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', t);
     var btn = document.getElementById('themeToggle');
-    if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+    if (btn) btn.innerHTML = window.YDJK_ICON ? window.YDJK_ICON(t === 'dark' ? 'sun' : 'moon') : (t === 'dark' ? '☀️' : '🌙');
     if (btn) btn.addEventListener('click', function () {
       var cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       applyTheme(cur);
@@ -56,7 +56,7 @@
       ov.style.display = 'flex';
       ov.setAttribute('role', 'dialog');
       ov.setAttribute('aria-modal', 'true');
-      var iconWrap = opts.danger ? '<span class="m-icon red">⚠️</span>' : (opts.icon ? '<span class="m-icon">' + opts.icon + '</span>' : '<span class="m-icon">❓</span>');
+      var iconWrap = opts.danger ? ('<span class="m-icon red">' + (window.YDJK_ICON ? window.YDJK_ICON('alert') : '⚠️') + '</span>') : (opts.icon ? '<span class="m-icon">' + opts.icon + '</span>' : ('<span class="m-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('info') : '❓') + '</span>'));
       ov.innerHTML = '<div class="modal confirm-modal">' +
         '<div class="modal-header">' + iconWrap +
         '<div><div class="modal-title">' + (opts.title || '确认操作') + '</div>' +
@@ -96,7 +96,7 @@
       ov.setAttribute('role', 'dialog');
       ov.setAttribute('aria-modal', 'true');
       ov.innerHTML = '<div class="modal confirm-modal">' +
-        '<div class="modal-header"><span class="m-icon">🔑</span>' +
+        '<div class="modal-header"><span class="m-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('lock') : '🔑') + '</span>' +
         '<div><div class="modal-title">' + (opts.title || '请输入') + '</div>' +
         (opts.message ? '<div class="modal-sub">' + opts.message + '</div>' : '') + '</div></div>' +
         '<input class="input" type="' + (opts.type || 'text') + '" id="promptInput" placeholder="' + (opts.placeholder || '') + '" style="margin-bottom:6px" autocomplete="off">' +
@@ -248,7 +248,7 @@
     formWrap.innerHTML = buildProfileForm(existing);
     bindProfileForm(formWrap);
     var title = modal.querySelector('.modal-title');
-    if (title) title.textContent = existing ? '✏️ 编辑健康档案' : '👋 欢迎来到悦动健康';
+    if (title) title.innerHTML = (window.YDJK_ICON ? window.YDJK_ICON(existing ? 'edit' : 'wave') : (existing ? '✏️' : '👋')) + ' ' + (existing ? '编辑健康档案' : '欢迎来到悦动健康');
     var sub = modal.querySelector('.modal-sub');
     if (sub) sub.textContent = existing ? '修改信息后，全站的健康计算与推荐会同步更新' : '先花 30 秒建立你的健康档案，之后所有计算与推荐将为你量身定制';
     var btn = modal.querySelector('button[type=submit]');
@@ -550,7 +550,7 @@
       mp.style.display = 'grid';
       mp.style.placeItems = 'center';
     } else {
-      mp.innerHTML = '👤';
+      mp.innerHTML = window.YDJK_ICON ? window.YDJK_ICON('user') : '👤';
       mp.style.padding = '';
       mp.style.width = '';
       mp.style.height = '';
@@ -607,7 +607,7 @@
         }
         btn.onclick = function () { location.href = 'profile.html'; };
       } else {
-        btn.innerHTML = '👤';
+        btn.innerHTML = window.YDJK_ICON ? window.YDJK_ICON('user') : '👤';
         btn.title = '登录 / 注册';
         btn.onclick = function () { location.href = 'login.html'; };
         updateMobileProfileBtn('', '', false);
@@ -633,7 +633,7 @@
       if (dismissed) return;
       var bar = document.createElement('div');
       bar.className = 'install-bar';
-      bar.innerHTML = '<span class="ib-icon">📲</span><span class="ib-text"><b>把悦动健康添加到主屏幕</b><br><small>像 App 一样使用，离线也能看</small></span>' +
+      bar.innerHTML = '<span class="ib-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('mobile') : '📲') + '</span><span class="ib-text"><b>把悦动健康添加到主屏幕</b><br><small>像 App 一样使用，离线也能看</small></span>' +
         '<button class="btn btn-primary btn-sm ib-install">安装</button>' +
         '<button class="btn btn-ghost btn-sm ib-close" aria-label="关闭">✕</button>';
       document.body.appendChild(bar);
@@ -669,7 +669,7 @@
     if (!inp || !box) return;
     var q = inp.value.trim().toLowerCase();
     if (!q) {
-      box.innerHTML = '<div class="empty"><div class="e-icon">🔍</div><div class="e-title">输入关键词开始搜索</div><div class="e-desc">支持食物热量、训练动作、健康文章</div></div>';
+      box.innerHTML = '<div class="empty"><div class="e-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍') + '</div><div class="e-title">输入关键词开始搜索</div><div class="e-desc">支持食物热量、训练动作、健康文章</div></div>';
       return;
     }
     var D = window.YDJK_DATA;
@@ -697,7 +697,7 @@
     var btn = document.createElement('button');
     btn.className = 'icon-btn';
     btn.id = 'globalSearchBtn';
-    btn.innerHTML = '🔍';
+    btn.innerHTML = window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍';
     btn.title = '全站搜索（Ctrl+K）';
     btn.setAttribute('aria-label', '全站搜索');
     actions.insertBefore(btn, actions.firstChild);
@@ -706,8 +706,8 @@
     ov.className = 'modal-overlay';
     ov.id = 'searchModal';
     ov.innerHTML = '<div class="modal" style="max-width:640px;padding:24px">' +
-      '<div class="modal-header"><span class="m-icon purple">🔍</span><div><div class="modal-title">全站搜索</div><div class="modal-sub">搜索食物、训练动作、健康知识 · Ctrl+K 快速唤起</div></div></div>' +
-      '<div class="search-box" style="margin:0 0 14px"><span class="s-ico">🔍</span><input class="input" id="searchInput" placeholder="输入关键词，如：鸡胸肉、深蹲、热身…"></div>' +
+      '<div class="modal-header"><span class="m-icon purple">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍') + '</span><div><div class="modal-title">全站搜索</div><div class="modal-sub">搜索食物、训练动作、健康知识 · Ctrl+K 快速唤起</div></div></div>' +
+      '<div class="search-box" style="margin:0 0 14px"><span class="s-ico">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍') + '</span><input class="input" id="searchInput" placeholder="输入关键词，如：鸡胸肉、深蹲、热身…"></div>' +
       '<div id="searchResults" style="max-height:44vh;overflow-y:auto"></div></div>';
     document.body.appendChild(ov);
     // ✕ 关闭按钮（动态弹窗手动注入）
@@ -734,7 +734,7 @@
     });
     // 初始空状态
     var box0 = document.getElementById('searchResults');
-    if (box0) box0.innerHTML = '<div class="empty"><div class="e-icon">🔍</div><div class="e-title">输入关键词开始搜索</div><div class="e-desc">支持食物热量、训练动作、健康文章</div></div>';
+    if (box0) box0.innerHTML = '<div class="empty"><div class="e-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍') + '</div><div class="e-title">输入关键词开始搜索</div><div class="e-desc">支持食物热量、训练动作、健康文章</div></div>';
   }
 
   /* ---------- 导航滚动阴影 ---------- */

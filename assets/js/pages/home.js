@@ -55,7 +55,7 @@
       if (p) {
         var m = YDJK.macros(goalCal, p.goal);
         dgEl.style.display = 'block';
-        dgEl.innerHTML = '<div class="dg-title">🎯 你的每日目标</div>' +
+        dgEl.innerHTML = '<div class="dg-title">' + (window.YDJK_ICON ? window.YDJK_ICON('target') : '🎯') + ' 你的每日目标</div>' +
           '<div class="dg-items">' +
           '<div class="dg-item"><b>' + Math.round(goalCal) + '</b><span>热量 kcal</span></div>' +
           '<div class="dg-item"><b>' + Math.round(m.protein) + 'g</b><span>蛋白质</span></div>' +
@@ -121,8 +121,8 @@
     var goalCal = 2000;
     if (p) { var bmr = YDJK.calcBMR(p); var tdee = YDJK.calcTDEE(bmr, p.activity); goalCal = YDJK.goalCalories(tdee, p.goal); }
     var tasks = [
-      { icon: '🍽️', label: '记录饮食', done: meal.count > 0, sub: meal.kcal + ' / ' + Math.round(goalCal) + ' kcal', href: 'foods.html', action: null },
-      { icon: '🏃', label: '记录运动', done: workoutDone, sub: workoutDone ? todayWk.length + ' 项训练' : '记录今天的训练', href: 'plans.html', action: workoutDone ? null : 'quickCheckin' }
+      { icon: (window.YDJK_ICON ? window.YDJK_ICON('food') : '🍽️'), label: '记录饮食', done: meal.count > 0, sub: meal.kcal + ' / ' + Math.round(goalCal) + ' kcal', href: 'foods.html', action: null },
+      { icon: (window.YDJK_ICON ? window.YDJK_ICON('run') : '🏃'), label: '记录运动', done: workoutDone, sub: workoutDone ? todayWk.length + ' 项训练' : '记录今天的训练', href: 'plans.html', action: workoutDone ? null : 'quickCheckin' }
     ];
     el.innerHTML = '<div class="task-list">' + tasks.map(function (t) {
       var actionHtml = t.action ? '<button class="btn btn-primary btn-xs js-task-action" data-action="' + t.action + '" style="margin-left:8px">' + (t.action === 'quickWater' ? '+250ml' : '打卡') + '</button>' : '';
@@ -166,7 +166,7 @@
     el.innerHTML =
       '<div class="card" style="padding:16px 18px">' +
       '<div class="flex-between" style="margin-bottom:8px">' +
-      '<span class="card-title" style="margin:0">📊 本周训练</span>' +
+      '<span class="card-title" style="margin:0">' + (window.YDJK_ICON ? window.YDJK_ICON('stats') : '📊') + ' 本周训练</span>' +
       '<span class="small"><b style="color:' + barColor + '">' + doneDays + '/' + total + '</b> 天</span></div>' +
       '<div class="week-bar" style="height:8px;background:var(--border);border-radius:99px;overflow:hidden">' +
       '<div style="width:' + pct + '%;height:100%;background:' + barColor + ';border-radius:99px;transition:width .6s ease"></div></div>' +
@@ -185,12 +185,12 @@
       var nick = '';
       try { nick = localStorage.getItem('ydjk:nickname') || ''; } catch (e) {}
       var name = nick || (user.email || '').split('@')[0] || '用户';
-      el.innerHTML = '<div class="alert success"><span>👋</span><span style="flex:1">欢迎回来，<b>' + esc(name) + '</b>！数据已云端同步 ☁️</span>' +
+      el.innerHTML = '<div class="alert success"><span>' + (window.YDJK_ICON ? window.YDJK_ICON('wave') : '👋') + '</span><span style="flex:1">欢迎回来，<b>' + esc(name) + '</b>！数据已云端同步 ☁️</span>' +
         '<div class="flex gap-sm" style="gap:8px;flex:none">' +
-        '<button class="btn btn-ghost btn-sm" onclick="location.href=\'profile.html\'">👤 资料</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="location.href=\'profile.html\'">' + (window.YDJK_ICON ? window.YDJK_ICON('user') : '👤') + ' 资料</button>' +
         '<button class="btn btn-primary btn-sm" onclick="location.href=\'plans.html\'">去记录 →</button></div></div>';
     } else {
-      el.innerHTML = '<div class="alert info"><span>👋</span><span style="flex:1">登录后数据云端同步，多设备随时查看。</span>' +
+      el.innerHTML = '<div class="alert info"><span>' + (window.YDJK_ICON ? window.YDJK_ICON('wave') : '👋') + '</span><span style="flex:1">登录后数据云端同步，多设备随时查看。</span>' +
         '<button class="btn btn-primary btn-sm" onclick="location.href=\'login.html\'">登录 / 注册</button></div>';
     }
   }
@@ -213,14 +213,14 @@
     if (isGuest) {
       var wm = document.getElementById('welcomeMini');
       if (wm && !wm.innerHTML.trim()) {
-        wm.innerHTML = '<div class="welcome-card"><div class="wc-top"><span class="wc-emoji">👋</span><div><b>欢迎使用悦动健康</b><p>三步开始，先了解自己，再科学记录</p></div></div>' +
+        wm.innerHTML = '<div class="welcome-card"><div class="wc-top"><span class="wc-emoji">' + (window.YDJK_ICON ? window.YDJK_ICON('wave') : '👋') + '</span><div><b>欢迎使用悦动健康</b><p>三步开始，先了解自己，再科学记录</p></div></div>' +
           '<div class="wc-steps">' +
           '<div class="wc-step"><span class="wc-n">1</span><div><b>建立健康档案</b><p>填写性别年龄身高体重，帮你算好每日目标</p></div></div>' +
           '<div class="wc-step"><span class="wc-n">2</span><div><b>记录饮食</b><p>点下方「饮食」，搜索食物记下每餐</p></div></div>' +
           '<div class="wc-step"><span class="wc-n">3</span><div><b>记录运动</b><p>点下方「运动」，记录今天的锻炼</p></div></div>' +
           '</div>' +
-          '<div class="wc-actions"><button class="btn btn-primary btn-sm" onclick="location.href=\'index.html?setup=1\'">📋 先建立档案</button>' +
-          '<button class="btn btn-ghost btn-sm" onclick="location.href=\'foods.html\'">🍽️ 直接记饮食</button></div></div>';
+          '<div class="wc-actions"><button class="btn btn-primary btn-sm" onclick="location.href=\'index.html?setup=1\'">' + (window.YDJK_ICON ? window.YDJK_ICON('clipboard') : '📋') + ' 先建立档案</button>' +
+          '<button class="btn btn-ghost btn-sm" onclick="location.href=\'foods.html\'">' + (window.YDJK_ICON ? window.YDJK_ICON('food') : '🍽️') + ' 直接记饮食</button></div></div>';
       }
     }
     return isGuest;

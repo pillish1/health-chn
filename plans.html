@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -23,9 +23,9 @@
 <!-- 移动端 App 头 -->
 <div class="m-header">
   <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
-  <div class="m-search">🔍 搜索健康知识、计划…</div>
+  <div class="m-search"><i class="ic" data-icon="search"></i> 搜索健康知识、计划…</div>
   <div class="m-actions">
-    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的">👤</button>
+    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的"><i class="ic" data-icon="user"></i></button>
   </div>
 </div>
 
@@ -46,8 +46,8 @@
       <a href="foods.html">食物热量</a>
     </div>
     <div class="nav-actions">
-      <button class="icon-btn" id="themeToggle" title="切换主题">🌙</button>
-      <button class="icon-btn nav-toggle" id="navToggle" title="菜单">☰</button>
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单"><i class="ic" data-icon="menu"></i></button>
     </div>
   </div>
 </nav>
@@ -55,7 +55,7 @@
 <header class="page-hero">
   <div class="container">
     <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>运动记录</span></div>
-    <h1>🏃 运动记录</h1>
+    <h1><i class="ic" data-icon="run"></i> 运动记录</h1>
     <p>记录你今天的运动，这里会给你合适的建议</p>
   </div>
 </header>
@@ -65,18 +65,18 @@
     <!-- 训练记录（卡片式） -->
     <div class="card mb-3">
       <div class="flex-between" style="margin-bottom:14px">
-        <div class="card-title" style="margin:0">💪 我的训练记录</div>
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="workout"></i> 我的训练记录</div>
         <button class="btn btn-primary btn-sm" id="btnAddWorkout" type="button">＋ 添加训练</button>
       </div>
       <p class="small muted mb-2" style="margin-top:0">记录每次训练：练了什么部位、做了什么动作、几组几次</p>
       <div id="workoutList"></div>
-      <div id="workoutEmpty" class="empty hidden"><div class="e-icon">🏋️</div><div class="e-title">还没有训练记录</div><div class="e-desc">点右上角「添加训练」，记下今天的训练</div></div>
+      <div id="workoutEmpty" class="empty hidden"><div class="e-icon"><i class="ic" data-icon="dumbbell"></i></div><div class="e-title">还没有训练记录</div><div class="e-desc">点右上角「添加训练」，记下今天的训练</div></div>
     </div>
 
     <!-- 添加训练弹窗（点选动作模式） -->
     <div class="modal-overlay" id="addWorkoutModal">
       <div class="modal" style="max-width:520px">
-        <div class="modal-title">🏋️ 添加训练</div>
+        <div class="modal-title"><i class="ic" data-icon="dumbbell"></i> 添加训练</div>
         <div class="modal-sub">点选今天练了哪些动作</div>
         <div class="field" id="wkFavField">
           <label>⭐ 我的收藏（点击快速添加）</label>
@@ -111,11 +111,11 @@
 
     <!-- 本周运动概览 -->
     <div class="card mb-3">
-      <div class="card-title">📊 本周运动概览</div>
+      <div class="card-title"><i class="ic" data-icon="stats"></i> 本周运动概览</div>
       <div class="stat-grid" id="weekWorkoutStats">
-        <div class="stat-card blue"><div class="s-icon">📅</div><div class="s-value" id="wsDays">--</div><div class="s-label">运动天数</div></div>
+        <div class="stat-card blue"><div class="s-icon"><i class="ic" data-icon="calendar"></i></div><div class="s-value" id="wsDays">--</div><div class="s-label">运动天数</div></div>
         <div class="stat-card green"><div class="s-icon">⏱️</div><div class="s-value" id="wsMinutes">--</div><div class="s-label">总时长(分)</div></div>
-        <div class="stat-card orange"><div class="s-icon">🔥</div><div class="s-value" id="wsStreak">--</div><div class="s-label">连续天数</div></div>
+        <div class="stat-card orange"><div class="s-icon"><i class="ic" data-icon="flame"></i></div><div class="s-value" id="wsStreak">--</div><div class="s-label">连续天数</div></div>
       </div>
       <div class="small muted mt-2" id="weekWorkoutDetail"></div>
     </div>
@@ -123,7 +123,7 @@
     <!-- 运动日历（历史记录） -->
     <div class="card mb-3">
       <div class="flex-between" style="margin-bottom:10px">
-        <div class="card-title" style="margin:0">📅 运动日历</div>
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 运动日历</div>
         <div class="cal-nav">
           <button id="calPrev" title="上个月" aria-label="上个月">‹</button>
           <span class="small muted" id="monthLabel" style="min-width:90px;text-align:center"></span>
@@ -135,9 +135,9 @@
 
     <!-- 运动建议（基于记录生成） -->
     <div class="card mb-3" id="suggestCard">
-      <div class="card-title">💡 运动建议</div>
+      <div class="card-title"><i class="ic" data-icon="tip"></i> 运动建议</div>
       <div id="suggestBody" class="text-2" style="font-size:.92rem;line-height:1.8">
-        <p style="margin:0">开始记录运动后，这里会根据你的运动习惯给出建议 💪</p>
+        <p style="margin:0">开始记录运动后，这里会根据你的运动习惯给出建议 <i class="ic" data-icon="workout"></i></p>
       </div>
     </div>
   </div>
@@ -152,12 +152,13 @@
 
 <!-- 底部 Tab 导航（移动端 App 式） -->
 <nav class="tab-bar">
-  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
-  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico">🍽️</span><span class="tab-lbl">饮食</span></a>
-  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">运动</span></a>
-  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico"><i class="ic" data-icon="home"></i></span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico"><i class="ic" data-icon="food"></i></span><span class="tab-lbl">饮食</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico"><i class="ic" data-icon="workout"></i></span><span class="tab-lbl">运动</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico"><i class="ic" data-icon="user"></i></span><span class="tab-lbl">我的</span></a>
 </nav>
 
 
+<script src="assets/js/icons.js?v=90"></script>
 </body>
 </html>

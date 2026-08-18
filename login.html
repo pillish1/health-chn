@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -19,9 +19,9 @@
 <!-- 移动端 App 头 -->
 <div class="m-header">
   <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
-  <div class="m-search">🔍 搜索健康知识、计划…</div>
+  <div class="m-search"><i class="ic" data-icon="search"></i> 搜索健康知识、计划…</div>
   <div class="m-actions">
-    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的">👤</button>
+    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的"><i class="ic" data-icon="user"></i></button>
   </div>
 </div>
 
@@ -43,8 +43,8 @@
       
     </div>
     <div class="nav-actions">
-      <button class="icon-btn" id="themeToggle" title="切换主题">🌙</button>
-      <button class="icon-btn nav-toggle" id="navToggle" title="菜单">☰</button>
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单"><i class="ic" data-icon="menu"></i></button>
     </div>
   </div>
 </nav>
@@ -68,7 +68,7 @@
             <label>密码</label>
             <div class="input-group" style="display:flex;gap:8px;align-items:center">
               <input class="input" type="password" id="authPwd" placeholder="至少 6 位" autocomplete="current-password" minlength="6" style="flex:1">
-              <button class="btn btn-ghost btn-sm" id="pwdToggle" type="button" style="flex:none;white-space:nowrap" aria-label="显示/隐藏密码">👁️ 显示</button>
+              <button class="btn btn-ghost btn-sm" id="pwdToggle" type="button" style="flex:none;white-space:nowrap" aria-label="显示/隐藏密码"><i class="ic" data-icon="eye"></i> <span id="pwdToggleTxt">显示</span></button>
             </div>
           </div>
           <button class="btn btn-primary btn-block btn-lg" id="authSubmit">登录 / 注册</button>
@@ -80,9 +80,9 @@
       </div>
       <div class="auth-features">
         <h3>登录后你能获得</h3>
-        <div class="af-item"><span>☁️</span><div><b>云端同步</b><p>体重、打卡、饮食记录跨设备同步</p></div></div>
-        <div class="af-item"><span>🔐</span><div><b>数据私有</b><p>每个用户只能看到自己的数据</p></div></div>
-        <div class="af-item"><span>📊</span><div><b>记录沉淀</b><p>饮食与运动记录长期保存，见证改变</p></div></div>
+        <div class="af-item"><span class="af-ico"><i class="ic" data-icon="cloud"></i></span><div><b>云端同步</b><p>体重、打卡、饮食记录跨设备同步</p></div></div>
+        <div class="af-item"><span class="af-ico"><i class="ic" data-icon="shield"></i></span><div><b>数据私有</b><p>每个用户只能看到自己的数据</p></div></div>
+        <div class="af-item"><span class="af-ico"><i class="ic" data-icon="stats"></i></span><div><b>记录沉淀</b><p>饮食与运动记录长期保存，见证改变</p></div></div>
       </div>
     </div>
   </div>
@@ -101,12 +101,13 @@
 
 <!-- 底部 Tab 导航（移动端 App 式） -->
 <nav class="tab-bar">
-  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
-  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico">🍽️</span><span class="tab-lbl">饮食</span></a>
-  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">运动</span></a>
-  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico"><i class="ic" data-icon="home"></i></span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico"><i class="ic" data-icon="food"></i></span><span class="tab-lbl">饮食</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico"><i class="ic" data-icon="workout"></i></span><span class="tab-lbl">运动</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico"><i class="ic" data-icon="user"></i></span><span class="tab-lbl">我的</span></a>
 </nav>
 
 
+<script src="assets/js/icons.js?v=90"></script>
 </body>
 </html>
