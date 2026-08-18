@@ -993,6 +993,42 @@ html[data-theme="dark"] .hero-card {
 
 
 
+
+
+/* ============ 底部 Tab 导航 v2（移动端，统一样式，防止 tab 位置跳动） ============ */
+.tab-bar{display:none}
+@media(max-width:900px){
+  .tab-bar{
+    position:fixed;bottom:0;left:0;right:0;z-index:150;
+    display:flex;align-items:center;justify-content:space-around;
+    background:var(--surface);border-top:1px solid var(--border);
+    padding:6px 8px calc(6px + env(safe-area-inset-bottom));
+    -webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);
+    box-shadow:0 -6px 24px rgba(15,23,42,.05);
+  }
+  .tab-item{
+    flex:1;max-width:104px;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+    padding:5px 10px;color:var(--muted);font-size:.68rem;font-weight:700;text-decoration:none;
+    border-radius:14px;transition:color .25s var(--ease),transform .15s var(--ease);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .tab-item .tab-ico{
+    width:42px;height:26px;display:grid;place-items:center;
+    font-size:1.25rem;line-height:1;border-radius:13px;
+    transition:background .28s var(--ease),transform .28s var(--ease);
+  }
+  .tab-item:active{transform:scale(.9)}
+  .tab-item.active{color:var(--primary)}
+  .tab-item.active .tab-ico{background:var(--primary-soft);transform:translateY(-1px) scale(1.05)}
+  .tab-item.active .tab-lbl{color:var(--primary);font-weight:800}
+  body{padding-bottom:calc(62px + env(safe-area-inset-bottom))}
+}
+
+/* ============ 页面进入过渡（跳转衔接更丝滑） ============ */
+body{animation:pageIn .3s var(--ease) .18s both}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
 .modal-overlay.sheet .modal {

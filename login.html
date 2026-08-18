@@ -102,39 +102,11 @@
 <!-- 底部 Tab 导航（移动端 App 式） -->
 <nav class="tab-bar">
   <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
-  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">运动</span></a>
   <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico">🍽️</span><span class="tab-lbl">饮食</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">运动</span></a>
   <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
 </nav>
 
-<style>
-.tab-bar{display:none}
-@media(max-width:900px){
-  .tab-bar{
-    position:fixed;bottom:0;left:0;right:0;z-index:150;
-    display:flex;align-items:center;justify-content:space-around;
-    background:var(--surface);border-top:1px solid var(--border);
-    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
-    backdrop-filter:blur(14px);
-  }
-  .tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;color:var(--muted);font-size:.68rem;font-weight:700;text-decoration:none;border-radius:12px;transition:color .2s}
-  .tab-item .tab-ico{font-size:1.25rem;line-height:1}
-  .tab-item.active{color:var(--primary)}
-  .tab-plus{
-    width:52px;height:52px;border-radius:50%;border:none;margin-top:-22px;
-    background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-size:1.6rem;
-    box-shadow:0 8px 24px rgba(139,92,246,.45);display:grid;place-items:center;cursor:pointer;
-    transition:transform .2s;
-  }
-  .tab-plus:active{transform:scale(.92)}
-  body{padding-bottom:64px}
-  .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
-  .quick-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 12px;border:1px solid var(--border);border-radius:16px;background:var(--surface-2);cursor:pointer;transition:all .2s}
-  .quick-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
-  .qb-ico{font-size:1.8rem}
-  .quick-btn b{font-size:.9rem}
-  .quick-btn small{font-size:.7rem;color:var(--muted)}
-}
-</style>
+
 </body>
 </html>

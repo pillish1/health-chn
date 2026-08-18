@@ -524,9 +524,11 @@
     var map = { 'index.html': 'home', 'foods.html': 'foods', 'plans.html': 'plans', 'profile.html': 'profile' };
     var active = map[path];
     document.querySelectorAll('.tab-item').forEach(function (t) {
-      if (t.dataset.tab === active) t.classList.add('active');
+      var isActive = t.dataset.tab === active;
+      t.classList.toggle('active', isActive);
+      if (isActive) t.setAttribute('aria-current', 'page');
+      else t.removeAttribute('aria-current');
     });
-
   }
 
   /* 移动端顶部头像按钮（mProfileBtn） */
