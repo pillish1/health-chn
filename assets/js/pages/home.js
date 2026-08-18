@@ -213,13 +213,14 @@
     if (isGuest) {
       var wm = document.getElementById('welcomeMini');
       if (wm && !wm.innerHTML.trim()) {
-        wm.innerHTML = '<div class="welcome-card"><div class="wc-top"><span class="wc-emoji">👋</span><div><b>欢迎使用悦动健康</b><p>简单两步，开始记录你的健康生活</p></div></div>' +
+        wm.innerHTML = '<div class="welcome-card"><div class="wc-top"><span class="wc-emoji">👋</span><div><b>欢迎使用悦动健康</b><p>三步开始，先了解自己，再科学记录</p></div></div>' +
           '<div class="wc-steps">' +
-          '<div class="wc-step"><span class="wc-n">1</span><div><b>记饮食</b><p>点下方「饮食」，搜索食物记下每餐</p></div></div>' +
-          '<div class="wc-step"><span class="wc-n">2</span><div><b>记运动</b><p>点下方「运动」，记录今天的锻炼</p></div></div>' +
+          '<div class="wc-step"><span class="wc-n">1</span><div><b>建立健康档案</b><p>填写性别年龄身高体重，帮你算好每日目标</p></div></div>' +
+          '<div class="wc-step"><span class="wc-n">2</span><div><b>记录饮食</b><p>点下方「饮食」，搜索食物记下每餐</p></div></div>' +
+          '<div class="wc-step"><span class="wc-n">3</span><div><b>记录运动</b><p>点下方「运动」，记录今天的锻炼</p></div></div>' +
           '</div>' +
-          '<div class="wc-actions"><button class="btn btn-primary btn-sm" onclick="location.href=\'foods.html\'">🍽️ 去记饮食</button>' +
-          '<button class="btn btn-ghost btn-sm" onclick="location.href=\'plans.html\'">🏃 去记运动</button></div></div>';
+          '<div class="wc-actions"><button class="btn btn-primary btn-sm" onclick="location.href=\'index.html?setup=1\'">📋 先建立档案</button>' +
+          '<button class="btn btn-ghost btn-sm" onclick="location.href=\'foods.html\'">🍽️ 直接记饮食</button></div></div>';
       }
     }
     return isGuest;
@@ -279,29 +280,6 @@
     wrap.innerHTML = html;
   }
 
-  function renderArticles() {
-    var wrap = document.getElementById('articlePreview');
-    if (!wrap) return;
-    var arts = DATA.ARTICLES.slice(0, 3);
-    if (window.YD_CLOUD) {
-      window.YD_CLOUD.loadArticles().then(function (cloudArts) {
-        if (cloudArts && cloudArts.length) {
-          arts = cloudArts.slice(0, 3);
-          render();
-        }
-      }).catch(function () { render(); });
-    }
-    function render() {
-      wrap.innerHTML = arts.map(function (a) {
-        return '<a href="articles.html" class="card card-hover article-card">' +
-          '<div class="a-meta"><span class="tag blue">' + esc(a.cat) + '</span><span>⏱ ' + (a.read_time || a.readTime || 5) + ' 分钟</span></div>' +
-          '<div class="a-title">' + esc(a.title) + '</div>' +
-          '<div class="a-excerpt">' + esc(a.excerpt) + '</div></a>';
-      }).join('');
-    }
-    render();
-  }
-
-  window.onProfileSaved = function () { renderDashboard(); renderWeek(); renderHot(); renderTasks(); renderWeightTrend(); };
-  window.onDataChanged = function () { renderDashboard(); renderWeek(); renderHot(); renderTasks(); renderWeightTrend(); };
+  window.onProfileSaved = function () { renderDashboard(); renderTasks(); renderWeekRate(); };
+  window.onDataChanged = function () { renderDashboard(); renderTasks(); renderWeekRate(); };
 })();
