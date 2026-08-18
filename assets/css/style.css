@@ -1044,6 +1044,12 @@ body{animation:pageIn .3s var(--ease) .18s both}
 .m-icon svg,.s-icon svg,.af-item > span svg,.ib-icon svg,.wc-emoji svg{width:1.5rem;height:1.5rem;flex:none}
 .e-icon svg{width:2.2rem;height:2.2rem;flex:none}
 
+
+/* ============ 饮食页时段分组增强 ============ */
+.meal-empty-row{font-size:.78rem;color:var(--muted);padding:9px 4px}
+.meal-item-actions{display:inline-flex;align-items:center;gap:4px;flex:none}
+.meal-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px dashed var(--border)}
+
 /* ============ 训练记录项操作按钮 ============ */
 .wk-item-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .wk-item-actions{display:inline-flex;align-items:center;gap:4px;flex:none}

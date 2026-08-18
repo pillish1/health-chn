@@ -40,7 +40,7 @@
     renderDateNav();
     renderSummary();
     renderMealList();
-    renderWeekOverview();
+    
   }
 
   /* ---------- 今日摄入摘要 ---------- */
@@ -54,9 +54,20 @@
       var tdee = YDJK.calcTDEE(bmr, p.activity);
       goalCal = YDJK.goalCalories(tdee, p.goal);
     }
+    var numEl = document.getElementById('intakeKcalNum');
+    if (numEl) numEl.textContent = Math.round(s.kcal);
+    var goalEl = document.getElementById('intakeGoalNum');
+    if (goalEl) goalEl.textContent = Math.round(goalCal);
+    var remainEl = document.getElementById('intakeRemain');
+    if (remainEl) {
+      var remain = Math.round(goalCal - s.kcal);
+      remainEl.textContent = remain >= 0 ? '还可摄入 ' + remain + ' kcal' : '已超目标 ' + (-remain) + ' kcal';
+      remainEl.style.color = remain >= 0 ? '' : 'var(--danger)';
+    }
     var ring = document.getElementById('calRing');
     YDJK_CHARTS.donutChart(ring, {
-      value: s.kcal, max: goalCal, unit: ' kcal', label: '目标 ' + Math.round(goalCal), color: s.kcal > goalCal ? '#ef4444' : undefined, size: 150
+      value: s.kcal, max: goalCal, unit: '', label: Math.round(s.kcal), size: 150, decimals: 0,
+      color: s.kcal > goalCal ? '#ef4444' : undefined
     });
     var macros = [
       { name: '蛋白质', v: s.protein, color: '#38bdf8' },
@@ -75,27 +86,6 @@
       '<div class="small muted mt-2">' + (window.YDJK_ICON ? window.YDJK_ICON('tip') : '💡') + ' 数值为每 100g 可食部的常见估算值，实际以包装标签为准。</div>';
   }
 
-  /* ---------- 本周摄入概览 ---------- */
-  function renderWeekOverview() {
-    var el = document.getElementById('weekOverview');
-    if (!el) return;
-    var week = YDJK.weekDates(currentDate);
-    var total = 0, days = 0;
-    week.forEach(function (d) {
-      var m = YDJK.mealSummary(d);
-      if (m.kcal > 0) { total += m.kcal; days++; }
-    });
-    var p = YDJK.getProfile();
-    var goal = 2000;
-    if (p) { var bmr = YDJK.calcBMR(p); goal = YDJK.goalCalories(YDJK.calcTDEE(bmr, p.activity), p.goal); }
-    var avg = days ? Math.round(total / days) : 0;
-    var pct = goal ? Math.round(avg / goal * 100) : 0;
-    el.innerHTML = '<div class="card" style="padding:14px 18px">' +
-      '<div class="flex-between flex-wrap" style="gap:8px">' +
-      '<div><b class="small">' + (window.YDJK_ICON ? window.YDJK_ICON('stats') : '📊') + ' 本周摄入</b><div class="small muted">记录 ' + days + ' 天 · 日均 ' + avg + ' kcal</div></div>' +
-      '<div style="min-width:120px"><div class="progress" style="height:8px"><div class="progress-bar" style="width:' + Math.min(100, pct) + '%' + (pct > 100 ? ';background:linear-gradient(90deg,#f87171,#ef4444)' : '') + '"></div></div>' +
-      '<div class="small muted mt-1" style="text-align:right">目标 ' + Math.round(goal) + ' kcal · ' + pct + '%</div></div></div></div>';
-  }
   function renderRecent() {
     var el = document.getElementById('recentFoods');
     if (!el) return;
@@ -191,6 +181,12 @@
     typeGroup.innerHTML = DATA.MEAL_TYPES.map(function (t, i) {
       return '<div class="radio-pill"><input type="radio" name="mealType" id="mt-' + t.id + '" value="' + t.id + '"' + (i === 0 ? ' checked' : '') + '><label for="mt-' + t.id + '">' + t.emoji + ' ' + t.label + '</label></div>';
     }).join('');
+    // 补记预设餐次
+    if (presetMealType) {
+      var pr = document.getElementById('mt-' + presetMealType);
+      if (pr) pr.checked = true;
+      presetMealType = null;
+    }
     var gram = document.getElementById('mealGram');
     gram.value = 100;
     updateMealCalc();
@@ -246,7 +242,7 @@
     YDJK_UI.toast('✅ 已记录：' + meal.name + '（' + meal.kcal + ' kcal）');
     renderSummary();
     renderMealList();
-    renderWeekOverview();
+    
   }
   function safe(fn) {
     try { fn(); } catch (e) { if (window.console) console.error('[foods]', e); }
@@ -256,7 +252,7 @@
     // 分步初始化：任一步出错都不影响其它功能绑定
     safe(renderDateNav);
     safe(renderSummary);
-    safe(renderWeekOverview);
+    
     safe(renderRecent);
     safe(renderCats);
     safe(renderFoods);
@@ -313,7 +309,7 @@
       // 保存时附带照片
       window._mealPhotoData = function () { return photoData; };
     });
-    window.onDataChanged = function () { renderSummary(); renderWeekOverview(); renderMealList(); };
+    window.onDataChanged = function () { renderSummary();  renderMealList(); };
     safe(function () {
       var ms = document.getElementById('mealSave');
       if (ms) ms.addEventListener('click', saveMeal);
@@ -356,7 +352,7 @@
         window.YDJK_UI.toast('✅ 已记录');
         renderMealList();
         renderSummary();
-        renderWeekOverview();
+        
       });
     });
 
@@ -385,52 +381,54 @@
   });
 
   /* 当日饮食记录列表（所选日期吃了什么） */
+  /* ---------- 当日饮食记录（按时段分组，薄荷健康式） ---------- */
+  var presetMealType = null; // 补记时预设的餐次
   function renderMealList() {
     var list = document.getElementById('mealList');
     if (!list) return;
-    var today = currentDate;
-    var meals = YDJK.getMeals(today);
+    var meals = YDJK.getMeals(currentDate);
     var empty = document.getElementById('mealEmpty');
     var total = document.getElementById('mealTotal');
-    if (!meals.length) {
-      list.innerHTML = '';
-      if (empty) empty.classList.remove('hidden');
-      if (total) total.style.display = 'none';
-      return;
-    }
     if (empty) empty.classList.add('hidden');
-    var sum = 0;
-    // 按餐次分组
-    var groups = DATA.MEAL_TYPES.map(function (t) {
+    var grand = 0;
+    var html = DATA.MEAL_TYPES.map(function (t) {
       var items = meals.filter(function (m) { return m.type === t.id; });
-      return { type: t, items: items };
-    }).filter(function (g) { return g.items.length > 0; });
-    list.innerHTML = groups.map(function (g) {
-      var typeSum = 0;
-      var itemsHtml = g.items.map(function (m) {
-        sum += m.kcal;
-        typeSum += m.kcal;
+      var sum = 0;
+      var itemsHtml = items.map(function (m) {
+        sum += m.kcal; grand += m.kcal;
         return '<div class="meal-item">' +
           '<div class="meal-item-main"><b>' + esc(m.name) + '</b>' +
           '<span class="small muted">' + m.kcal + ' kcal' + (m.protein ? ' · 蛋白' + m.protein + 'g' : '') + '</span></div>' +
-          '<button class="btn btn-ghost btn-xs js-del-meal" data-id="' + m.id + '">✕</button></div>';
+          '<div class="meal-item-actions"><button class="btn btn-ghost btn-xs js-del-meal" data-id="' + m.id + '" title="删除">✕</button></div></div>';
       }).join('');
+      if (!itemsHtml) itemsHtml = '<div class="meal-empty-row">还没有记录' + t.label + '</div>';
       return '<div class="meal-group">' +
-        '<div class="meal-group-head"><span>' + g.type.emoji + ' ' + g.type.label + '</span><b class="small">' + typeSum + ' kcal</b></div>' +
+        '<div class="meal-group-head"><span>' + t.emoji + ' ' + t.label + '</span>' +
+        '<div style="display:flex;align-items:center;gap:8px"><b class="small">' + sum + ' kcal</b>' +
+        '<button class="btn btn-ghost btn-xs js-add-meal" data-type="' + t.id + '" type="button">＋ 补记</button></div></div>' +
         itemsHtml + '</div>';
     }).join('');
+    list.innerHTML = html;
+    // 补记 → 打开搜索弹窗（预设餐次）
+    list.querySelectorAll('.js-add-meal').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        presetMealType = btn.dataset.type;
+        window.YDJK_UI.openModal('foodPickerModal');
+        setTimeout(function () { var i = document.getElementById('foodSearch'); if (i) i.focus(); }, 100);
+      });
+    });
+    // 删除
     list.querySelectorAll('.js-del-meal').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        YDJK.removeMeal(today, btn.dataset.id);
+        YDJK.removeMeal(currentDate, btn.dataset.id);
         renderMealList();
         renderSummary();
-        renderWeekOverview();
         window.YDJK_UI.toast('已删除该记录');
       });
     });
     if (total) {
       total.style.display = 'block';
-      total.textContent = (currentDate === YDJK.today() ? '今日' : fmtCN(currentDate)) + '共 ' + meals.length + ' 餐 · ' + Math.round(sum) + ' kcal';
+      total.textContent = (currentDate === YDJK.today() ? '今日' : fmtCN(currentDate)) + '共 ' + meals.length + ' 餐 · ' + Math.round(grand) + ' kcal';
     }
   }
 })();

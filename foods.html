@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -81,7 +81,13 @@
 
     <!-- 当日摄入摘要 -->
     <div class="card mb-3">
-      <div class="card-title"><i class="ic" data-icon="stats"></i> <span id="intakeTitle">今日摄入</span></div>
+      <div class="flex-between" style="margin-bottom:14px">
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="stats"></i> <span id="intakeTitle">今日摄入</span></div>
+        <div style="text-align:right">
+          <div style="font-size:1.35rem;font-weight:900;line-height:1"><b id="intakeKcalNum">0</b> <span class="muted" style="font-size:.78rem;font-weight:600">/ 目标 <b id="intakeGoalNum" style="color:var(--text)">2000</b> kcal</span></div>
+          <div class="small muted" id="intakeRemain"></div>
+        </div>
+      </div>
       <div id="foodSummary" class="grid grid-2" style="align-items:center">
         <div id="calRing" style="display:flex;justify-content:center"></div>
         <div id="macroBar"></div>
@@ -91,7 +97,7 @@
     <!-- 今日饮食记录（今天吃了什么） -->
     <div class="card mb-3">
       <div class="flex-between" style="margin-bottom:12px">
-        <div class="card-title" style="margin:0"><i class="ic" data-icon="food"></i> 今日饮食记录</div>
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="food"></i> 今日饮食</div>
         <div class="flex gap-sm" style="gap:8px">
           <button class="btn btn-outline btn-sm" id="btnManualMeal" type="button"><i class="ic" data-icon="edit"></i> 手动</button>
           <button class="btn btn-primary btn-sm" id="btnPickFood" type="button" onclick="if(window.YDJK_UI)window.YDJK_UI.openModal('foodPickerModal');setTimeout(function(){var i=document.getElementById('foodSearch');if(i)i.focus();},100)">＋ 记一餐</button>
@@ -124,7 +130,6 @@
       </div>
     </div>
 
-    <div id="weekOverview" class="week-overview mb-3"></div>
   </div>
 </section>
 
