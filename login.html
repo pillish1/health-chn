@@ -56,25 +56,55 @@
         <div class="auth-head">
           <span class="auth-logo"><img src="icons/icon-192.png" alt="悦动健康"></span>
           <h1 id="authTitle">欢迎回来</h1>
-          <p id="authSub">登录后，你的健康数据将云端同步，多设备随时查看</p>
+          <p id="authSub">手机号登录，健康数据云端同步</p>
         </div>
-        <div class="field">
-          <label>邮箱</label>
-          <input class="input" type="email" id="authEmail" placeholder="you@example.com" autocomplete="email">
+        <!-- 登录方式切换 -->
+        <div class="auth-tabs" id="authTabs">
+          <button class="auth-tab active" data-mode="phone">📱 手机登录</button>
+          <button class="auth-tab" data-mode="email">✉️ 邮箱登录</button>
         </div>
-        <div class="field">
-          <label>密码</label>
-          <input class="input" type="password" id="authPassword" placeholder="至少 6 位" autocomplete="current-password">
+        <!-- 手机登录 -->
+        <div id="phoneForm">
+          <div class="field">
+            <label>手机号</label>
+            <div class="input-group" style="display:flex;gap:8px">
+              <input class="input" type="tel" id="authPhone" placeholder="请输入手机号" autocomplete="tel" maxlength="11" style="flex:1">
+              <button class="btn btn-outline btn-sm" id="sendCode" type="button" style="flex:none;white-space:nowrap">获取验证码</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>验证码</label>
+            <input class="input" type="text" id="authCode" placeholder="6 位验证码" inputmode="numeric" maxlength="6">
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" id="authSubmit">登 录</button>
+          <div class="auth-switch">
+            <span class="muted small">未注册手机号将自动创建账号</span>
+          </div>
         </div>
-        <button class="btn btn-primary btn-block btn-lg" id="authSubmit">登 录</button>
-        <div class="auth-switch" id="forgotRow">
-          <button class="btn-link" id="forgotPw">忘记密码？</button>
-        </div>
-        <div class="auth-switch">
-          <span class="muted small">还没有账号？</span>
-          <button class="btn-link" id="authToggle">立即注册 →</button>
+        <!-- 邮箱登录（备选） -->
+        <div id="emailForm" style="display:none">
+          <div class="field">
+            <label>邮箱</label>
+            <input class="input" type="email" id="authEmail" placeholder="you@example.com" autocomplete="email">
+          </div>
+          <div class="field">
+            <label>密码</label>
+            <input class="input" type="password" id="authPassword" placeholder="至少 6 位" autocomplete="current-password">
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" id="authSubmitEmail">登 录</button>
+          <div class="auth-switch" id="forgotRow">
+            <button class="btn-link" id="forgotPw">忘记密码？</button>
+          </div>
         </div>
         <div id="authMsg" class="small muted text-center mt-2"></div>
+        <!-- 第三方登录 -->
+        <div class="auth-divider"><span>其他方式</span></div>
+        <div class="social-login">
+          <button class="social-btn wechat" id="wechatLogin" type="button">
+            <span class="sb-ico">💬</span>微信登录
+            <span class="sb-badge">即将开放</span>
+          </button>
+        </div>
       </div>
       <div class="auth-features">
         <h3>登录后你能获得</h3>
