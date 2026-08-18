@@ -34,7 +34,8 @@
     { id: 'shoulder', label: '肩部', emoji: '🏔️' },
     { id: 'arms', label: '手臂', emoji: '💪' },
     { id: 'core', label: '核心', emoji: '🎯' },
-    { id: 'cardio', label: '有氧', emoji: '🏃' }
+    { id: 'cardio', label: '有氧', emoji: '🏃' },
+    { id: 'yoga', label: '瑜伽/拉伸', emoji: '🧘' }
   ];
 
   /* ---------- 动作库 ---------- */
@@ -71,7 +72,46 @@
     { id: 'cycling', name: '骑行', muscle: 'cardio', level: '初级', sets: '40分钟', desc: '中等强度，保持踏频 70-90 转/分钟。' },
     { id: 'swimming', name: '游泳', muscle: 'cardio', level: '中级', sets: '30分钟', desc: '自由泳或蛙泳，注意呼吸节奏。' },
     { id: 'hiit', name: 'HIIT 间歇', muscle: 'cardio', level: '进阶', sets: '20分钟', desc: '30秒冲刺 + 30秒慢走，循环 20 组。' },
-    { id: 'walking', name: '快走', muscle: 'cardio', level: '入门', sets: '40分钟', desc: '步频 120 步/分钟以上，微微出汗。' }
+    { id: 'walking', name: '快走', muscle: 'cardio', level: '入门', sets: '40分钟', desc: '步频 120 步/分钟以上，微微出汗。' },
+    /* 家庭 / 零器械训练 */
+    { id: 'home-squat', name: '家庭深蹲', muscle: 'legs', level: '入门', sets: '3x15', desc: '自重深蹲，下蹲至大腿平行地面。' },
+    { id: 'glute-bridge', name: '臀桥', muscle: 'legs', level: '初级', sets: '3x15', desc: '仰卧屈膝，臀部发力抬起至身体成直线。' },
+    { id: 'wall-sit', name: '靠墙静蹲', muscle: 'legs', level: '初级', sets: '3x45秒', desc: '背靠墙下蹲，大腿与地面平行。' },
+    { id: 'side-lunge', name: '侧弓步', muscle: 'legs', level: '初级', sets: '3x12/腿', desc: '向侧方跨步下蹲，另一腿伸直。' },
+    { id: 'step-up', name: '台阶登高', muscle: 'legs', level: '初级', sets: '3x12/腿', desc: '单脚踩台阶向上登，交替进行。' },
+    /* 女性塑形 / 臀部 */
+    { id: 'hip-thrust', name: '杠铃臀推', muscle: 'legs', level: '中级', sets: '4x10', desc: '上背靠凳，杠铃置于髋部，臀部发力推起。' },
+    { id: 'cable-kickback', name: '绳索后踢腿', muscle: 'legs', level: '初级', sets: '3x12/腿', desc: '绳索绑脚踝，臀部发力向后踢。' },
+    { id: 'sumo-deadlift', name: '相扑硬拉', muscle: 'legs', level: '中级', sets: '4x8', desc: '宽站位，杠铃贴近身体拉起，更多臀部参与。' },
+    /* 胸部更多 */
+    { id: 'incline-pushup', name: '上斜俯卧撑', muscle: 'chest', level: '入门', sets: '3x12', desc: '手撑高处，降低难度做俯卧撑。' },
+    { id: 'knee-pushup', name: '跪姿俯卧撑', muscle: 'chest', level: '入门', sets: '3x10', desc: '膝盖着地做俯卧撑，适合初学者。' },
+    { id: 'chest-press', name: '哑铃卧推', muscle: 'chest', level: '初级', sets: '4x10', desc: '哑铃卧推，控制下放至胸部两侧。' },
+    { id: 'cable-fly', name: '龙门架夹胸', muscle: 'chest', level: '初级', sets: '3x12', desc: '绳索夹胸，感受胸部中缝收缩。' },
+    /* 背部更多 */
+    { id: 'face-pull', name: '面拉', muscle: 'back', level: '初级', sets: '3x15', desc: '绳索拉向面部，激活上背和肩袖。' },
+    { id: 'seated-row', name: '坐姿划船', muscle: 'back', level: '初级', sets: '4x10', desc: '坐姿划船，肩胛骨后缩发力。' },
+    /* 手臂更多 */
+    { id: 'preacher-curl', name: '牧师凳弯举', muscle: 'arms', level: '中级', sets: '3x10', desc: '牧师凳固定大臂，孤立二头弯举。' },
+    { id: 'diamond-pushup', name: '钻石俯卧撑', muscle: 'arms', level: '中级', sets: '3x10', desc: '双手并拢呈菱形，刺激三头。' },
+    { id: 'chin-up', name: '反手引体', muscle: 'arms', level: '中级', sets: '3x8', desc: '反手窄握，更多二头参与。' },
+    /* 核心更多 */
+    { id: 'side-plank', name: '侧平板支撑', muscle: 'core', level: '初级', sets: '3x30秒/侧', desc: '侧撑身体成直线，锻炼侧腹。' },
+    { id: 'dead-bug', name: '死虫式', muscle: 'core', level: '初级', sets: '3x12', desc: '仰卧对侧手脚伸展，核心稳定。' },
+    { id: 'bicycle', name: '自行车卷腹', muscle: 'core', level: '初级', sets: '3x20', desc: '交替肘触膝，快速交替。' },
+    /* 瑜伽 / 拉伸 */
+    { id: 'downward-dog', name: '下犬式', muscle: 'yoga', level: '入门', sets: '3x60秒', desc: '身体呈倒V形，拉伸背部与腘绳肌。' },
+    { id: 'warrior', name: '战士一式', muscle: 'yoga', level: '入门', sets: '2x60秒/侧', desc: '弓步姿势，双臂上举，锻炼腿与平衡。' },
+    { id: 'cat-cow', name: '猫牛式', muscle: 'yoga', level: '入门', sets: '3x10', desc: '四点跪姿，交替弓背塌腰，放松脊柱。' },
+    { id: 'child-pose', name: '婴儿式', muscle: 'yoga', level: '入门', sets: '2x60秒', desc: '跪坐前趴，手臂前伸，放松全身。' },
+    { id: 'triangle', name: '三角式', muscle: 'yoga', level: '初级', sets: '2x60秒/侧', desc: '侧弯伸展体侧，锻炼平衡与柔韧。' },
+    { id: 'bridge-yoga', name: '桥式', muscle: 'yoga', level: '初级', sets: '3x12', desc: '仰卧屈膝抬臀，锻炼臀腿与后腰。' },
+    /* 有氧更多 */
+    { id: 'stair-climb', name: '爬楼梯', muscle: 'cardio', level: '初级', sets: '20分钟', desc: '快走楼梯，心率达到中等强度。' },
+    { id: 'rowing', name: '划船机', muscle: 'cardio', level: '中级', sets: '30分钟', desc: '保持节奏，全身协调发力。' },
+    { id: 'elliptical', name: '椭圆机', muscle: 'cardio', level: '初级', sets: '30分钟', desc: '低冲击有氧，保护膝盖。' },
+    { id: 'dance', name: '舞蹈有氧', muscle: 'cardio', level: '入门', sets: '30分钟', desc: '跟随音乐节奏舞动，燃脂又快乐。' },
+    { id: 'badminton', name: '羽毛球', muscle: 'cardio', level: '初级', sets: '40分钟', desc: '全身运动，锻炼反应与协调。' }
   ];
 
   /* ---------- 运动计划 ---------- */

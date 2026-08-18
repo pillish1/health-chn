@@ -13,7 +13,8 @@
     { id: 'shoulder', label: '🏔️ 肩' },
     { id: 'arms', label: '💪 手臂' },
     { id: 'core', label: '🎯 核心' },
-    { id: 'cardio', label: '🏃 有氧' }
+    { id: 'cardio', label: '🏃 有氧' },
+    { id: 'yoga', label: '🧘 瑜伽拉伸' }
   ];
   var selectedMuscle = 'chest';
 
@@ -82,18 +83,38 @@
       });
     });
   }
-  /* 渲染当前部位的动作卡片（点选） */
+  /* 动作收藏（本地存储） */
+  function getFavActions() {
+    try { return JSON.parse(localStorage.getItem('ydjk:fav-actions') || '[]'); } catch (e) { return []; }
+  }
+  function toggleFavAction(id) {
+    var favs = getFavActions();
+    var idx = favs.indexOf(id);
+    if (idx >= 0) favs.splice(idx, 1); else favs.push(id);
+    try { localStorage.setItem('ydjk:fav-actions', JSON.stringify(favs)); } catch (e) {}
+    return favs.indexOf(id) >= 0;
+  }
+  /* 渲染当前部位的动作卡片（点选 + 收藏） */
   function renderActionGrid() {
     var grid = document.getElementById('wkActionGrid');
     if (!grid) return;
+    var favs = getFavActions();
     var actions = DATA.ACTIONS.filter(function (a) { return a.muscle === wkCurrentMuscle; });
     if (!actions.length) {
       actions = [{ id: 'custom', name: '自定义', sets: '自由' }];
     }
+    // 收藏的置顶
+    actions.sort(function (a, b) {
+      var fa = favs.indexOf(a.id) >= 0 ? 0 : 1;
+      var fb = favs.indexOf(b.id) >= 0 ? 0 : 1;
+      return fa - fb;
+    });
     grid.innerHTML = actions.map(function (a) {
       var on = !!selectedActions[a.id];
+      var faved = favs.indexOf(a.id) >= 0;
       return '<div class="wk-action-card' + (on ? ' selected"' : '"') + ' data-id="' + a.id + '">' +
-        '<b>' + esc(a.name) + '</b>' +
+        '<div class="wk-action-head"><b>' + esc(a.name) + '</b>' +
+        '<button class="wk-fav' + (faved ? ' faved"' : '"') + ' data-id="' + a.id + '" title="' + (faved ? '取消收藏' : '收藏') + '">' + (faved ? '★' : '☆') + '</button></div>' +
         '<span>' + esc(a.sets || '') + '</span>' +
         (on ? '<div class="wk-sets-input">' +
           '<input type="number" class="input wk-sets" data-id="' + a.id + '" value="' + (selectedActions[a.id].sets || 3) + '" min="1" placeholder="组"><span>组×</span>' +
@@ -102,10 +123,18 @@
           '</div>' : '') +
         '</div>';
     }).join('');
+    // 收藏切换
+    grid.querySelectorAll('.wk-fav').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleFavAction(btn.dataset.id);
+        renderActionGrid();
+      });
+    });
     // 点选/取消
     grid.querySelectorAll('.wk-action-card').forEach(function (card) {
       card.addEventListener('click', function (e) {
-        if (e.target.classList.contains('wk-sets') || e.target.classList.contains('wk-reps') || e.target.classList.contains('wk-weight')) return;
+        if (e.target.classList.contains('wk-sets') || e.target.classList.contains('wk-reps') || e.target.classList.contains('wk-weight') || e.target.classList.contains('wk-fav')) return;
         var id = card.dataset.id;
         if (selectedActions[id]) delete selectedActions[id];
         else selectedActions[id] = { sets: 3, reps: 10, weight: '' };

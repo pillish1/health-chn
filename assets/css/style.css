@@ -1488,3 +1488,7 @@ html[data-theme="dark"] .hero-card {
 .wk-sets-input .input { width: 52px; padding: 4px 6px; font-size: .78rem; }
 .wk-sets-input span { font-size: .72rem; color: var(--muted); }
 @media (max-width: 400px) { .wk-action-grid { grid-template-columns: 1fr; } }
+/* 动作收藏 */
+.wk-action-head { display: flex; justify-content: space-between; align-items: center; }
+.wk-fav { background: none; border: none; font-size: 1.1rem; color: var(--muted); cursor: pointer; padding: 2px 4px; }
+.wk-fav.faved { color: #f59e0b; }
