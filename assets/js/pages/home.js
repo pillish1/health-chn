@@ -86,6 +86,9 @@
       }).join('');
     }
 
+    /* 今日待办 */
+    renderTodayTasks(today, meal, workouts);
+
     /* 今日记录简览 */
     renderTodayBrief(today, meal, workouts);
 
@@ -105,6 +108,34 @@
       tipBody.textContent = tips[0].replace(/<[^>]+>/g, '');
       tipBody.innerHTML = tips[0];
     }
+  }
+
+  /* 今日待办：记录饮食 / 记录运动 状态引导 */
+  function renderTodayTasks(today, meal, workouts) {
+    var el = document.getElementById('todayTasks');
+    if (!el) return;
+    var mealDone = meal.count > 0;
+    var workoutDone = workouts.length > 0;
+    var p = YDJK.getProfile();
+    var goalCal = 2000;
+    if (p) {
+      var bmr = YDJK.calcBMR({ gender: p.gender, age: p.age, height: p.height, weight: p.weight });
+      goalCal = Math.round(YDJK.goalCalories(YDJK.calcTDEE(bmr, p.activity), p.goal));
+    }
+    var mealSub = mealDone ? '已记录 ' + meal.count + ' 条 · ' + Math.round(meal.kcal) + ' / ' + goalCal + ' kcal' : '今天还没记录饮食';
+    var workoutSub = workoutDone ? '已记录 ' + workouts.length + ' 项训练' : '今天还没记录运动';
+    el.innerHTML = '<div class="card" style="padding:14px 16px">' +
+      '<div class="flex-between" style="margin-bottom:10px">' +
+      '<span class="card-title" style="margin:0;font-size:.95rem"><i class="ic" data-icon="check-circle"></i> 今日待办</span>' +
+      '<span class="small muted">' + (mealDone && workoutDone ? '全部完成，很棒！' : '完成今天的记录') + '</span></div>' +
+      '<a class="todo-row' + (mealDone ? ' done' : '') + '" href="foods.html">' +
+      '<span class="todo-check">' + (mealDone ? '✓' : '○') + '</span>' +
+      '<span class="todo-main"><b>记录饮食</b><span class="small muted">' + mealSub + '</span></span>' +
+      (mealDone ? '' : '<span class="tag blue">去记录</span>') + '</a>' +
+      '<a class="todo-row' + (workoutDone ? ' done' : '') + '" href="plans.html">' +
+      '<span class="todo-check">' + (workoutDone ? '✓' : '○') + '</span>' +
+      '<span class="todo-main"><b>记录运动</b><span class="small muted">' + workoutSub + '</span></span>' +
+      (workoutDone ? '' : '<span class="tag blue">去记录</span>') + '</a></div>';
   }
 
   /* 今日记录简览：饮食按餐次 + 运动列表 */

@@ -1141,6 +1141,16 @@ html[data-theme="dark"] .meal-item:hover, html[data-theme="dark"] .wk-item:hover
 .ei-row{flex-wrap:wrap}
 
 .ei-detail{font-size:.68rem;color:var(--muted);line-height:1.5;padding-left:2px}
+
+/* 今日待办 */
+.todo-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;text-decoration:none;color:var(--text);transition:background .2s}
+.todo-row:hover{background:var(--surface-2)}
+.todo-row + .todo-row{margin-top:6px}
+.todo-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center;font-size:.8rem;flex:none;color:var(--muted)}
+.todo-row.done .todo-check{border-color:#10b981;background:#10b981;color:#fff}
+.todo-row.done b{color:var(--muted);text-decoration:line-through}
+.todo-main{flex:1;display:flex;flex-direction:column;gap:1px}
+.todo-main b{font-size:.9rem}
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
 .modal-overlay.sheet .modal {
