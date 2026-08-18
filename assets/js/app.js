@@ -521,7 +521,7 @@
   /* ---------- 底部 Tab 导航 ---------- */
   function initTabBar() {
     var path = location.pathname.split('/').pop() || 'index.html';
-    var map = { 'index.html': 'home', 'discover.html': 'discover', 'tracker.html': 'tracker', 'profile.html': 'profile' };
+    var map = { 'index.html': 'home', 'foods.html': 'foods', 'plans.html': 'plans', 'profile.html': 'profile' };
     var active = map[path];
     document.querySelectorAll('.tab-item').forEach(function (t) {
       if (t.dataset.tab === active) t.classList.add('active');

@@ -96,17 +96,11 @@
         <div class="dash-rings">
           <div class="dash-ring" id="ringMeal" title="今日摄入"></div>
           <div class="dash-ring" id="ringWorkout" title="今日运动"></div>
-          <div class="dash-ring" id="ringWater" title="今日饮水"></div>
-        </div>
-        <div class="dash-meta">
-          <div class="dm-item"><span class="dm-ico">📊</span><div><b id="statBmi">--</b><span>BMI</span></div></div>
-          <div class="dm-item"><span class="dm-ico">🍽️</span><div><b id="statKcal">--</b><span>摄入/kcal</span></div></div>
         </div>
         <div class="daily-goal" id="dailyGoal" style="display:none"></div>
         <div class="dash-quick">
           <button class="btn btn-primary btn-sm" onclick="location.href='foods.html'">🍽️ 记一餐</button>
-          <button class="btn btn-outline btn-sm" onclick="location.href='plans.html'">🏃 运动</button>
-          <button class="btn btn-ghost btn-sm" onclick="location.href='tracker.html#weight'">⚖️ 体重</button>
+          <button class="btn btn-outline btn-sm" onclick="location.href='plans.html'">🏃 记录运动</button>
         </div>
       </div>
       <div class="dash-side">
@@ -194,9 +188,9 @@ if ('serviceWorker' in navigator) {
 <!-- 底部 Tab 导航（移动端 App 式） -->
 <nav class="tab-bar">
   <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
-  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">计划</span></a>
+  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico">🍽️</span><span class="tab-lbl">饮食</span></a>
   <button class="tab-plus" id="tabPlusBtn" aria-label="快速记录"><span>＋</span></button>
-  <a class="tab-item" data-tab="tracker" href="tracker.html"><span class="tab-ico">📊</span><span class="tab-lbl">记录</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">运动</span></a>
   <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
 </nav>
 

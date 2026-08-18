@@ -27,8 +27,6 @@
     var checkin = YDJK.getCheckin(today);
     var minutes = checkin ? (checkin.minutes || 0) : 0;
     var workoutDone = checkin && ((checkin.types && checkin.types.length) || checkin.plan || (checkin.minutes && checkin.minutes > 0));
-    var water = YDJK.getWater(today);
-    var waterGoal = YDJK.getWaterGoal();
     var streak = YDJK.checkinStreak();
 
     /* 渲染三环（颜色区分：摄入蓝、运动绿、饮水青） */
@@ -39,10 +37,6 @@
     YDJK_CHARTS.donutChart(document.getElementById('ringWorkout'), {
       value: minutes, max: 60, unit: ' 分钟', label: '运动', size: 118, decimals: 0,
       color: workoutDone ? '#10b981' : '#10b981'
-    });
-    YDJK_CHARTS.donutChart(document.getElementById('ringWater'), {
-      value: water, max: waterGoal, unit: ' ml', label: '饮水', size: 118, decimals: 0,
-      color: '#06b6d4'
     });
 
     /* 数据速览（dash-meta） */
@@ -86,7 +80,6 @@
       else if (meal.kcal < goalCal * 0.5) tips.push('今日摄入偏低，记得补充优质蛋白 🥚');
       else if (meal.kcal > goalCal * 1.2) tips.push('今日摄入略高，可适当增加运动消耗 🏃');
       if (!workoutDone) tips.push('今天还没运动，来 30 分钟动一动吧 💪');
-      if (water < waterGoal * 0.6) tips.push('饮水还差 ' + (waterGoal - water) + ' ml，记得补水 💧');
       if (!tips.length) tips.push('今日各项指标都很棒，继续保持！🌟');
       tipBody.textContent = tips[0];
     }
@@ -122,15 +115,12 @@
     var meal = YDJK.mealSummary(today);
     var checkin = YDJK.getCheckin(today);
     var workoutDone = checkin && ((checkin.types && checkin.types.length) || checkin.plan || (checkin.minutes && checkin.minutes > 0));
-    var water = YDJK.getWater(today);
-    var waterGoal = YDJK.getWaterGoal();
     var p = YDJK.getProfile();
     var goalCal = 2000;
     if (p) { var bmr = YDJK.calcBMR(p); var tdee = YDJK.calcTDEE(bmr, p.activity); goalCal = YDJK.goalCalories(tdee, p.goal); }
     var tasks = [
       { icon: '🍽️', label: '记录饮食', done: meal.count > 0, sub: meal.kcal + ' / ' + Math.round(goalCal) + ' kcal', href: 'foods.html', action: null },
-      { icon: '🏃', label: '今日运动', done: !!workoutDone, sub: workoutDone ? (checkin.minutes ? checkin.minutes + ' 分钟' : '已记录') : '记录今天的运动', href: 'plans.html', action: workoutDone ? null : 'quickCheckin' },
-      { icon: '💧', label: '饮水达标', done: water >= waterGoal, sub: water + ' / ' + waterGoal + ' ml', href: 'tracker.html', action: water >= waterGoal ? null : 'quickWater' }
+      { icon: '🏃', label: '记录运动', done: !!workoutDone, sub: workoutDone ? (checkin.minutes ? checkin.minutes + ' 分钟' : '已记录') : '记录今天的运动', href: 'plans.html', action: workoutDone ? null : 'quickCheckin' }
     ];
     el.innerHTML = '<div class="task-list">' + tasks.map(function (t) {
       var actionHtml = t.action ? '<button class="btn btn-primary btn-xs js-task-action" data-action="' + t.action + '" style="margin-left:8px">' + (t.action === 'quickWater' ? '+250ml' : '打卡') + '</button>' : '';
@@ -145,16 +135,11 @@
       b.addEventListener('click', function (e) {
         e.stopPropagation();
         var act = b.dataset.action;
-        if (act === 'quickWater') {
-          YDJK.setWater(today, water + 250);
-          window.YDJK_UI.toast('💧 +250 ml');
-          renderTasks();
-    renderWeekRate();
-          renderDashboard();
-        } else if (act === 'quickCheckin') {
+        if (act === 'quickCheckin') {
           YDJK.setCheckin(today, { types: ['other'], minutes: 30, plan: 'quick' });
-          window.YDJK_UI.toast('🏃 已打卡 30 分钟');
+          window.YDJK_UI.toast('🏃 已记录 30 分钟运动');
           renderTasks();
+          renderWeekRate();
           renderDashboard();
         }
       });
