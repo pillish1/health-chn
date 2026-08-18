@@ -819,32 +819,6 @@
     if (close) close.addEventListener('click', function () { el.innerHTML = ''; });
   }
 
-  /* ---------- 连续打卡里程碑 ---------- */
-  function checkMilestone(dateStr) {
-    var streak = YDJK.checkinStreak(dateStr || YDJK.today());
-    var milestones = [3, 7, 14, 30, 60, 100];
-    for (var i = 0; i < milestones.length; i++) {
-      if (streak === milestones[i]) {
-        var key = 'ydjk:ms:' + milestones[i];
-        var last = null;
-        try { last = localStorage.getItem(key); } catch (e) {}
-        var todayKey = YDJK.today();
-        if (last !== todayKey) {
-          try { localStorage.setItem(key, todayKey); } catch (e) {}
-          var msgs = {
-            3: '🎉 连续打卡 3 天，习惯正在养成！',
-            7: '🏆 连续打卡 7 天，完成第一周挑战！',
-            14: '🔥 连续打卡 14 天，两周不松懈！',
-            30: '🌟 连续打卡 30 天，你已经是运动达人了！',
-            60: '💎 连续打卡 60 天，自律改变人生！',
-            100: '👑 连续打卡 100 天，健康生活的王者！'
-          };
-          toast(msgs[milestones[i]] || '🎉 连续打卡 ' + milestones[i] + ' 天！');
-        }
-      }
-    }
-  }
-
   /* ---------- 滚动显现 ---------- */
   function initReveal() {
     var items = document.querySelectorAll('.reveal');
@@ -949,7 +923,6 @@
     toast: toast, openModal: openModal, closeModal: closeModal, confirmDialog: confirmDialog, promptDialog: promptDialog,
     buildHealthTips: buildHealthTips, renderHealthTip: renderHealthTip,
     requestNotifPermission: requestNotifPermission, getReminderCfg: getReminderCfg, setReminderCfg: setReminderCfg, initNotifications: initNotifications,
-    initOnboarding: initOnboarding, openProfileEditor: openProfileEditor, submitProfileForm: submitProfileForm, applyTheme: applyTheme,
-    checkMilestone: checkMilestone
+    initOnboarding: initOnboarding, openProfileEditor: openProfileEditor, submitProfileForm: submitProfileForm, applyTheme: applyTheme
   };
 })();
