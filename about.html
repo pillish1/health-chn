@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -26,10 +26,6 @@
 <!-- 移动端 App 头 -->
 <div class="m-header">
   <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
-  
-  <div class="m-actions">
-    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的"><i class="ic" data-icon="user"></i></button>
-  </div>
 </div>
 
 <div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
@@ -42,7 +38,11 @@
 <nav class="navbar">
   <div class="nav-inner">
     <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
-    <div class="nav-links">`n      <a href="index.html">首页</a>`n      <a href="foods.html">饮食记录</a>`n      <a href="plans.html">运动记录</a>`n    </div>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="foods.html">饮食记录</a>
+      <a href="plans.html">运动记录</a>
+    </div>
     <div class="nav-actions">
       <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
       <button class="icon-btn nav-toggle" id="navToggle" title="菜单"><i class="ic" data-icon="menu"></i></button>

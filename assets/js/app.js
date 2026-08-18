@@ -491,14 +491,6 @@
     });
   }
 
-  /* 移动端顶部头像按钮（mProfileBtn，本地模式直达我的页） */
-  function updateMobileProfileBtn() {
-    var mp = document.getElementById('mProfileBtn');
-    if (!mp) return;
-    mp.innerHTML = window.YDJK_ICON ? window.YDJK_ICON('user') : '👤';
-    mp.title = '我的';
-    mp.onclick = function () { location.href = 'profile.html'; };
-  }
 
   /* ---------- PWA 安装引导 ---------- */
   var deferredInstallPrompt = null;

@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    悦动健康 · 设计系统 v2
    ============================================================ */
 :root {
@@ -1189,26 +1189,14 @@ html[data-theme="dark"] .meal-item:hover, html[data-theme="dark"] .wk-item:hover
 .m-header {
   display: none;
   position: sticky; top: 0; z-index: 120;
-  align-items: center; gap: 10px;
-  padding: 10px 14px;
+  align-items: center; justify-content: center; gap: 10px;
+  padding: 9px 14px;
   background: color-mix(in srgb, var(--surface) 85%, transparent);
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
 }
 .m-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 900; font-size: .95rem; color: var(--text); flex: none; }
 .m-logo img { width: 30px; height: 30px; border-radius: 9px; }
-.m-search {
-  flex: 1;
-  display: flex; align-items: center;
-  padding: 8px 14px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 99px;
-  color: var(--muted);
-  font-size: .82rem;
-  cursor: pointer;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
 .m-actions { display: flex; align-items: center; gap: 4px; flex: none; }
 @media (max-width: 900px) {
   .m-header { display: flex; }
