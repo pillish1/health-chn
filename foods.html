@@ -78,10 +78,13 @@
     <div class="card mb-3">
       <div class="flex-between" style="margin-bottom:12px">
         <div class="card-title" style="margin:0">🍽️ 今日饮食记录</div>
-        <button class="btn btn-outline btn-sm" id="btnManualMeal" type="button">✍️ 手动添加</button>
+        <div class="flex gap-sm" style="gap:8px">
+          <button class="btn btn-outline btn-sm" id="btnManualMeal" type="button">✍️ 手动</button>
+          <button class="btn btn-primary btn-sm" id="btnPickFood" type="button">＋ 记一餐</button>
+        </div>
       </div>
       <div id="mealList"></div>
-      <div id="mealEmpty" class="empty hidden"><div class="e-icon">🍽️</div><div class="e-title">今天还没有饮食记录</div><div class="e-desc">从下方搜索食物点击「记一餐」，或手动添加</div></div>
+      <div id="mealEmpty" class="empty hidden"><div class="e-icon">🍽️</div><div class="e-title">今天还没有饮食记录</div><div class="e-desc">点「记一餐」，搜索食物记下今天吃的</div></div>
       <div class="alert success mt-2" id="mealTotal" style="display:none"></div>
     </div>
 
@@ -108,31 +111,40 @@
     </div>
 
     <div id="weekOverview" class="week-overview mb-3"></div>
-    <div class="search-box">
-      <span class="s-ico">🔍</span>
-      <input class="input" id="foodSearch" placeholder="搜索食物，如：鸡胸肉、米饭、苹果…">
-    </div>
-    <div class="flex-between flex-wrap" style="margin-bottom:20px">
-      <div id="recentFoods" class="recent-foods" style="margin-bottom:16px"></div>
-    <div class="tabs" id="catTabs" style="margin:0"></div>
-      <div class="flex gap-sm" style="gap:10px;flex-wrap:wrap">
-        <select class="input" id="kcalRange" style="width:auto;padding:8px 34px 8px 14px;border-radius:var(--radius-full)">
-          <option value="all">全部热量</option>
-          <option value="low">低卡 (&lt;100)</option>
-          <option value="mid">中卡 (100-300)</option>
-          <option value="high">高卡 (&gt;300)</option>
-        </select>
-        <select class="input" id="sortSel" style="width:auto;padding:8px 34px 8px 14px;border-radius:var(--radius-full)">
-          <option value="default">默认排序</option>
-          <option value="kcal-asc">热量从低到高</option>
-          <option value="kcal-desc">热量从高到低</option>
-          <option value="protein-desc">蛋白质从高到低</option>
-        </select>
-      </div>
-    </div>
-    <div class="grid grid-3" id="foodGrid"></div>
   </div>
 </section>
+
+<!-- 记餐弹窗（搜索 + 分类 + 食物列表） -->
+<div class="modal-overlay" id="foodPickerModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-title">🍽️ 记一餐</div>
+    <div class="search-box" style="margin:0 0 12px">
+      <span class="s-ico">🔍</span>
+      <input class="input" id="foodSearch" placeholder="搜索食物，如：鸡胸肉、米饭、苹果…" autocomplete="off">
+    </div>
+    <div class="flex gap-sm flex-wrap" style="margin-bottom:10px">
+      <div class="tabs" id="catTabs" style="margin:0;flex:1"></div>
+    </div>
+    <div class="flex gap-sm flex-wrap" style="margin-bottom:12px">
+      <div id="recentFoods" class="recent-foods"></div>
+    </div>
+    <div class="flex gap-sm flex-wrap" style="margin-bottom:12px">
+      <select class="input" id="kcalRange" style="width:auto;padding:8px 34px 8px 14px;border-radius:var(--radius-full)">
+        <option value="all">全部热量</option>
+        <option value="low">低卡 (&lt;100)</option>
+        <option value="mid">中卡 (100-300)</option>
+        <option value="high">高卡 (&gt;300)</option>
+      </select>
+      <select class="input" id="sortSel" style="width:auto;padding:8px 34px 8px 14px;border-radius:var(--radius-full)">
+        <option value="default">默认排序</option>
+        <option value="kcal-asc">热量从低到高</option>
+        <option value="kcal-desc">热量从高到低</option>
+        <option value="protein-desc">蛋白质从高到低</option>
+      </select>
+    </div>
+    <div class="grid grid-2" id="foodGrid" style="max-height:40vh;overflow-y:auto"></div>
+  </div>
+</div>
 
 <!-- 记餐弹窗 -->
 <div class="modal-overlay" id="mealModal">

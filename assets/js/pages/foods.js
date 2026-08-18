@@ -208,6 +208,8 @@
     YDJK_UI.closeModal('mealModal');
     YDJK_UI.toast('✅ 已记录：' + meal.name + '（' + meal.kcal + ' kcal）');
     renderSummary();
+    renderMealList();
+    renderWeekOverview();
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -216,6 +218,15 @@
     renderRecent();
     renderCats();
     renderFoods();
+    // 记一餐 → 打开搜索弹窗
+    var pickBtn = document.getElementById('btnPickFood');
+    if (pickBtn) pickBtn.addEventListener('click', function () {
+      window.YDJK_UI.openModal('foodPickerModal');
+      setTimeout(function () {
+        var i = document.getElementById('foodSearch');
+        if (i) i.focus();
+      }, 100);
+    });
     document.getElementById('foodSearch').addEventListener('input', renderFoods);
     document.getElementById('sortSel').addEventListener('change', renderFoods);
     document.getElementById('kcalRange').addEventListener('change', function () {
@@ -296,15 +307,24 @@
     }
     if (empty) empty.classList.add('hidden');
     var sum = 0;
-    list.innerHTML = meals.map(function (m) {
-      sum += m.kcal;
-      var typeName = '';
-      var mt = DATA.MEAL_TYPES.find(function (t) { return t.id === m.type; });
-      if (mt) typeName = mt.emoji + ' ' + mt.label;
-      return '<div class="list-row">' +
-        '<div class="lr-main"><span class="small">' + esc(typeName) + '</span> <b class="small">' + esc(m.name) + '</b></div>' +
-        '<div class="lr-side"><b>' + m.kcal + ' kcal</b>' +
-        '<button class="btn btn-ghost btn-xs js-del-meal" data-id="' + m.id + '" style="margin-left:8px">✕</button></div></div>';
+    // 按餐次分组
+    var groups = DATA.MEAL_TYPES.map(function (t) {
+      var items = meals.filter(function (m) { return m.type === t.id; });
+      return { type: t, items: items };
+    }).filter(function (g) { return g.items.length > 0; });
+    list.innerHTML = groups.map(function (g) {
+      var typeSum = 0;
+      var itemsHtml = g.items.map(function (m) {
+        sum += m.kcal;
+        typeSum += m.kcal;
+        return '<div class="meal-item">' +
+          '<div class="meal-item-main"><b>' + esc(m.name) + '</b>' +
+          '<span class="small muted">' + m.kcal + ' kcal' + (m.protein ? ' · 蛋白' + m.protein + 'g' : '') + '</span></div>' +
+          '<button class="btn btn-ghost btn-xs js-del-meal" data-id="' + m.id + '">✕</button></div>';
+      }).join('');
+      return '<div class="meal-group">' +
+        '<div class="meal-group-head"><span>' + g.type.emoji + ' ' + g.type.label + '</span><b class="small">' + typeSum + ' kcal</b></div>' +
+        itemsHtml + '</div>';
     }).join('');
     list.querySelectorAll('.js-del-meal').forEach(function (btn) {
       btn.addEventListener('click', function () {

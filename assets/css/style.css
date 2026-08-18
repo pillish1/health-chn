@@ -1498,3 +1498,11 @@ html[data-theme="dark"] .hero-card {
 .wk-fav-chip small { color: var(--muted); font-weight: 600; }
 .wk-fav-chip.selected { background: var(--primary); color: #fff; border-color: transparent; }
 .wk-fav-chip.selected small { color: rgba(255,255,255,.8); }
+/* 饮食记录按餐次分组 */
+.meal-group { margin-bottom: 14px; }
+.meal-group-head { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--surface-2); border-radius: 10px 10px 0 0; font-size: .85rem; font-weight: 800; }
+.meal-group-head b { color: var(--primary); }
+.meal-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.meal-item:last-child { border-bottom: none; }
+.meal-item-main b { font-size: .88rem; display: block; }
+.meal-item-main span { font-size: .72rem; }
