@@ -15,4 +15,5 @@ Thumbs.db
 
 # 构建日志与脚本（本地工具）
 mobile/*.log
-mobile/build-apk.bat
+mobile/build-apk.bat# APK ????
+*.apk
