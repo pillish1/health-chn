@@ -995,6 +995,7 @@ html[data-theme="dark"] .hero-card {
 .ach-item {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   padding: 12px 6px; border-radius: 14px; border: 1px solid var(--border);
+}
 
 
 /* ============ 知识库布局（articles） ============ */
@@ -1129,10 +1130,128 @@ html[data-theme="dark"] .hero-card {
   border-color: transparent;
   box-shadow: 0 4px 14px rgba(139, 92, 246, .35);
 }
-\n\n/* ============ 首页今日仪表盘（App 化） ============ */\n.dash-grid {\n  display: grid;\n  grid-template-columns: 1.4fr 1fr;\n  gap: 24px;\n  max-width: 980px;\n  margin: 0 auto;\n  padding: 28px;\n  background: var(--surface);\n  border: 1px solid var(--border);\n  border-radius: 24px;\n  box-shadow: 0 12px 40px rgba(0, 0, 0, .06);\n}\n.dash-main { min-width: 0; }
-.dash-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }\n.dash-rings { display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap; }\n.dash-ring { flex: 1; min-width: 104px; display: grid; place-items: center; }\n.dash-quick { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }\n.dash-side { display: grid; gap: 12px; align-content: center; }\n.dash-stat {\n  display: flex; align-items: center; justify-content: space-between;\n  padding: 14px 18px;\n  background: var(--surface-2);\n  border: 1px solid var(--border);\n  border-radius: 16px;\n}\n.dash-stat b { font-size: 1.3rem; font-weight: 900; color: var(--primary); }\n.dash-stat span { font-size: .8rem; color: var(--muted); font-weight: 700; }\n.today-tasks { display: grid; gap: 8px; }\n.home-chart { margin-top: 16px; }\n@media (max-width: 900px) {\n  .dash-grid { grid-template-columns: 1fr; padding: 20px 16px; border-radius: 20px; }\n  .dash-rings { gap: 8px; }\n  .dash-side { grid-template-columns: repeat(3, 1fr); gap: 8px; }\n  .dash-stat { flex-direction: column; gap: 4px; text-align: center; padding: 12px 8px; }\n  .dash-stat b { font-size: 1.1rem; }\n}
-\n\n/* ============ 成就页补充 ============ */\n.ach-overview {\n  display: grid; place-items: center; gap: 6px;\n  padding: 28px 20px;\n  background: linear-gradient(135deg, var(--primary-soft), var(--surface-2));\n  border: 1px solid var(--border);\n  border-radius: 20px;\n  margin-bottom: 20px;\n  text-align: center;\n}\n.ach-item { position: relative; }\n.ach-icon { font-size: 1.6rem; line-height: 1; }\n.ach-name { font-size: .74rem; font-weight: 700; text-align: center; line-height: 1.3; }\n.ach-progress { width: 100%; height: 4px; border-radius: 99px; background: var(--border); overflow: hidden; }\n.ach-progress .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 99px; }\n.ach-tip { font-size: .66rem; color: var(--muted); text-align: center; }\n\n/* ============ 记录页快捷入口 ============ */\n.quick-actions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 18px; }\n.qa-btn {\n  display: flex; flex-direction: column; align-items: center; gap: 6px;\n  padding: 14px 8px;\n  background: var(--surface);\n  border: 1px solid var(--border);\n  border-radius: 16px;\n  color: var(--text); text-decoration: none;\n  font-size: .8rem; font-weight: 700;\n  transition: all .2s;\n}\n.qa-btn span { font-size: 1.4rem; }\n.qa-btn:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(139, 92, 246, .15); }\n\n/* ============ 记录页分节 ============ */\n.tracker-sec { margin-bottom: 24px; }\n@media (max-width: 900px) {\n  .quick-actions { grid-template-columns: repeat(5, 1fr); gap: 6px; }\n  .qa-btn { padding: 10px 4px; font-size: .72rem; }\n}
-\n\n/* ============ 移动端 App 头部（m-header） ============ */\n.m-header {\n  display: none;\n  position: sticky; top: 0; z-index: 120;\n  align-items: center; gap: 10px;\n  padding: 10px 14px;\n  background: color-mix(in srgb, var(--surface) 85%, transparent);\n  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);\n  border-bottom: 1px solid var(--border);\n}\n.m-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 900; font-size: .95rem; color: var(--text); flex: none; }\n.m-logo img { width: 30px; height: 30px; border-radius: 9px; }\n.m-search {\n  flex: 1;\n  display: flex; align-items: center;\n  padding: 8px 14px;\n  background: var(--surface-2);\n  border: 1px solid var(--border);\n  border-radius: 99px;\n  color: var(--muted);\n  font-size: .82rem;\n  cursor: pointer;\n  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;\n}\n.m-actions { display: flex; align-items: center; gap: 4px; flex: none; }\n@media (max-width: 900px) {\n  .m-header { display: flex; }\n  /* 移动端隐藏桌面导航栏，避免三层导航 */\n  .navbar { display: none; }\n}\n\n/* ============ 链接按钮 ============ */\n.btn-link {\n  background: none; border: none; padding: 4px 6px;\n  color: var(--primary); font-size: .85rem; font-weight: 700;\n  cursor: pointer; text-decoration: none;\n}\n.btn-link:hover { text-decoration: underline; }\n\n/* ============ 首页欢迎语 ============ */\n.hero-welcome { text-align: center; margin-bottom: 20px; }
+
+
+/* ============ 首页今日仪表盘（App 化） ============ */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 24px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .06);
+}
+.dash-main { min-width: 0; }
+.dash-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.dash-rings { display: flex; gap: 20px; justify-content: space-around; flex-wrap: wrap; }
+.dash-ring { flex: 1; min-width: 104px; display: grid; place-items: center; }
+.dash-quick { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 20px; }
+.dash-side { display: grid; gap: 12px; align-content: center; }
+.dash-stat {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.dash-stat b { font-size: 1.3rem; font-weight: 900; color: var(--primary); }
+.dash-stat span { font-size: .8rem; color: var(--muted); font-weight: 700; }
+.today-tasks { display: grid; gap: 8px; }
+.home-chart { margin-top: 16px; }
+@media (max-width: 900px) {
+  .dash-grid { grid-template-columns: 1fr; padding: 20px 16px; border-radius: 20px; }
+  .dash-rings { gap: 8px; }
+  .dash-side { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .dash-stat { flex-direction: column; gap: 4px; text-align: center; padding: 12px 8px; }
+  .dash-stat b { font-size: 1.1rem; }
+}
+
+
+/* ============ 成就页补充 ============ */
+.ach-overview {
+  display: grid; place-items: center; gap: 6px;
+  padding: 28px 20px;
+  background: linear-gradient(135deg, var(--primary-soft), var(--surface-2));
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.ach-item { position: relative; }
+.ach-icon { font-size: 1.6rem; line-height: 1; }
+.ach-name { font-size: .74rem; font-weight: 700; text-align: center; line-height: 1.3; }
+.ach-progress { width: 100%; height: 4px; border-radius: 99px; background: var(--border); overflow: hidden; }
+.ach-progress .progress-bar { height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 99px; }
+.ach-tip { font-size: .66rem; color: var(--muted); text-align: center; }
+
+/* ============ 记录页快捷入口 ============ */
+.quick-actions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 18px; }
+.qa-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 14px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--text); text-decoration: none;
+  font-size: .8rem; font-weight: 700;
+  transition: all .2s;
+}
+.qa-btn span { font-size: 1.4rem; }
+.qa-btn:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(139, 92, 246, .15); }
+
+/* ============ 记录页分节 ============ */
+.tracker-sec { margin-bottom: 24px; }
+@media (max-width: 900px) {
+  .quick-actions { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .qa-btn { padding: 10px 4px; font-size: .72rem; }
+}
+
+
+/* ============ 移动端 App 头部（m-header） ============ */
+.m-header {
+  display: none;
+  position: sticky; top: 0; z-index: 120;
+  align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.m-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 900; font-size: .95rem; color: var(--text); flex: none; }
+.m-logo img { width: 30px; height: 30px; border-radius: 9px; }
+.m-search {
+  flex: 1;
+  display: flex; align-items: center;
+  padding: 8px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  color: var(--muted);
+  font-size: .82rem;
+  cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.m-actions { display: flex; align-items: center; gap: 4px; flex: none; }
+@media (max-width: 900px) {
+  .m-header { display: flex; }
+  /* 移动端隐藏桌面导航栏，避免三层导航 */
+  .navbar { display: none; }
+}
+
+/* ============ 链接按钮 ============ */
+.btn-link {
+  background: none; border: none; padding: 4px 6px;
+  color: var(--primary); font-size: .85rem; font-weight: 700;
+  cursor: pointer; text-decoration: none;
+}
+.btn-link:hover { text-decoration: underline; }
+
+/* ============ 首页欢迎语 ============ */
+.hero-welcome { text-align: center; margin-bottom: 20px; }
 
 /* ============ 登录页 v2（手机号+微信） ============ */
 .auth-tabs { display: flex; gap: 6px; margin-bottom: 20px; background: var(--surface-2); padding: 4px; border-radius: 12px; }
@@ -1180,3 +1299,114 @@ html[data-theme="dark"] .hero-card {
 .ds-item { padding: 10px 12px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); font-size: .8rem; font-weight: 700; text-decoration: none; text-align: center; transition: all .2s; }
 .ds-item:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
 @media (max-width: 900px) { .dash-meta { flex-wrap: wrap; } .dash-side { grid-template-columns: 1fr; } }
+
+
+/* ============ 绉诲姩绔揣鍑戝竷灞€锛坴62锛?============ */
+@media (max-width: 640px) {
+  .feature-card { gap: 8px; padding: 16px; }
+  .feature-card .card-title { font-size: .98rem; margin-bottom: 2px; }
+  .feature-card .card-sub { font-size: .82rem; }
+  .dash-rings { gap: 6px; }
+  .dash-ring { min-width: 96px; }
+  .dash-grid { padding: 16px 14px; gap: 16px; }
+  .dash-quick { gap: 8px; }
+  .dm-item { padding: 10px; }
+  .dash-tip { padding: 14px; }
+  .week-bar { height: 10px !important; }
+  .home-chart { margin-top: 10px; }
+  .today-tasks { margin-top: 10px !important; }
+  .hero-welcome { margin-bottom: 12px; }
+  #weekRate { margin-top: 10px !important; }
+  .section-title { margin-bottom: 8px; }
+  .section-sub { margin: 6px auto 20px; }
+}
+
+/* ============ mobile app v62.1 ============ */
+@media (max-width: 900px) {
+.dash-grid { grid-template-columns: 1fr; padding: 18px 14px; gap: 14px; border-radius: 18px; }
+.dash-rings { gap: 4px; }
+.dash-ring { min-width: 100px; }
+.dash-ring svg { max-width: 100px !important; }
+.dash-meta { gap: 8px; margin-top: 12px; }
+.dm-item { padding: 9px 10px; border-radius: 12px; }
+.dash-quick { margin-top: 14px; gap: 8px; }
+.dash-quick .btn { flex: 1; padding: 9px 8px; font-size: .8rem; }
+.dash-side { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dash-tip { padding: 12px 14px; border-radius: 14px; }
+.dash-tip-title { font-size: .78rem; margin-bottom: 5px; }
+.dash-tip-body { font-size: .76rem; line-height: 1.5; }
+.dash-shortcuts { grid-template-columns: 1fr; gap: 6px; }
+.ds-item { padding: 8px 10px; font-size: .74rem; border-radius: 8px; }
+.task-item { padding: 10px 12px !important; border-radius: 12px !important; }
+.task-ico { font-size: 1.1rem !important; }
+.task-sub { font-size: .72rem !important; }
+#weekRate .card { padding: 12px 14px !important; }
+.guest-only .grid-3, .guest-only .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.feature-card { padding: 14px !important; }
+.feature-card .icon-badge { width: 38px; height: 38px; font-size: 1.15rem; border-radius: 11px; }
+.feature-card .card-title { font-size: .9rem; }
+.feature-card .card-sub { font-size: .76rem; }
+.hot-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+.hot-card { min-width: 240px; }
+#weekPreview.grid-3 { grid-template-columns: 1fr 1fr; gap: 10px; }
+#articlePreview.grid-3 { grid-template-columns: 1fr; gap: 10px; }
+}
+
+
+/* ============ 绉诲姩绔竷灞€淇 v62.2锛堟渶楂樹紭鍏堢骇锛?============ */
+@media (max-width: 640px) {
+  /* 鍔熻兘瀵艰寮哄埗 2 鍒楃揣鍑?*/
+  .guest-only .grid-3, .guest-only .grid-4, .section.guest-only .grid-3, .section.guest-only .grid-4, .section-sm.guest-only .grid-3 { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  /* 鍔熻兘鍗＄墖瓒呯揣鍑戯細妯悜甯冨眬 */
+  .feature-card { flex-direction: row; align-items: center; gap: 12px !important; padding: 12px 14px !important; border-radius: 14px !important; }
+  .feature-card .icon-badge { width: 40px; height: 40px; flex: none; }
+  .feature-card .card-title { font-size: .88rem !important; margin: 0 !important; }
+  .feature-card .card-sub { font-size: .72rem !important; line-height: 1.4; }
+  .feature-card .fc-more { display: none; }
+  /* dash-grid 鍘嬬缉楂樺害 */
+  .dash-grid { padding: 14px 12px !important; }
+  .dash-title { margin-bottom: 8px !important; }
+  .dash-title h1 { font-size: 1.05rem !important; }
+  .dash-rings { gap: 2px !important; }
+  .dash-ring { min-width: 92px !important; }
+  .dash-ring svg { max-width: 92px !important; }
+  .dash-meta { margin-top: 10px !important; }
+  .dash-quick { margin-top: 12px !important; }
+  /* weekPreview 鍛ㄨ鍒?2 鍒楃揣鍑?*/
+  #weekPreview.grid-3 { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+  #weekPreview .card { padding: 12px !important; }
+  #weekPreview .card .flex-between { flex-direction: column; align-items: flex-start; gap: 4px; }
+  #weekPreview .mt-2 { display: none; }
+  /* dash-side 涓ゅ崱妯帓 */
+  .dash-side { grid-template-columns: 1fr 1fr !important; }
+  /* 鏁版嵁瑙佽瘉婕旂ず鍖哄潡绉诲姩绔殣钘忥紙瀵圭敤鎴锋棤浠峰€硷級 */
+  .section-sm.guest-only:last-of-type { display: none !important; }
+  /* 涓轰粈涔堥€夋嫨鎴戜滑 2 鍒?*/
+  .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  /* hero 椤堕儴鍘嬬缉 */
+  .hero { padding: 20px 0 24px !important; }
+}
+
+
+/* ============ 绉诲姩绔簿绠€ v62.3 ============ */
+@media (max-width: 900px) {
+  /* 绉诲姩绔殣钘忎綆棰戣惀閿€鍖哄潡锛岃仛鐒︽牳蹇冨姛鑳?*/
+  .section.guest-only[style*="background"], .section-sm.guest-only:last-of-type { display: none !important; }
+  /* 棣栭〉鍔熻兘瀵艰 2 鍒楋紙瑕嗙洊 640 鏂偣鍗曞垪锛?*/
+  .guest-only .grid-3, .guest-only .grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  /* 鍘嬬缉鍚勫尯鍧楅棿璺?*/
+  .section { padding: 24px 0 !important; }
+  .section-sm { padding: 16px 0 !important; }
+  .container { padding: 0 14px !important; }
+  /* 鐑棬鎺ㄨ崘婊氬姩鏉￠殣钘?*/
+  .hot-scroll { scrollbar-width: none; }
+  .hot-scroll::-webkit-scrollbar { display: none; }
+}
+
+
+/* ============ dash-rings 妯帓淇 ============ */
+@media (max-width: 900px) {
+  .dash-rings { flex-wrap: nowrap !important; gap: 4px !important; }
+  .dash-ring { min-width: 0 !important; flex: 1 1 0 !important; }
+  .dash-ring svg { max-width: 100% !important; }
+}
