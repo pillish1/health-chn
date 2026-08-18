@@ -12,3 +12,7 @@ Thumbs.db
 
 # 本地备份
 *.zip
+
+# 构建日志与脚本（本地工具）
+mobile/*.log
+mobile/build-apk.bat
