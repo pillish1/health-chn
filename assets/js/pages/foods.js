@@ -227,16 +227,17 @@
     // 拍照记餐（存本地缩略图）
     var photoInput = document.getElementById('mealPhotoInput');
     var photoData = null;
-    document.getElementById('btnPhoto').addEventListener('click', function () { photoInput.click(); });
-    photoInput.addEventListener('change', function () {
+    var btnPhoto = document.getElementById('btnPhoto');
+    if (btnPhoto) btnPhoto.addEventListener('click', function () { photoInput.click(); });
+    if (photoInput) photoInput.addEventListener('change', function () {
       var file = photoInput.files[0];
       if (!file) return;
       if (file.size > 2 * 1024 * 1024) { YDJK_UI.toast('图片需小于 2MB', 'err'); return; }
       var reader = new FileReader();
       reader.onload = function () {
         photoData = reader.result;
-        document.getElementById('mealPhotoImg').src = photoData;
-        document.getElementById('mealPhotoPreview').style.display = 'block';
+        var pImg = document.getElementById('mealPhotoImg'); if (pImg) pImg.src = photoData;
+        var pPrev = document.getElementById('mealPhotoPreview'); if (pPrev) pPrev.style.display = 'block';
         YDJK_UI.toast('📷 照片已添加');
       };
       reader.readAsDataURL(file);
