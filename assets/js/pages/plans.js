@@ -152,6 +152,44 @@
       });
     });
   }
+  /* 收藏夹：展示所有收藏的动作（跨部位） */
+  function renderFavList() {
+    var wrap = document.getElementById('wkFavList');
+    var field = document.getElementById('wkFavField');
+    if (!wrap) return;
+    var favs = getFavActions();
+    if (!favs.length) {
+      if (field) field.style.display = 'none';
+      wrap.innerHTML = '';
+      return;
+    }
+    if (field) field.style.display = '';
+    // 找收藏的动作（含自定义收藏的名字）
+    var items = favs.map(function (id) {
+      var a = DATA.ACTIONS.find(function (x) { return x.id === id; });
+      if (!a) return null;
+      var mu = MUSCLES.find(function (m) { return m.id === a.muscle; });
+      return { id: a.id, name: a.name, muscle: mu ? mu.label : '' };
+    }).filter(Boolean);
+    if (!items.length) {
+      if (field) field.style.display = 'none';
+      wrap.innerHTML = '';
+      return;
+    }
+    wrap.innerHTML = items.map(function (it) {
+      var on = !!selectedActions[it.id];
+      return '<button type="button" class="wk-fav-chip' + (on ? ' selected"' : '"') + ' data-id="' + it.id + '">' + esc(it.name) + (it.muscle ? ' <small>' + esc(it.muscle) + '</small>' : '') + '</button>';
+    }).join('');
+    wrap.querySelectorAll('.wk-fav-chip').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.dataset.id;
+        if (selectedActions[id]) delete selectedActions[id];
+        else selectedActions[id] = { sets: 3, reps: 10, weight: '' };
+        renderFavList();
+        renderActionGrid();
+      });
+    });
+  }
   function saveWorkout() {
     var date = document.getElementById('wkDate').value || YDJK.today();
     var minutes = Number(document.getElementById('wkMinutes').value) || 0;
@@ -259,6 +297,7 @@
       wkCurrentMuscle = 'chest';
       renderMuscleOptions();
       renderActionGrid();
+      renderFavList();
       window.YDJK_UI.openModal('addWorkoutModal');
     });
     var saveBtn = document.getElementById('btnSaveWorkout');

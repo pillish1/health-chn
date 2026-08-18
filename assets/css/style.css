@@ -1492,3 +1492,9 @@ html[data-theme="dark"] .hero-card {
 .wk-action-head { display: flex; justify-content: space-between; align-items: center; }
 .wk-fav { background: none; border: none; font-size: 1.1rem; color: var(--muted); cursor: pointer; padding: 2px 4px; }
 .wk-fav.faved { color: #f59e0b; }
+/* 收藏夹 */
+.wk-fav-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.wk-fav-chip { padding: 8px 14px; border-radius: 99px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: .8rem; font-weight: 700; cursor: pointer; transition: all .2s; }
+.wk-fav-chip small { color: var(--muted); font-weight: 600; }
+.wk-fav-chip.selected { background: var(--primary); color: #fff; border-color: transparent; }
+.wk-fav-chip.selected small { color: rgba(255,255,255,.8); }
