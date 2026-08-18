@@ -1441,3 +1441,15 @@ html[data-theme="dark"] .hero-card {
 .wc-top b { font-size: 1rem; display: block; }
 .wc-top p { font-size: .8rem; color: var(--muted); margin-top: 3px; line-height: 1.5; }
 .wc-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+
+/* ============ 移动端纯 App 化（v72） ============ */
+@media (max-width: 900px) {
+  .navbar, .footer, .footer-grid { display: none !important; }
+  .page-hero { padding: 16px 0 12px !important; }
+  .page-hero h1 { font-size: 1.3rem !important; }
+  .page-hero p { font-size: .78rem !important; margin-top: 4px !important; }
+  .breadcrumb { margin-bottom: 4px !important; font-size: .72rem !important; }
+  body { background: var(--surface); }
+  .container { padding: 0 16px; }
+}
