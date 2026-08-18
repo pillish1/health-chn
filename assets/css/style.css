@@ -1337,6 +1337,28 @@ html[data-theme="dark"] .hero-card {
 .dash-tip-body { font-size: .76rem; line-height: 1.5; }
 .dash-shortcuts { grid-template-columns: 1fr; gap: 6px; }
 .ds-item { padding: 8px 10px; font-size: .74rem; border-radius: 8px; }
+
+/* ============ 今日任务列表（标准样式） ============ */
+.task-list { display: grid; gap: 8px; }
+.task-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  text-decoration: none;
+  transition: all .2s;
+}
+.task-item:hover { border-color: var(--primary); transform: translateY(-1px); }
+.task-item.done { background: var(--primary-soft); border-color: color-mix(in srgb, var(--primary) 30%, transparent); }
+.task-ico { font-size: 1.2rem; flex: none; }
+.task-main { flex: 1; min-width: 0; }
+.task-main b { font-size: .9rem; display: block; }
+.task-sub { font-size: .76rem; color: var(--muted); }
+.task-check { font-size: 1.1rem; color: var(--muted); flex: none; }
+.task-item.done .task-check { color: var(--success, #10b981); }
+
 .task-item { padding: 10px 12px !important; border-radius: 12px !important; }
 .task-ico { font-size: 1.1rem !important; }
 .task-sub { font-size: .72rem !important; }
