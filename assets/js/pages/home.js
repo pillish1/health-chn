@@ -31,25 +31,22 @@
     var waterGoal = YDJK.getWaterGoal();
     var streak = YDJK.checkinStreak();
 
-    /* 渲染三环 */
+    /* 渲染三环（颜色区分：摄入蓝、运动绿、饮水青） */
     YDJK_CHARTS.donutChart(document.getElementById('ringMeal'), {
       value: Math.round(meal.kcal), max: Math.round(goalCal), unit: ' kcal', label: '摄入', size: 118, decimals: 0,
-      color: meal.kcal > goalCal ? '#ef4444' : undefined
+      color: meal.kcal > goalCal ? '#ef4444' : '#2563eb'
     });
     YDJK_CHARTS.donutChart(document.getElementById('ringWorkout'), {
       value: minutes, max: 60, unit: ' 分钟', label: '运动', size: 118, decimals: 0,
-      color: workoutDone ? '#10b981' : undefined
+      color: workoutDone ? '#10b981' : '#10b981'
     });
     YDJK_CHARTS.donutChart(document.getElementById('ringWater'), {
       value: water, max: waterGoal, unit: ' ml', label: '饮水', size: 118, decimals: 0,
       color: '#06b6d4'
     });
 
-    /* 右侧速览 */
+    /* 数据速览（dash-meta） */
     var bmi = p ? YDJK.calcBMI(p.height, weight) : null;
-    var level = bmi ? YDJK.bmiLevel(bmi) : null;
-    document.getElementById('statBmi').innerHTML = '<b>' + (bmi ? bmi.toFixed(1) : '--') + '</b><span>' + (level ? 'BMI · ' + level.name : 'BMI') + '</span>';
-    document.getElementById('statKcal').innerHTML = '<b>' + Math.round(meal.kcal) + '</b><span>摄入 / ' + Math.round(goalCal) + ' kcal</span>';
     var sc = document.getElementById('statStreak');
     if (sc) sc.textContent = streak;
     var statKcalEl = document.getElementById('statKcal');
@@ -219,6 +216,7 @@
     applyGuestMode();
     renderDashboard();
     renderTasks();
+    renderWeekRate();
     // 登录后引导建档
     if (location.search.indexOf('setup=1') >= 0 && !YDJK.getProfile() && window.YDJK_UI) {
       setTimeout(function () { window.YDJK_UI.openProfileEditor(); }, 600);

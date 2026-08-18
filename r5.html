@@ -1,0 +1,428 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>悦动健康 · 你的私人健康管理平台</title>
+<meta name="description" content="悦动健康：BMI 与卡路里计算、科学运动计划、食物热量查询、健康数据追踪，一站式私人健康管理平台。">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="悦动健康">
+<link rel="stylesheet" href="assets/css/style.css?v=56">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="悦动健康">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="悦动健康 · 你的私人健康管理平台">
+<meta property="og:description" content="悦动健康：BMI 与卡路里计算、科学运动计划、食物热量查询、健康数据追踪，一站式私人健康管理平台。">
+<meta property="og:image" content="icons/icon-512.png">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "悦动健康",
+  "alternateName": "Yuedong Health",
+  "description": "科学运动、均衡饮食与数据追踪的一站式私人健康管理平台：BMI 计算、卡路里计算、运动计划、食物热量查询、健康数据追踪。",
+  "inLanguage": "zh-CN",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "foods.html?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+</head>
+<body>
+
+<!-- 移动端 App 头 -->
+<div class="m-header">
+  <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
+  <div class="m-search">🔍 搜索健康知识、计划…</div>
+  <div class="m-actions">
+    <button class="icon-btn" id="mProfileBtn" onclick="location.href='profile.html'" aria-label="我的" title="登录 / 注册">👤</button>
+  </div>
+</div>
+
+<div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="text-align:center">
+    <img src="icons/icon-192.png" alt="悦动健康" style="width:56px;height:56px;border-radius:16px;box-shadow:0 8px 24px rgba(139,92,246,.3);animation:pulse 1.2s ease-in-out infinite">
+    <div style="margin-top:12px;color:var(--muted);font-size:.85rem">加载中…</div>
+  </div>
+</div>
+<style>@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }</style>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="active">首页</a>
+      <a href="tracker.html">健康追踪</a>
+      <a href="plans.html">运动计划</a>
+      <a href="foods.html">食物热量</a>
+      <a href="articles.html">健康知识</a>
+    </div>
+    <div class="nav-actions"><button class="icon-btn" id="globalSearchBtn" title="全站搜索（Ctrl+K）" aria-label="全站搜索">🔍</button><button class="icon-btn js-auth-btn" title="登录 / 注册" aria-label="登录">👤</button>
+      <button class="icon-btn" id="themeToggle" title="切换主题">🌙</button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单">☰</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero" style="padding:40px 0 56px">
+  <div class="container">
+    <div class="hero-welcome" id="welcomeMini"><div class="alert info"><span>👋</span><span style="flex:1">登录后数据云端同步，多设备随时查看。</span><button class="btn btn-primary btn-sm" onclick="location.href='login.html'">登录 / 注册</button></div></div>
+        <div class="dash-grid">
+      <div class="dash-main">
+        <div class="dash-title">
+          <div>
+            <h1 style="font-size:1.2rem;font-weight:900;margin:0">浠婃棩鐘舵€?/h1&gt;
+            <span class="muted small" id="dashDate">2026/08/18</span>
+          </h1></div>
+          <span class="streak-chip" id="streakChip">馃敟 <b id="statStreak">0</b> 澶?/span&gt;
+        </span></div>
+        <div class="dash-rings">
+          <div class="dash-ring" id="ringMeal" title="浠婃棩鎽勫叆"><svg viewBox="0 0 118 118" class="chart" style="max-width:118px;margin:0 auto"><circle cx="59" cy="59" r="52" fill="none" stroke="var(--surface-2)" stroke-width="14"></circle><defs><linearGradient id="donutGrad1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3b82f6"></stop><stop offset="100%" stop-color="#8b5cf6"></stop></linearGradient></defs><circle cx="59" cy="59" r="52" fill="none" stroke="url(#donutGrad1)" stroke-width="14" stroke-linecap="round" stroke-dasharray="326.7256359733385" stroke-dashoffset="326.7256359733385" transform="rotate(-90 59 59)" style="transition: stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)"></circle><text x="59" y="57" text-anchor="middle" style="font-size:28.32px;font-weight:800;fill:var(--text)">0 kcal</text><text x="59" y="75.52000000000001" text-anchor="middle" style="font-size:10.62px;fill:var(--muted)">摄入</text></svg></div>
+          <div class="dash-ring" id="ringWorkout" title="浠婃棩杩愬姩"><svg viewBox="0 0 118 118" class="chart" style="max-width:118px;margin:0 auto"><circle cx="59" cy="59" r="52" fill="none" stroke="var(--surface-2)" stroke-width="14"></circle><defs><linearGradient id="donutGrad2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#3b82f6"></stop><stop offset="100%" stop-color="#8b5cf6"></stop></linearGradient></defs><circle cx="59" cy="59" r="52" fill="none" stroke="url(#donutGrad2)" stroke-width="14" stroke-linecap="round" stroke-dasharray="326.7256359733385" stroke-dashoffset="326.7256359733385" transform="rotate(-90 59 59)" style="transition: stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)"></circle><text x="59" y="57" text-anchor="middle" style="font-size:28.32px;font-weight:800;fill:var(--text)">0 分钟</text><text x="59" y="75.52000000000001" text-anchor="middle" style="font-size:10.62px;fill:var(--muted)">运动</text></svg></div>
+          <div class="dash-ring" id="ringWater" title="浠婃棩楗按"><svg viewBox="0 0 118 118" class="chart" style="max-width:118px;margin:0 auto"><circle cx="59" cy="59" r="52" fill="none" stroke="var(--surface-2)" stroke-width="14"></circle><circle cx="59" cy="59" r="52" fill="none" stroke="#06b6d4" stroke-width="14" stroke-linecap="round" stroke-dasharray="326.7256359733385" stroke-dashoffset="326.7256359733385" transform="rotate(-90 59 59)" style="transition: stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)"></circle><text x="59" y="57" text-anchor="middle" style="font-size:28.32px;font-weight:800;fill:var(--text)">0 ml</text><text x="59" y="75.52000000000001" text-anchor="middle" style="font-size:10.62px;fill:var(--muted)">饮水</text></svg></div>
+        </div>
+        <div class="dash-meta">
+          <div class="dm-item"><span class="dm-ico">馃搳</span><div><b id="statBmi">--</b><span>BMI</span></div></div>
+          <div class="dm-item"><span class="dm-ico">馃嵔锔?/span&gt;<div><b id="statKcal">0 / 2000</b><span>鎽勫叆/kcal</span></div></span></div>
+        </div>
+        <div class="dash-quick">
+          <button class="btn btn-primary btn-sm" onclick="location.href='foods.html'">馃嵔锔?璁颁竴椁?/button&gt;
+          </button><button class="btn btn-outline btn-sm" onclick="location.href='tracker.html#workout'">馃弮 鎵撳崱</button>
+          <button class="btn btn-ghost btn-sm" onclick="location.href='tracker.html#weight'">鈿栵笍 绉伴噸</button>
+        </div>
+      </div>
+      <div class="dash-side">
+        <div class="dash-tip" id="dashTip">
+          <div class="dash-tip-title">馃挕 浠婃棩寤鸿</div>
+          <div class="dash-tip-body" id="dashTipBody">还没有记录饮食，点「记一餐」开始 🍽️</div>
+        <div class="dash-tip">
+          <div class="dash-tip-title">馃殌 蹇€熷叆鍙?/div&gt;
+          <div class="dash-shortcuts">
+            <a href="report.html" class="ds-item">馃搱 鎶ュ憡</a>
+            <a href="achievements.html" class="ds-item">馃弲 鎴愬氨</a>
+            <a href="foods.html" class="ds-item">馃 椋熺墿搴?/a&gt;
+            </a><a href="plans.html" class="ds-item">馃挭 璁″垝</a>
+          </div>
+        </div>
+      </div>
+    </div><div id="welcomeBar" style="max-width:760px;margin:20px auto 0"><div class="alert info"><span>👋</span><span style="flex:1">登录后数据云端同步，多设备随时查看。</span><button class="btn btn-primary btn-sm" onclick="location.href='login.html'">登录 / 注册</button></div></div>
+    <div id="todayTasks" class="today-tasks" style="max-width:980px;margin:16px auto 0"><div class="task-list"><div class="task-item" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;text-decoration:none;color:var(--text)"><span class="task-ico">🍽️</span><div class="task-main" style="flex:1"><b>记录饮食</b><span class="task-sub" style="display:block;font-size:.78rem;color:var(--muted)">0 / 2000 kcal</span></div><button class="btn btn-ghost btn-xs js-task-go" data-href="foods.html" style="color:var(--primary)">去记录</button></div><div class="task-item" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;text-decoration:none;color:var(--text)"><span class="task-ico">🏃</span><div class="task-main" style="flex:1"><b>今日运动</b><span class="task-sub" style="display:block;font-size:.78rem;color:var(--muted)">30 分钟起</span></div><button class="btn btn-ghost btn-xs js-task-go" data-href="tracker.html#workout" style="color:var(--primary)">去记录</button><button class="btn btn-primary btn-xs js-task-action" data-action="quickCheckin" style="margin-left:8px">打卡</button></div><div class="task-item" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;text-decoration:none;color:var(--text)"><span class="task-ico">💧</span><div class="task-main" style="flex:1"><b>饮水达标</b><span class="task-sub" style="display:block;font-size:.78rem;color:var(--muted)">0 / 2000 ml</span></div><button class="btn btn-ghost btn-xs js-task-go" data-href="tracker.html" style="color:var(--primary)">去记录</button><button class="btn btn-primary btn-xs js-task-action" data-action="quickWater" style="margin-left:8px">+250ml</button></div></div></div>
+    <div id="weekRate" style="max-width:980px;margin:16px auto 0"></div>
+    <div class="home-chart" style="max-width:980px;margin:16px auto 0">
+      <div class="card">
+        <div class="flex-between">
+          <div class="card-title" style="margin:0">⚖️ 体重趋势</div>
+          <a href="tracker.html" class="btn btn-ghost btn-sm">管理 →</a>
+        </div>
+        <div id="homeWeightChart"></div>
+      </div>
+    </div>
+  </div>
+</div></div></header>
+
+<!-- 数据概览 -->
+<section class="section-sm guest-only">
+  <div class="container">
+    <!-- 数据速览由顶部 dash-side 展示，此处不再重复 -->
+    <div id="healthTip" class="mt-3" style="max-width:760px;margin-left:auto;margin-right:auto"><div class="alert info"><span>👋</span><span style="flex:1">建立健康档案后，这里会给你个性化的每日建议</span><button class="btn btn-ghost btn-sm js-tip-close" aria-label="关闭提示">✕</button></div></div>
+    <div class="trust-bar" id="trustBar">
+      <span>📚 依据《中国居民膳食指南》</span>
+      <span>🔬 计算基于国际通用公式（Mifflin-St Jeor）</span>
+      <span>🔒 数据仅存本地</span>
+      <span>🏃 300+ 健康数据点</span>
+    </div>
+  </div>
+</section>
+
+<!-- 功能导览 -->
+<section class="section guest-only">
+  <div class="container">
+    <h2 class="section-title">一站式健康工具箱</h2>
+    <p class="section-sub">六大功能模块，覆盖健康管理的完整链路：评估 → 计划 → 执行 → 记录 → 复盘</p>
+    <div class="grid grid-3">
+      <a href="bmi.html" class="card card-hover feature-card reveal">
+        <div class="icon-badge green">📊</div>
+        <div class="card-title">BMI 体质指数</div>
+        <div class="card-sub">快速评估体重状态，获取分档建议与理想体重区间</div>
+        <span class="fc-more">去计算 →</span>
+      </a>
+      <a href="calorie.html" class="card card-hover feature-card reveal">
+        <div class="icon-badge orange">🔥</div>
+        <div class="card-title">卡路里计算器</div>
+        <div class="card-sub">BMR + TDEE 精确估算，自动给出三大营养素配比</div>
+        <span class="fc-more">去计算 →</span>
+      </a>
+      <a href="plans.html" class="card card-hover feature-card reveal">
+        <div class="icon-badge purple">💪</div>
+        <div class="card-title">科学运动计划 <span class="tag purple" style="margin-left:6px;vertical-align:middle">🧩 可自定义</span></div>
+        <div class="card-sub">系统推荐三套科学周计划，也可从 30+ 动作库自由拼装专属计划</div>
+        <span class="fc-more">去构建 →</span>
+      </a>
+      <a href="foods.html" class="card card-hover feature-card reveal">
+        <div class="icon-badge purple">🥗</div>
+        <div class="card-title">食物热量库</div>
+        <div class="card-sub">200+ 常见食物热量与营养素查询，边吃边算</div>
+        <span class="fc-more">去查询 →</span>
+      </a>
+      <a href="tracker.html" class="card card-hover feature-card reveal">
+        <div class="icon-badge red">📈</div>
+        <div class="card-title">健康数据追踪</div>
+        <div class="card-sub">体重趋势、运动打卡、饮食与饮水记录，可视化复盘</div>
+        <span class="fc-more">去追踪 →</span>
+      </a>
+      <a href="articles.html" class="card card-hover feature-card reveal">
+        <div class="icon-badge green" style="background:var(--accent-soft)">📖</div>
+        <div class="card-title">健康知识库</div>
+        <div class="card-sub">训练、营养、恢复的科学干货，帮你少走弯路</div>
+        <span class="fc-more">去阅读 →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 为什么选择我们 -->
+<section class="section guest-only" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <h2 class="section-title">为什么选择悦动健康</h2>
+    <p class="section-sub">四大理由，让你放心把健康交给数据</p>
+    <div class="grid grid-4">
+      <div class="card feature-card">
+        <div class="icon-badge green">🔒</div>
+        <div class="card-title">数据完全本地</div>
+        <div class="card-sub">所有记录只存在你的浏览器里，不上传任何服务器，隐私零风险</div>
+      </div>
+      <div class="card feature-card">
+        <div class="icon-badge blue">🧮</div>
+        <div class="card-title">科学计算引擎</div>
+        <div class="card-sub">基于国际通用公式（Mifflin-St Jeor），热量与代谢估算更可靠</div>
+      </div>
+      <div class="card feature-card">
+        <div class="icon-badge orange">🥗</div>
+        <div class="card-title">253 种食物库</div>
+        <div class="card-sub">主食、肉蛋、果蔬、零食全覆盖，边吃边算不迷路</div>
+      </div>
+      <div class="card feature-card">
+        <div class="icon-badge purple">🧩</div>
+        <div class="card-title">自由定制计划</div>
+        <div class="card-sub">30+ 标准动作自由拼装，打造独属于你的训练方案</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 热门推荐 -->
+<section class="section-sm">
+  <div class="container">
+    <div class="flex-between flex-wrap" style="margin-bottom:18px">
+      <div>
+        <h2 class="section-title" style="text-align:left">🔥 热门推荐</h2>
+        <p class="muted small mt-1">根据你的档案推荐的热门计划与精选内容</p>
+      </div>
+      <a href="plans.html" class="btn btn-outline btn-sm">全部计划 →</a>
+    </div>
+    <div class="hot-scroll" id="hotScroll"><div class="hot-card dark" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff"><div class="hot-tag">⭐ 为你推荐</div><div class="hot-title">🔥 减脂计划</div><div class="hot-desc">热量缺口 + 有氧为主 + 力量塑形，四周可见效果</div><a class="hot-link" href="plans.html">查看计划 →</a></div><div class="hot-card"><div class="hot-tag">💪</div><div class="hot-title">增肌计划</div><div class="hot-desc">推拉腿分化训练，热量盈余，大重量低次数</div><a class="hot-link" href="plans.html">查看计划 →</a></div><div class="hot-card"><div class="hot-tag">🌿</div><div class="hot-title">健康保持计划</div><div class="hot-desc">平衡训练 + 规律作息，轻松养成终身习惯</div><a class="hot-link" href="plans.html">查看计划 →</a></div></div>
+  </div>
+</section>
+
+<!-- 数据见证 -->
+<section class="section-sm guest-only">
+  <div class="container">
+    <h2 class="section-title">你的健康数据，一目了然</h2>
+    <p class="section-sub">体重趋势、打卡热力、每日摄入——记录之后，变化看得见</p>
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="card-title">⚖️ 体重趋势</div>
+        <div class="demo-chart">
+          <svg viewBox="0 0 260 100" preserveAspectRatio="xMidYMid meet" style="width:100%">
+            <line x1="10" y1="30" x2="250" y2="30" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4" opacity=".8"></line>
+            <text x="250" y="24" text-anchor="end" font-size="10" fill="#f59e0b">目标 65kg</text>
+            <polyline points="10,80 50,74 90,76 130,64 170,60 210,54 250,48" fill="none" stroke="#3b82f6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+            <polyline points="10,80 50,74 90,76 130,64 170,60 210,54 250,48" fill="url(#wgrad)" stroke="none"></polyline>
+            <defs><linearGradient id="wgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3b82f6" stop-opacity=".25"></stop><stop offset="100%" stop-color="#3b82f6" stop-opacity="0"></stop></linearGradient></defs>
+            <text x="12" y="94" font-size="9" fill="#94a3b8">第 1 周</text>
+            <text x="232" y="94" font-size="9" fill="#94a3b8">第 7 周</text>
+          </svg>
+        </div>
+        <div class="small muted text-center">连续 7 周记录，趋势线清晰可见</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📅 打卡热力图</div>
+        <div class="demo-heatmap">
+          <div class="dh-row"><span>一</span><i class="h1"></i><i class="h2"></i><i class="h3"></i><i class="h2"></i><i class="h4"></i><i class="h3"></i><i class="h1"></i></div>
+          <div class="dh-row"><span>三</span><i class="h2"></i><i class="h3"></i><i class="h4"></i><i class="h3"></i><i class="h2"></i><i class="h1"></i><i class="h3"></i></div>
+          <div class="dh-row"><span>五</span><i class="h3"></i><i class="h2"></i><i class="h3"></i><i class="h4"></i><i class="h3"></i><i class="h2"></i><i class="h4"></i></div>
+          <div class="dh-row"><span>日</span><i class="h1"></i><i class="h3"></i><i class="h2"></i><i class="h1"></i><i class="h3"></i><i class="h2"></i><i class="h3"></i></div>
+        </div>
+        <div class="small muted text-center">颜色越深，运动越投入</div>
+      </div>
+      <div class="card">
+        <div class="card-title">🍽️ 每日摄入</div>
+        <div class="demo-ring-wrap">
+          <div class="demo-ring">
+            <div class="demo-ring-inner"><b>1580</b><span>目标 2000 kcal</span></div>
+          </div>
+        </div>
+        <div class="small muted text-center">热量预算可视化，超标早知道</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 本周计划预览 -->
+<section class="section" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div class="flex-between flex-wrap" style="margin-bottom:26px">
+      <div>
+        <h2 class="section-title" style="text-align:left">📅 本周训练计划</h2>
+        <p class="muted small mt-1" id="planPreviewSub">根据你的档案推荐，可前往计划页切换</p>
+      </div>
+      <a href="plans.html" class="btn btn-outline btn-sm">切换计划 →</a>
+    </div>
+    <div id="weekPreview" class="grid grid-3"><div class="card card-hover" style=""><div class="flex-between"><span class="tag gray">周一</span><span class="small muted">胸 + 有氧</span></div><div class="mt-2"><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">杠铃卧推</span><b class="mono small" style="color:var(--primary-dark)">4×8</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">哑铃飞鸟</span><b class="mono small" style="color:var(--primary-dark)">3×12</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">双杠臂屈伸</span><b class="mono small" style="color:var(--primary-dark)">3×10</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">慢跑</span><b class="mono small" style="color:var(--primary-dark)">30分钟</b></div></div></div><div class="card card-hover" style="border:2px solid var(--primary)"><div class="flex-between"><span class="tag blue">周二 · 今天</span><span class="small muted">核心 + HIIT</span></div><div class="mt-2"><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">平板支撑</span><b class="mono small" style="color:var(--primary-dark)">3×45秒</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">卷腹</span><b class="mono small" style="color:var(--primary-dark)">4×15</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">俄罗斯转体</span><b class="mono small" style="color:var(--primary-dark)">3×20</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">HIIT 间歇</span><b class="mono small" style="color:var(--primary-dark)">20分钟</b></div></div></div><div class="card card-hover" style=""><div class="flex-between"><span class="tag gray">周三</span><span class="small muted">背部 + 有氧</span></div><div class="mt-2"><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">高位下拉</span><b class="mono small" style="color:var(--primary-dark)">4×10</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">哑铃划船</span><b class="mono small" style="color:var(--primary-dark)">4×10</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">引体向上</span><b class="mono small" style="color:var(--primary-dark)">4×6</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">跳绳</span><b class="mono small" style="color:var(--primary-dark)">15分钟</b></div></div></div><div class="card card-hover" style=""><div class="flex-between"><span class="tag gray">周四</span><span class="small muted">休息 / 主动恢复</span></div><div class="mt-2"><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">快走</span><b class="mono small" style="color:var(--primary-dark)">40分钟</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">全身拉伸</span><b class="mono small" style="color:var(--primary-dark)">15分钟</b></div></div></div><div class="card card-hover" style=""><div class="flex-between"><span class="tag gray">周五</span><span class="small muted">腿部 + 有氧</span></div><div class="mt-2"><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">徒手深蹲</span><b class="mono small" style="color:var(--primary-dark)">4×15</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">弓步蹲</span><b class="mono small" style="color:var(--primary-dark)">3×12/腿</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">站姿提踵</span><b class="mono small" style="color:var(--primary-dark)">4×15</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">慢跑</span><b class="mono small" style="color:var(--primary-dark)">30分钟</b></div></div></div><div class="card card-hover" style=""><div class="flex-between"><span class="tag gray">周六</span><span class="small muted">肩臂塑形</span></div><div class="mt-2"><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">哑铃推举</span><b class="mono small" style="color:var(--primary-dark)">4×8</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">哑铃侧平举</span><b class="mono small" style="color:var(--primary-dark)">4×12</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">哑铃弯举</span><b class="mono small" style="color:var(--primary-dark)">4×10</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">仰卧臂屈伸</span><b class="mono small" style="color:var(--primary-dark)">3×10</b></div></div></div><div class="card card-hover" style=""><div class="flex-between"><span class="tag gray">周日</span><span class="small muted">彻底休息</span></div><div class="mt-2"><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">放松拉伸</span><b class="mono small" style="color:var(--primary-dark)">10分钟</b></div><div class="flex-between" style="padding:6px 0;border-bottom:1px dashed var(--border);font-size:.88rem"><span class="text-2">充足睡眠</span><b class="mono small" style="color:var(--primary-dark)">7-8小时</b></div></div></div></div>
+  </div>
+</section>
+
+<!-- 精选文章 -->
+<section class="section">
+  <div class="container">
+    <div class="flex-between flex-wrap" style="margin-bottom:26px">
+      <div>
+        <h2 class="section-title" style="text-align:left">📖 健康知识精选</h2>
+        <p class="muted small mt-1">科学健身，从正确认知开始</p>
+      </div>
+      <a href="articles.html" class="btn btn-outline btn-sm">全部文章 →</a>
+    </div>
+    <div id="articlePreview" class="grid grid-3"><a href="articles.html" class="card card-hover article-card"><div class="a-meta"><span class="tag blue">训练基础</span><span>⏱ 5 分钟</span></div><div class="a-title">为什么热身比训练本身更重要？</div><div class="a-excerpt">好的热身能降低 60% 以上的运动损伤风险。教你一套 10 分钟标准热身流程。</div></a><a href="articles.html" class="card card-hover article-card"><div class="a-meta"><span class="tag blue">营养饮食</span><span>⏱ 6 分钟</span></div><div class="a-title">蛋白质到底怎么吃？一文讲透</div><div class="a-excerpt">每天吃多少蛋白？什么时候吃？植物蛋白行不行？所有关于蛋白质的疑问都在这里。</div></a><a href="articles.html" class="card card-hover article-card"><div class="a-meta"><span class="tag blue">恢复管理</span><span>⏱ 4 分钟</span></div><div class="a-title">睡不好，练了也白练：睡眠与恢复的真相</div><div class="a-excerpt">肌肉在睡眠中生长，不在健身房里。深度睡眠不足，训练效果直接打五折。</div></a></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section-sm">
+  <div class="container">
+    <div class="card text-center" style="background:linear-gradient(135deg,var(--primary),var(--primary-deep));border:none;color:#fff;padding:52px 24px">
+      <h2 style="font-size:1.7rem;font-weight:900;letter-spacing:-.02em">30 秒建档，开启你的健康蜕变</h2>
+      <p style="margin:12px auto 26px;max-width:520px;opacity:.9">不设门槛、不留数据、不看广告——只有你和你的健康数据。</p>
+      <a href="tracker.html" class="btn btn-lg" style="background:#fff;color:var(--primary-deep)">开始记录 →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:var(--text)"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+        <p class="f-desc">科学运动 + 均衡饮食 + 数据追踪，一站式私人健康管理平台。所有数据仅保存在你的浏览器本地。</p>
+      </div>
+      <div>
+        <h4>工具</h4>
+        <a href="bmi.html">BMI 计算</a>
+        <a href="calorie.html">卡路里计算</a>
+        <a href="foods.html">食物热量库</a>
+      </div>
+      <div>
+        <h4>健康</h4>
+        <a href="plans.html">运动计划</a>
+        <a href="tracker.html">健康追踪</a>
+        <a href="articles.html">健康知识</a>
+      </div>
+      <div>
+        <h4>关于</h4>
+        <a href="about.html">关于本站</a>
+        <a href="about.html#privacy">隐私说明</a>
+        <a href="about.html#disclaimer">免责声明</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
+  </div>
+</footer>
+
+<!-- 档案引导弹窗 -->
+<div class="modal-overlay" id="onboardModal">
+  <div class="modal">
+    <div class="modal-title">👋 欢迎来到悦动健康</div>
+    <div class="modal-sub">先花 30 秒建立你的健康档案，之后所有计算与推荐将为你量身定制</div>
+    <form id="onboardForm" data-built="1"><div class="form-section">👤 基本信息</div><div class="field"><label>性别</label><div class="radio-group"><div class="radio-pill"><input type="radio" name="gender" id="g-male" value="male" checked=""><label for="g-male"><span class="emoji">👨</span>男</label></div><div class="radio-pill"><input type="radio" name="gender" id="g-female" value="female"><label for="g-female"><span class="emoji">👩</span>女</label></div></div></div><div class="grid grid-2" style="gap:14px"><div class="field"><label>年龄</label><input class="input" type="number" id="pf-age" min="10" max="100" value="25"></div><div class="field"><label>身高 (cm)</label><input class="input" type="number" id="pf-height" min="80" max="250" value="170"></div></div><div class="field"><label>当前体重 (kg)</label><input class="input" type="number" id="pf-weight" min="20" max="300" step="0.1" value="60"></div><div class="form-section">🎯 健康目标</div><div class="field"><label>你的目标</label><div class="radio-group"><div class="radio-pill"><input type="radio" name="goal" id="goal-cut" value="cut"><label for="goal-cut"><span class="emoji">🔥</span>减脂塑形</label></div><div class="radio-pill"><input type="radio" name="goal" id="goal-keep" value="keep" checked=""><label for="goal-keep"><span class="emoji">🌿</span>保持健康</label></div><div class="radio-pill"><input type="radio" name="goal" id="goal-bulk" value="bulk"><label for="goal-bulk"><span class="emoji">💪</span>增肌增重</label></div></div></div><div class="field"><label>日常活动水平</label><select class="input" id="pf-activity"><option value="sedentary">久坐少动（1.2）</option><option value="light">轻度活动（1.375）</option><option value="moderate" selected="">中度活动（1.55）</option><option value="active">高度活动（1.725）</option><option value="very">极高强度（1.9）</option></select></div></form>
+    <div class="flex gap-sm mt-2">
+        <button type="button" class="btn btn-ghost" onclick="window.YDJK_UI.closeModal('onboardModal')" style="flex:1">取消</button>
+        <button type="button" class="btn btn-primary" onclick="window.YDJK_UI.submitProfileForm()" style="flex:1">保存档案，开始使用 →</button>
+      </div>
+  <button class="modal-close" aria-label="关闭">✕</button></div>
+</div>
+
+<script src="assets/js/supabase-config.js?v=56"></script>
+<script src="assets/js/storage.js?v=56"></script>
+<script src="assets/js/data.js?v=56"></script>
+<script src="assets/js/charts.js?v=56"></script>
+<script src="assets/js/app.js?v=56"></script>
+<script src="assets/js/pages/home.js?v=56"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+
+<!-- 底部 Tab 导航（移动端 App 式） -->
+<nav class="tab-bar">
+  <a class="tab-item active" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="discover" href="discover.html"><span class="tab-ico">🧭</span><span class="tab-lbl">发现</span></a>
+  <button class="tab-plus" id="tabPlusBtn" aria-label="快速记录"><span>＋</span></button>
+  <a class="tab-item" data-tab="tracker" href="tracker.html"><span class="tab-ico">📊</span><span class="tab-lbl">记录</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
+</nav>
+
+<!-- 快速记录面板 -->
+<div class="modal-overlay" id="quickModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">⚡ 快速记录</div>
+    <div class="modal-sub">随手记，养成习惯更简单</div>
+    <div class="quick-grid">
+      <button class="quick-btn" onclick="location.href='foods.html'"><span class="qb-ico">🍽️</span><b>记一餐</b><small>查询食物热量</small></button>
+      <button class="quick-btn" onclick="location.href='tracker.html#workout'"><span class="qb-ico">🏃</span><b>运动打卡</b><small>记录今日运动</small></button>
+      <button class="quick-btn" onclick="location.href='tracker.html#weight'"><span class="qb-ico">⚖️</span><b>记录体重</b><small>追踪体重变化</small></button>
+      <button class="quick-btn" onclick="location.href='tracker.html'"><span class="qb-ico">💧</span><b>饮水打卡</b><small>补充水分</small></button>
+    </div>
+  <button class="modal-close" aria-label="关闭">✕</button></div>
+</div>
+
+<style>
+.tab-bar{display:none}
+@media(max-width:900px){
+  .tab-bar{
+    position:fixed;bottom:0;left:0;right:0;z-index:150;
+    display:flex;align-items:center;justify-content:space-around;
+    background:var(--surface);border-top:1px solid var(--border);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    backdrop-filter:blur(14px);
+  }
+  .tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;color:var(--muted);font-size:.68rem;font-weight:700;text-decoration:none;border-radius:12px;transition:color .2s}
+  .tab-item .tab-ico{font-size:1.25rem;line-height:1}
+  .tab-item.active{color:var(--primary)}
+  .tab-plus{
+    width:52px;height:52px;border-radius:50%;border:none;margin-top:-22px;
+    background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;font-size:1.6rem;
+    box-shadow:0 8px 24px rgba(139,92,246,.45);display:grid;place-items:center;cursor:pointer;
+    transition:transform .2s;
+  }
+  .tab-plus:active{transform:scale(.92)}
+  body{padding-bottom:64px}
+  .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  .quick-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 12px;border:1px solid var(--border);border-radius:16px;background:var(--surface-2);cursor:pointer;transition:all .2s}
+  .quick-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
+  .qb-ico{font-size:1.8rem}
+  .quick-btn b{font-size:.9rem}
+  .quick-btn small{font-size:.7rem;color:var(--muted)}
+}
+</style>
+
+<div class="modal-overlay" id="searchModal"><div class="modal" style="max-width:640px;padding:24px"><div class="modal-header"><span class="m-icon purple">🔍</span><div><div class="modal-title">全站搜索</div><div class="modal-sub">搜索食物、训练动作、健康知识 · Ctrl+K 快速唤起</div></div></div><div class="search-box" style="margin:0 0 14px"><span class="s-ico">🔍</span><input class="input" id="searchInput" placeholder="输入关键词，如：鸡胸肉、深蹲、热身…"></div><div id="searchResults" style="max-height:44vh;overflow-y:auto"><div class="empty"><div class="e-icon">🔍</div><div class="e-title">输入关键词开始搜索</div><div class="e-desc">支持食物热量、训练动作、健康文章</div></div></div><button class="modal-close" aria-label="关闭">✕</button></div></div></body></html>

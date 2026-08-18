@@ -113,9 +113,10 @@
     }
     var arc = el('circle', { cx: c, cy: c, r: r, fill: 'none', stroke: strokeColor, 'stroke-width': thick, 'stroke-linecap': 'round', 'stroke-dasharray': circ, 'stroke-dashoffset': circ * (1 - ratio), transform: 'rotate(-90 ' + c + ' ' + c + ')', style: 'transition: stroke-dashoffset .8s cubic-bezier(.4,0,.2,1)' });
     svg.appendChild(arc);
-    var txt = el('text', { x: c, y: c - 2, 'text-anchor': 'middle', style: 'font-size:' + (size * 0.24) + 'px;font-weight:800;fill:var(--text)' });
+    var isEmpty = !opts.value || opts.value <= 0;
+    var txt = el('text', { x: c, y: c - 2, 'text-anchor': 'middle', style: 'font-size:' + (size * (isEmpty ? 0.19 : 0.24)) + 'px;font-weight:' + (isEmpty ? 600 : 800) + ';fill:' + (isEmpty ? 'var(--muted)' : 'var(--text)') });
     txt.textContent = (opts.decimals ? Number(opts.value).toFixed(opts.decimals) : Math.round(opts.value)) + (opts.unit || '');
-    var sub = el('text', { x: c, y: c + size * 0.14, 'text-anchor': 'middle', style: 'font-size:' + (size * 0.09) + 'px;fill:var(--muted)' });
+    var sub = el('text', { x: c, y: c + size * 0.14, 'text-anchor': 'middle', style: 'font-size:' + (size * 0.09) + 'px;fill:var(--muted);font-weight:600' });
     sub.textContent = opts.label || '';
     svg.appendChild(txt);
     svg.appendChild(sub);
