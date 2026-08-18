@@ -62,28 +62,47 @@
 
 <section class="section-sm">
   <div class="container">
-    <!-- 今日运动记录（自由记录） -->
+    <!-- 训练记录（卡片式） -->
     <div class="card mb-3">
       <div class="flex-between" style="margin-bottom:14px">
-        <div class="card-title" style="margin:0">💪 今天做了什么运动？</div>
-        <span class="small muted" id="exerciseDate"></span>
+        <div class="card-title" style="margin:0">💪 我的训练记录</div>
+        <button class="btn btn-primary btn-sm" id="btnAddWorkout" type="button">＋ 添加训练</button>
       </div>
-      <p class="small muted mb-2" style="margin-top:0">自由选择，想记多少记多少，记录后生成你的专属建议</p>
-      <div id="workoutTypes" class="flex gap-sm flex-wrap" style="margin-bottom:16px"></div>
-      <div class="field" style="margin-bottom:12px">
-        <label class="small">运动时长（分钟）</label>
-        <div class="range-wrap">
-          <input type="range" id="workoutMinutes" min="0" max="300" value="30" step="5">
-          <span class="range-val" id="workoutMinutesVal">30 分钟</span>
+      <p class="small muted mb-2" style="margin-top:0">记录每次训练：练了什么部位、做了什么动作、几组几次</p>
+      <div id="workoutList"></div>
+      <div id="workoutEmpty" class="empty hidden"><div class="e-icon">🏋️</div><div class="e-title">还没有训练记录</div><div class="e-desc">点右上角「添加训练」，记下今天的训练</div></div>
+    </div>
+
+    <!-- 添加训练弹窗 -->
+    <div class="modal-overlay" id="addWorkoutModal">
+      <div class="modal" style="max-width:500px">
+        <div class="modal-title">🏋️ 添加训练</div>
+        <div class="modal-sub">记录一次训练的内容</div>
+        <div class="field">
+          <label>训练日期</label>
+          <input class="input" type="date" id="wkDate">
         </div>
-      </div>
-      <div class="field" style="margin-bottom:14px">
-        <label class="small">备注（可选）</label>
-        <input class="input" id="workoutNote" placeholder="如：跑步 5 公里，感觉不错…" maxlength="50">
-      </div>
-      <div class="flex gap-sm">
-        <button class="btn btn-primary btn-sm" id="saveWorkout" style="flex:1">✅ 记录今日运动</button>
-        <button class="btn btn-ghost btn-sm" id="clearWorkout" style="flex:none">清空</button>
+        <div class="field">
+          <label>训练部位</label>
+          <div class="radio-group" id="wkMuscleGroup"></div>
+        </div>
+        <div class="field">
+          <label>训练动作</label>
+          <input class="input" id="wkAction" placeholder="如：卧推、深蹲、跑步…" maxlength="20">
+        </div>
+        <div class="grid grid-3" style="gap:10px">
+          <div class="field" style="margin:0"><label>组数</label><input class="input" type="number" id="wkSets" min="1" max="20" placeholder="组" inputmode="numeric"></div>
+          <div class="field" style="margin:0"><label>每组次数</label><input class="input" type="number" id="wkReps" min="1" max="100" placeholder="次" inputmode="numeric"></div>
+          <div class="field" style="margin:0"><label>重量(kg)</label><input class="input" type="number" id="wkWeight" min="0" placeholder="可选" inputmode="decimal"></div>
+        </div>
+        <div class="field">
+          <label>训练时长（分钟，可选）</label>
+          <input class="input" type="number" id="wkMinutes" min="0" max="600" placeholder="如：60" inputmode="numeric">
+        </div>
+        <div class="flex gap-sm mt-2">
+          <button class="btn btn-ghost" style="flex:1" onclick="window.YDJK_UI.closeModal('addWorkoutModal')">取消</button>
+          <button class="btn btn-primary" id="btnSaveWorkout" style="flex:1">保存训练</button>
+        </div>
       </div>
     </div>
 

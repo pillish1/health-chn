@@ -160,6 +160,40 @@
     return streak;
   }
 
+  /* ---------- 训练记录（卡片式） ---------- */
+  function getWorkouts(date) { return getJSON('workouts:' + date, []); }
+  function getAllWorkouts() {
+    var w = {};
+    for (var i = 0; i < LS.length; i++) {
+      var k = LS.key(i);
+      if (k.indexOf(NS + 'workouts:') === 0) w[k.replace(NS + 'workouts:', '')] = JSON.parse(LS.getItem(k) || '[]');
+    }
+    return w;
+  }
+  function addWorkout(date, workout) {
+    var list = getWorkouts(date);
+    if (!workout.id) workout.id = uid();
+    workout.date = date;
+    list.push(workout);
+    setJSON('workouts:' + date, list);
+    cloudSave();
+    return workout;
+  }
+  function removeWorkout(date, id) {
+    var list = getWorkouts(date).filter(function (w) { return w.id !== id; });
+    setJSON('workouts:' + date, list);
+    cloudSave();
+  }
+  function updateWorkout(date, workout) {
+    var list = getWorkouts(date).map(function (w) { return w.id === workout.id ? workout : w; });
+    setJSON('workouts:' + date, list);
+    cloudSave();
+  }
+  /* 今日是否有训练 */
+  function todayWorkoutDone(date) {
+    return getWorkouts(date || today()).length > 0;
+  }
+
   /* ---------- 食物收藏 ---------- */
   function getFavs() { return getJSON('favs', []); }
   function isFav(name) { return getFavs().indexOf(name) !== -1; }
@@ -352,6 +386,7 @@
     getWeights: getWeights, addWeight: addWeight, removeWeight: removeWeight, latestWeight: latestWeight,
     getCheckins: getCheckins, getCheckin: getCheckin, setCheckin: setCheckin,
     removeCheckin: removeCheckin, checkinStreak: checkinStreak,
+    getWorkouts: getWorkouts, getAllWorkouts: getAllWorkouts, addWorkout: addWorkout, removeWorkout: removeWorkout, updateWorkout: updateWorkout, todayWorkoutDone: todayWorkoutDone,
     getMeals: getMeals, addMeal: addMeal, updateMeal: updateMeal, removeMeal: removeMeal, mealSummary: mealSummary,
     getFavs: getFavs, isFav: isFav, toggleFav: toggleFav, removeFav: removeFav,
     getUserArticles: getUserArticles, saveUserArticle: saveUserArticle, removeUserArticle: removeUserArticle,

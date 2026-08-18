@@ -24,19 +24,21 @@
       goalCal = YDJK.goalCalories(tdee, p.goal);
     }
     var meal = YDJK.mealSummary(today);
-    var checkin = YDJK.getCheckin(today);
-    var minutes = checkin ? (checkin.minutes || 0) : 0;
-    var workoutDone = checkin && ((checkin.types && checkin.types.length) || checkin.plan || (checkin.minutes && checkin.minutes > 0));
+    var todayWorkouts = YDJK.getWorkouts(today);
+    var workoutCount = todayWorkouts.length;
+    var minutes = 0;
+    todayWorkouts.forEach(function (w) { minutes += Number(w.minutes) || 0; });
+    var workoutDone = workoutCount > 0;
     var streak = YDJK.checkinStreak();
 
-    /* 渲染三环（颜色区分：摄入蓝、运动绿、饮水青） */
+    /* 渲染双环（摄入蓝、运动绿） */
     YDJK_CHARTS.donutChart(document.getElementById('ringMeal'), {
       value: Math.round(meal.kcal), max: Math.round(goalCal), unit: ' kcal', label: '摄入', size: 118, decimals: 0,
       color: meal.kcal > goalCal ? '#ef4444' : '#2563eb'
     });
     YDJK_CHARTS.donutChart(document.getElementById('ringWorkout'), {
-      value: minutes, max: 60, unit: ' 分钟', label: '运动', size: 118, decimals: 0,
-      color: workoutDone ? '#10b981' : '#10b981'
+      value: workoutDone ? Math.max(workoutCount, minutes / 30) : 0, max: 5, unit: '', label: workoutDone ? workoutCount + ' 项训练' : '运动', size: 118, decimals: 0,
+      color: '#10b981'
     });
 
     /* 数据速览（dash-meta） */
@@ -113,14 +115,14 @@
     if (!el) return;
     var today = YDJK.today();
     var meal = YDJK.mealSummary(today);
-    var checkin = YDJK.getCheckin(today);
-    var workoutDone = checkin && ((checkin.types && checkin.types.length) || checkin.plan || (checkin.minutes && checkin.minutes > 0));
+    var todayWk = YDJK.getWorkouts(today);
+    var workoutDone = todayWk.length > 0;
     var p = YDJK.getProfile();
     var goalCal = 2000;
     if (p) { var bmr = YDJK.calcBMR(p); var tdee = YDJK.calcTDEE(bmr, p.activity); goalCal = YDJK.goalCalories(tdee, p.goal); }
     var tasks = [
       { icon: '🍽️', label: '记录饮食', done: meal.count > 0, sub: meal.kcal + ' / ' + Math.round(goalCal) + ' kcal', href: 'foods.html', action: null },
-      { icon: '🏃', label: '记录运动', done: !!workoutDone, sub: workoutDone ? (checkin.minutes ? checkin.minutes + ' 分钟' : '已记录') : '记录今天的运动', href: 'plans.html', action: workoutDone ? null : 'quickCheckin' }
+      { icon: '🏃', label: '记录运动', done: workoutDone, sub: workoutDone ? todayWk.length + ' 项训练' : '记录今天的训练', href: 'plans.html', action: workoutDone ? null : 'quickCheckin' }
     ];
     el.innerHTML = '<div class="task-list">' + tasks.map(function (t) {
       var actionHtml = t.action ? '<button class="btn btn-primary btn-xs js-task-action" data-action="' + t.action + '" style="margin-left:8px">' + (t.action === 'quickWater' ? '+250ml' : '打卡') + '</button>' : '';
@@ -136,11 +138,7 @@
         e.stopPropagation();
         var act = b.dataset.action;
         if (act === 'quickCheckin') {
-          YDJK.setCheckin(today, { types: ['other'], minutes: 30, plan: 'quick' });
-          window.YDJK_UI.toast('🏃 已记录 30 分钟运动');
-          renderTasks();
-          renderWeekRate();
-          renderDashboard();
+          location.href = 'plans.html';
         }
       });
     });
@@ -160,8 +158,7 @@
     var week = YDJK.weekDates(today);
     var doneDays = 0;
     week.forEach(function (d) {
-      var c = YDJK.getCheckin(d);
-      if (c && ((c.types && c.types.length) || c.plan || (c.minutes && c.minutes > 0))) doneDays++;
+      if (YDJK.getWorkouts(d).length > 0) doneDays++;
     });
     var total = week.length;
     var pct = Math.round(doneDays / total * 100);
@@ -169,12 +166,12 @@
     el.innerHTML =
       '<div class="card" style="padding:16px 18px">' +
       '<div class="flex-between" style="margin-bottom:8px">' +
-      '<span class="card-title" style="margin:0">📊 本周打卡</span>' +
-      '<span class="small"><b style="color:' + barColor + '">' + doneDays + '/' + total + '</b> 天 · ' + pct + '%</span></div>' +
+      '<span class="card-title" style="margin:0">📊 本周训练</span>' +
+      '<span class="small"><b style="color:' + barColor + '">' + doneDays + '/' + total + '</b> 天</span></div>' +
       '<div class="week-bar" style="height:8px;background:var(--border);border-radius:99px;overflow:hidden">' +
       '<div style="width:' + pct + '%;height:100%;background:' + barColor + ';border-radius:99px;transition:width .6s ease"></div></div>' +
       '<div class="small muted mt-2">' +
-      (pct === 0 ? '本周还没打卡，现在开始吧 💪' : pct >= 80 ? '本周状态很棒，继续保持！🌟' : pct >= 50 ? '过半了，再坚持一下！' : '本周打卡率偏低，加油！') +
+      (pct === 0 ? '本周还没训练，现在开始吧 💪' : pct >= 80 ? '本周状态很棒，继续保持！🌟' : pct >= 50 ? '过半了，再坚持一下！' : '本周训练偏少，加油！') +
       '</div></div>';
   }
 
