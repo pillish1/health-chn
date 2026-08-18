@@ -53,6 +53,23 @@
     if (statKcalEl) statKcalEl.textContent = Math.round(meal.kcal) + ' / ' + Math.round(goalCal);
     var statBmiEl = document.getElementById('statBmi');
     if (statBmiEl) statBmiEl.textContent = bmi ? bmi.toFixed(1) : '--';
+    // 每日目标（个性化：建档后显示热量+营养素）
+    var dgEl = document.getElementById('dailyGoal');
+    if (dgEl) {
+      if (p) {
+        var m = YDJK.macros(goalCal, p.goal);
+        dgEl.style.display = 'block';
+        dgEl.innerHTML = '<div class="dg-title">🎯 你的每日目标</div>' +
+          '<div class="dg-items">' +
+          '<div class="dg-item"><b>' + Math.round(goalCal) + '</b><span>热量 kcal</span></div>' +
+          '<div class="dg-item"><b>' + Math.round(m.protein) + 'g</b><span>蛋白质</span></div>' +
+          '<div class="dg-item"><b>' + Math.round(m.carbs) + 'g</b><span>碳水</span></div>' +
+          '<div class="dg-item"><b>' + Math.round(m.fat) + 'g</b><span>脂肪</span></div>' +
+          '</div>';
+      } else {
+        dgEl.style.display = 'none';
+      }
+    }
     // 无档案时优先显示建档引导
     var hasProfile = !!p;
     if (!hasProfile) {

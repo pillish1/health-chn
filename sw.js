@@ -1,44 +1,31 @@
 /* ============================================================
-   悦动健康 · Service Worker v3（离线缓存 + 自动更新）
+   悦动健康 · Service Worker（离线缓存 + 自动更新）
    ============================================================ */
-var CACHE = 'yuedong-health-v62';
+var CACHE = 'yuedong-health-v74';
 var ASSETS = [
   './',
   './index.html',
-  './bmi.html',
-  './calorie.html',
-  './plans.html',
-  './foods.html',
   './tracker.html',
-  './articles.html',
-  './discover.html',
-  './about.html',
-  './login.html',
+  './foods.html',
+  './plans.html',
   './profile.html',
-  './report.html',
-  './achievements.html',
-  './assets/js/pages/report.js?v=62',
-  './admin.html',
-  './publish.html',
+  './login.html',
+  './welcome.html',
+  './about.html',
   './404.html',
   './manifest.json',
-  './assets/css/style.css?v=62',
-  './assets/js/storage.js?v=62',
-  './assets/js/data.js?v=62',
-  './assets/js/charts.js?v=62',
-  './assets/js/app.js?v=62',
-  './assets/js/supabase-config.js?v=62',
-  './assets/js/pages/home.js?v=62',
-  './assets/js/pages/bmi.js?v=62',
-  './assets/js/pages/calorie.js?v=62',
-  './assets/js/pages/plans.js?v=62',
-  './assets/js/pages/foods.js?v=62',
-  './assets/js/pages/tracker.js?v=62',
-  './assets/js/pages/articles.js?v=62',
-  './assets/js/pages/login.js?v=62',
-  './assets/js/pages/profile.js?v=62',
-  './assets/js/pages/admin.js?v=62',
-  './assets/js/pages/data-manage.js?v=62',
+  './assets/css/style.css?v=74',
+  './assets/js/storage.js?v=74',
+  './assets/js/data.js?v=74',
+  './assets/js/charts.js?v=74',
+  './assets/js/app.js?v=74',
+  './assets/js/supabase-config.js?v=74',
+  './assets/js/pages/home.js?v=74',
+  './assets/js/pages/tracker.js?v=74',
+  './assets/js/pages/foods.js?v=74',
+  './assets/js/pages/plans.js?v=74',
+  './assets/js/pages/login.js?v=74',
+  './assets/js/pages/profile.js?v=74',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/favicon-32.png'
@@ -72,7 +59,11 @@ self.addEventListener('fetch', function (e) {
       }
       return res;
     }).catch(function () {
-      return caches.match(req).then(function (hit) { return hit || caches.match('./index.html'); });
+      return caches.match(req).then(function (cached) {
+        if (cached) return cached;
+        if (req.mode === 'navigate') return caches.match('./index.html');
+        return Response.error();
+      });
     })
   );
 });

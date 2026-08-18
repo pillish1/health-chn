@@ -1453,3 +1453,10 @@ html[data-theme="dark"] .hero-card {
   body { background: var(--surface); }
   .container { padding: 0 16px; }
 }
+/* 每日目标 */
+.daily-goal { margin-top: 14px; padding: 12px 14px; background: var(--surface-2); border-radius: 14px; }
+.dg-title { font-size: .78rem; font-weight: 800; margin-bottom: 8px; color: var(--text-2); }
+.dg-items { display: flex; gap: 8px; }
+.dg-item { flex: 1; text-align: center; padding: 6px 4px; background: var(--surface); border-radius: 10px; }
+.dg-item b { display: block; font-size: .9rem; font-weight: 900; color: var(--primary); }
+.dg-item span { font-size: .62rem; color: var(--muted); }
