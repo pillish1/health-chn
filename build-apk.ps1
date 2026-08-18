@@ -1,10 +1,10 @@
-# ============================================================
+﻿# ============================================================
 # 悦动健康 · 自动打包脚本
 # 用法：pwsh build-apk.ps1
 # 每次打包自动递增小版本号（v1.1 → v1.2 → v1.3 ...）
 # 输出：D:\health-chn\悦动健康-vX.Y-YYYYMMDD.apk（保留历史版本）
 # ============================================================
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 $dir = "D:\health-chn"
 
 Write-Host "== 1/4 同步 www（源 → mobile/www） ==" -ForegroundColor Cyan
