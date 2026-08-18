@@ -153,7 +153,7 @@
         if (!byType[t.id]) return '';
         var kcal = 0;
         meals.forEach(function (m) { if (m.type === t.id) kcal += m.kcal; });
-        return '<span class="brief-chip blue"><b>' + typeNames[t.id] || t.label + '</b> ' + byType[t.id] + ' 条 · ' + Math.round(kcal) + ' kcal</span>';
+        return '<span class="brief-chip blue"><b>' + (typeNames[t.id] || t.label) + '</b> ' + byType[t.id] + ' 条 · ' + Math.round(kcal) + ' kcal</span>';
       }).filter(Boolean).join('');
       html += '<div class="brief-card"><div class="brief-title"><i class="ic" data-icon="food"></i> 今日饮食</div>' +
         '<div class="brief-chips">' + typeStr + '</div></div>';

@@ -86,16 +86,17 @@
       <div class="energy-body">
         <div class="energy-ring"><div id="ringMeal"></div></div>
         <div class="energy-info">
-          <div class="ei-row"><i class="ic ei-ico blue" data-icon="food"></i><span>已摄入</span><b id="eiIntake">0</b><span class="muted">/ 目标 <b id="eiGoal">2000</b> kcal</span></div>
-          <div class="ei-row"><i class="ic ei-ico green" data-icon="flame"></i><span>今日总消耗</span><b id="eiBurn">0</b><span class="muted">kcal</span></div>
+          <div class="ei-row"><i class="ic ei-ico blue" data-icon="food"></i><span>已摄入</span><b id="eiIntake">0</b><span class="muted">/ 建议摄入 <b id="eiGoal">2000</b> kcal</span></div>
+          <div class="ei-row"><i class="ic ei-ico green" data-icon="flame"></i><span>今日消耗</span><b id="eiBurn">0</b><span class="muted">kcal</span></div>
           <div class="ei-detail" id="eiDetail"></div>
           <div class="ei-row"><i class="ic ei-ico purple" data-icon="target"></i><span>净摄入</span><b id="eiNet">0</b><span class="muted">kcal</span><span id="netTag" class="net-tag"></span></div>
+          <div class="ei-note"><i class="ic" data-icon="tip"></i> 建议摄入 = 达成目标的一日热量；今日消耗 = 基础代谢 + 日常活动 + 运动。消耗 &gt; 摄入即热量缺口（利于减脂）</div>
         </div>
       </div>
       <div class="energy-macros" id="energyMacros"></div>
       <div class="energy-actions">
-        <button class="btn btn-primary btn-lg" style="flex:1" onclick="location.href='foods.html'"><i class="ic" data-icon="food"></i> 记一餐</button>
-        <button class="btn btn-outline btn-lg" style="flex:1" onclick="location.href='plans.html'"><i class="ic" data-icon="run"></i> 记运动</button>
+        <button class="btn btn-primary" style="flex:1" onclick="location.href='foods.html'"><i class="ic" data-icon="food"></i> 记一餐</button>
+        <button class="btn btn-outline" style="flex:1" onclick="location.href='plans.html'"><i class="ic" data-icon="run"></i> 记运动</button>
       </div>
     </div>
 
