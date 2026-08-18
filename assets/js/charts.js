@@ -107,6 +107,7 @@
       var defs = el('defs', {});
       var lg = el('linearGradient', { id: 'donutGrad' + donutGradSeq, x1: '0', y1: '0', x2: '1', y2: '1' });
       lg.appendChild(el('stop', { offset: '0%', 'stop-color': '#3b82f6' }));
+      lg.appendChild(el('stop', { offset: '55%', 'stop-color': '#06b6d4' }));
       lg.appendChild(el('stop', { offset: '100%', 'stop-color': '#8b5cf6' }));
       defs.appendChild(lg);
       svg.appendChild(defs);
