@@ -17,3 +17,4 @@ Thumbs.db
 mobile/*.log
 mobile/build-apk.bat# APK ????
 *.apk
+push-retry.log
