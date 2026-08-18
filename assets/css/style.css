@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    悦动健康 · 设计系统 v2
    ============================================================ */
 :root {
@@ -1121,6 +1121,8 @@ html[data-theme="dark"] .meal-item:hover, html[data-theme="dark"] .wk-item:hover
 /* 页脚柔和 */
 .footer { border-top: 1px solid transparent; }
 
+
+.intake-tip{font-size:.68rem;color:var(--muted);text-align:center;margin-top:12px;opacity:.75}
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
 .modal-overlay.sheet .modal {

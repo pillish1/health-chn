@@ -82,8 +82,9 @@
         var pct = Math.min(100, Math.round(mm.v / t * 100));
         return '<div class="mb-2"><div class="flex-between small" style="margin-bottom:6px"><span><b>' + mm.name + '</b> <span class="muted">' + mm.v + ' / ' + t + ' g</span></span><b>' + pct + '%</b></div>' +
           '<div class="progress"><div class="progress-bar" style="width:' + pct + '%;background:' + mm.color + '"></div></div></div>';
-      }).join('') +
-      '<div class="small muted mt-2">' + (window.YDJK_ICON ? window.YDJK_ICON('tip') : '💡') + ' 数值为每 100g 可食部的常见估算值，实际以包装标签为准。</div>';
+      }).join('');
+    var tipEl = document.getElementById('intakeTip');
+    if (tipEl) tipEl.innerHTML = '数值为每 100g 可食部的常见估算值，实际以包装标签为准';
   }
 
   function renderRecent() {
