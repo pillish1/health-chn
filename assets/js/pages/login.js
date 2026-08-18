@@ -1,9 +1,7 @@
-/* 登录/注册页逻辑 v2：手机号验证码 + 邮箱双模式 */
+/* 登录/注册页逻辑 v3：仅手机号验证码（未注册手机号自动注册） */
 (function () {
   'use strict';
   var YDJK = window.YDJK;
-
-  var authMode = 'phone'; // phone | email
 
   function setMsg(text, ok) {
     var el = document.getElementById('authMsg');
@@ -139,19 +137,6 @@
       return;
     }
 
-    /* 登录方式切换 */
-    var tabs = document.querySelectorAll('.auth-tab');
-    function switchAuthTab(m) {
-      authMode = m;
-      tabs.forEach(function (t) { t.classList.toggle('active', t.dataset.mode === m); });
-      document.getElementById('phoneForm').style.display = m === 'phone' ? '' : 'none';
-      document.getElementById('emailForm').style.display = m === 'email' ? '' : 'none';
-      document.getElementById('authTitle').textContent = m === 'phone' ? '欢迎回来' : '邮箱登录';
-      document.getElementById('authSub').textContent = m === 'phone' ? '手机号登录，健康数据云端同步' : '使用邮箱和密码登录';
-      setMsg('');
-    }
-    tabs.forEach(function (t) { t.addEventListener('click', function () { switchAuthTab(t.dataset.mode); }); });
-
     /* 获取验证码 */
     var sendBtn = document.getElementById('sendCode');
     var countdown = null;
@@ -181,54 +166,6 @@
       if (!validPhone(phone)) { setMsg('❌ 请输入正确的 11 位手机号'); return; }
       if (!/^\d{6}$/.test(code)) { setMsg('❌ 请输入 6 位验证码'); return; }
       await phoneLogin(phone, code);
-    });
-
-    /* 邮箱登录提交 */
-    document.getElementById('authSubmitEmail').addEventListener('click', async function () {
-      var email = document.getElementById('authEmail').value.trim();
-      var password = document.getElementById('authPassword').value;
-      if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { setMsg('请输入有效邮箱'); return; }
-      if (password.length < 6) { setMsg('密码至少 6 位'); return; }
-      var submit = document.getElementById('authSubmitEmail');
-      submit.disabled = true;
-      submit.textContent = '登录中…';
-      try {
-        var r = await window.YD_CLOUD.login(email, password);
-        if (r.ok && r.data && r.data.access_token) {
-          await afterLogin(r.data.user);
-        } else {
-          submit.disabled = false;
-          submit.textContent = '登 录';
-          var msg = (r.data && (r.data.msg || r.data.error_description)) || '登录失败';
-          if (String(msg).indexOf('invalid') >= 0) msg = '邮箱或密码错误';
-          setMsg('❌ ' + msg);
-        }
-      } catch (e) {
-        submit.disabled = false;
-        submit.textContent = '登 录';
-        setMsg('❌ 网络异常，请重试');
-      }
-    });
-
-    /* 忘记密码（邮件重置） */
-    var forgotBtn = document.getElementById('forgotPw');
-    if (forgotBtn) forgotBtn.addEventListener('click', async function () {
-      var email = document.getElementById('authEmail').value.trim();
-      if (!email) { setMsg('请输入邮箱后点击忘记密码'); return; }
-      forgotBtn.disabled = true;
-      forgotBtn.textContent = '发送中…';
-      var cloud = window.YD_CLOUD;
-      var r = await cloud.request('/auth/v1/recover', { method: 'POST', body: { email: email } });
-      forgotBtn.disabled = false;
-      forgotBtn.textContent = '忘记密码？';
-      if (r.ok) setMsg('✅ 重置邮件已发送，请查收（含垃圾箱）');
-      else setMsg('❌ 发送失败：' + ((r.data && r.data.msg) || '邮箱可能未注册'));
-    });
-
-    /* 微信登录（占位：需企业资质接入） */
-    var wxBtn = document.getElementById('wechatLogin');
-    if (wxBtn) wxBtn.addEventListener('click', function () {
-      setMsg('💬 微信登录即将开放，敬请期待！');
     });
   });
 })();

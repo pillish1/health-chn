@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -58,12 +58,7 @@
           <h1 id="authTitle">欢迎回来</h1>
           <p id="authSub">手机号登录，健康数据云端同步</p>
         </div>
-        <!-- 登录方式切换 -->
-        <div class="auth-tabs" id="authTabs">
-          <button class="auth-tab active" data-mode="phone">📱 手机登录</button>
-          <button class="auth-tab" data-mode="email">✉️ 邮箱登录</button>
-        </div>
-        <!-- 手机登录 -->
+        <!-- 手机号登录（未注册手机号自动创建账号） -->
         <div id="phoneForm">
           <div class="field">
             <label>手机号</label>
@@ -81,30 +76,7 @@
             <span class="muted small">未注册手机号将自动创建账号</span>
           </div>
         </div>
-        <!-- 邮箱登录（备选） -->
-        <div id="emailForm" style="display:none">
-          <div class="field">
-            <label>邮箱</label>
-            <input class="input" type="email" id="authEmail" placeholder="you@example.com" autocomplete="email">
-          </div>
-          <div class="field">
-            <label>密码</label>
-            <input class="input" type="password" id="authPassword" placeholder="至少 6 位" autocomplete="current-password">
-          </div>
-          <button class="btn btn-primary btn-block btn-lg" id="authSubmitEmail">登 录</button>
-          <div class="auth-switch" id="forgotRow">
-            <button class="btn-link" id="forgotPw">忘记密码？</button>
-          </div>
-        </div>
         <div id="authMsg" class="small muted text-center mt-2"></div>
-        <!-- 第三方登录 -->
-        <div class="auth-divider"><span>其他方式</span></div>
-        <div class="social-login">
-          <button class="social-btn wechat" id="wechatLogin" type="button">
-            <span class="sb-ico">💬</span>微信登录
-            <span class="sb-badge">即将开放</span>
-          </button>
-        </div>
       </div>
       <div class="auth-features">
         <h3>登录后你能获得</h3>
