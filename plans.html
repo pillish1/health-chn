@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -62,15 +62,32 @@
 
 <section class="section-sm">
   <div class="container">
-    <!-- 训练记录（卡片式） -->
+    <!-- 运动日历（主入口：点日期查看/记录那天的训练） -->
+    <div class="card mb-3">
+      <div class="flex-between" style="margin-bottom:10px">
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 运动日历</div>
+        <div class="cal-nav">
+          <button id="calPrev" title="上个月" aria-label="上个月">‹</button>
+          <span class="small muted" id="monthLabel" style="min-width:90px;text-align:center"></span>
+          <button id="calNext" title="下个月" aria-label="下个月">›</button>
+        </div>
+      </div>
+      <p class="small muted" style="margin:0 0 10px">点选日期，查看并记录那一天的运动</p>
+      <div id="calHeatmap"></div>
+    </div>
+
+    <!-- 训练记录（选中日期） -->
     <div class="card mb-3">
       <div class="flex-between" style="margin-bottom:14px">
-        <div class="card-title" style="margin:0"><i class="ic" data-icon="workout"></i> 我的训练记录</div>
-        <button class="btn btn-primary btn-sm" id="btnAddWorkout" type="button">＋ 添加训练</button>
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="workout"></i> <span id="wkDateLabel">今天的训练</span></div>
+        <div class="flex gap-sm" style="gap:8px">
+          <button class="btn btn-outline btn-xs" id="wkTodayBtn" type="button">今天</button>
+          <button class="btn btn-primary btn-sm" id="btnAddWorkout" type="button">＋ 添加训练</button>
+        </div>
       </div>
-      <p class="small muted mb-2" style="margin-top:0">记录每次训练：练了什么部位、做了什么动作、几组几次</p>
       <div id="workoutList"></div>
-      <div id="workoutEmpty" class="empty hidden"><div class="e-icon"><i class="ic" data-icon="dumbbell"></i></div><div class="e-title">还没有训练记录</div><div class="e-desc">点右上角「添加训练」，记下今天的训练</div></div>
+      <div id="workoutEmpty" class="empty hidden"><div class="e-icon"><i class="ic" data-icon="dumbbell"></i></div><div class="e-title" id="wkEmptyTitle">还没有训练记录</div><div class="e-desc">点「添加训练」或在日历上选日期，记下当天的运动</div></div>
+      <div class="alert success mt-2" id="wkTotal" style="display:none"></div>
     </div>
 
     <!-- 添加训练弹窗（点选动作模式） -->
@@ -123,30 +140,6 @@
           <button class="btn btn-primary" id="btnSaveEditWk" style="flex:1">保存修改</button>
         </div>
       </div>
-    </div>
-
-    <!-- 本周运动概览 -->
-    <div class="card mb-3">
-      <div class="card-title"><i class="ic" data-icon="stats"></i> 本周运动概览</div>
-      <div class="stat-grid" id="weekWorkoutStats">
-        <div class="stat-card blue"><div class="s-icon"><i class="ic" data-icon="calendar"></i></div><div class="s-value" id="wsDays">--</div><div class="s-label">运动天数</div></div>
-        <div class="stat-card green"><div class="s-icon">⏱️</div><div class="s-value" id="wsMinutes">--</div><div class="s-label">总时长(分)</div></div>
-        <div class="stat-card orange"><div class="s-icon"><i class="ic" data-icon="flame"></i></div><div class="s-value" id="wsStreak">--</div><div class="s-label">连续天数</div></div>
-      </div>
-      <div class="small muted mt-2" id="weekWorkoutDetail"></div>
-    </div>
-
-    <!-- 运动日历（历史记录） -->
-    <div class="card mb-3">
-      <div class="flex-between" style="margin-bottom:10px">
-        <div class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 运动日历</div>
-        <div class="cal-nav">
-          <button id="calPrev" title="上个月" aria-label="上个月">‹</button>
-          <span class="small muted" id="monthLabel" style="min-width:90px;text-align:center"></span>
-          <button id="calNext" title="下个月" aria-label="下个月">›</button>
-        </div>
-      </div>
-      <div id="calHeatmap"></div>
     </div>
 
     <!-- 运动建议（基于记录生成） -->

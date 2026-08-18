@@ -125,7 +125,8 @@
 
   /* ---------- 日历热力图 ---------- */
   /* data: { '2026-08-14': 3 } 级别 0-4 */
-  function calendarHeatmap(container, year, month, data) {
+  function calendarHeatmap(container, year, month, data, opts) {
+    opts = opts || {};
     container.innerHTML = '';
     var days = window.YDJK.monthDates(year, month);
     var first = new Date(year, month - 1, 1).getDay(); // 0=Sun
@@ -147,11 +148,13 @@
     days.forEach(function (ds) {
       var cell = document.createElement('div');
       cell.className = 'cal-cell';
+      cell.setAttribute('data-date', ds);
       var dayNum = Number(ds.slice(8));
       var lv = data[ds] || 0;
       cell.classList.add('lv' + lv);
       if (ds === todayStr) cell.classList.add('today');
       if (ds > todayStr) cell.classList.add('future');
+      if (ds === (opts.selected || '')) cell.classList.add('selected');
       var dEl = document.createElement('span');
       dEl.className = 'd';
       dEl.textContent = dayNum;

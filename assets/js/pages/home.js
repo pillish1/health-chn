@@ -26,8 +26,12 @@
     var meal = YDJK.mealSummary(today);
     var todayWorkouts = YDJK.getWorkouts(today);
     var workoutCount = todayWorkouts.length;
-    var minutes = 0;
-    todayWorkouts.forEach(function (w) { minutes += Number(w.minutes) || 0; });
+    var workoutKcal = 0;
+    todayWorkouts.forEach(function (w) {
+      var met = Number(w.met) || 5;
+      var mins = (Number(w.minutes) || 0) > 0 ? Number(w.minutes) : (w.sets ? w.sets * 3 : 20);
+      workoutKcal += Math.round(met * 3.5 * (weight || 60) / 200 * mins);
+    });
     var workoutDone = workoutCount > 0;
     var streak = YDJK.checkinStreak();
 
@@ -37,7 +41,7 @@
       color: meal.kcal > goalCal ? '#ef4444' : '#2563eb'
     });
     YDJK_CHARTS.donutChart(document.getElementById('ringWorkout'), {
-      value: workoutDone ? Math.max(workoutCount, minutes / 30) : 0, max: 5, unit: '', label: workoutDone ? workoutCount + ' 项训练' : '运动', size: 118, decimals: 0,
+      value: workoutDone ? Math.min(500, workoutKcal) : 0, max: 500, unit: ' kcal', label: workoutDone ? '消耗 ' + workoutKcal : '运动', size: 118, decimals: 0,
       color: '#10b981'
     });
 

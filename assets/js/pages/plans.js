@@ -18,60 +18,96 @@
   ];
   var selectedMuscle = 'chest';
   var currentEditWk = null; // 正在编辑的训练 {date, id}
+  var currentDate = YDJK.today(); // 当前选中日期（日历点击驱动）
 
-  /* ---------- 训练记录列表 ---------- */
+  function fmtCN(d) {
+    var today = YDJK.today();
+    if (d === today) return '今天';
+    if (d === YDJK.addDays(today, -1)) return '昨天';
+    var p = String(d).split('-');
+    return (p[1] ? Number(p[1]) : 0) + '月' + (p[2] ? Number(p[2]) : 0) + '日';
+  }
+  /* ---------- 运动消耗估算（MET 法） ---------- */
+  var MET_MUSCLE = { chest: 5, back: 5, legs: 6, shoulder: 4.5, arms: 4.5, core: 4.5, cardio: 7, yoga: 3 };
+  var MET_CARDIO = { 跑步: 8, 快走: 4.3, 慢跑: 7, 游泳: 7, 骑车: 6, 跳绳: 10, 椭圆机: 6, '开合跳': 8, 'HIIT': 8, 爬楼梯: 7, '波比跳': 9, 登山跑: 8 };
+  function metFor(w) {
+    if (w.met) return Number(w.met);
+    var a = DATA.ACTIONS.filter(function (x) { return x.name === w.action; })[0];
+    if (a && MET_CARDIO[a.name]) return MET_CARDIO[a.name];
+    if (a && a.muscle === 'cardio') return 7;
+    if (a && MET_MUSCLE[a.muscle]) return MET_MUSCLE[a.muscle];
+    return 5;
+  }
+  function estMinutes(w) {
+    if (w.minutes && Number(w.minutes) > 0) return Number(w.minutes);
+    if (w.sets) return w.sets * 3; // 每组约 3 分钟（动作+组间休息）
+    return 20; // 未填时长默认 20 分钟
+  }
+  function workoutKcal(w) {
+    var p = YDJK.getProfile();
+    var kg = (p && p.weight) || 60;
+    return Math.round(metFor(w) * 3.5 * kg / 200 * estMinutes(w));
+  }
+
+  /* ---------- 训练记录（选中日期） ---------- */
   function renderWorkoutList() {
     var list = document.getElementById('workoutList');
     var empty = document.getElementById('workoutEmpty');
     if (!list) return;
-    var all = YDJK.getAllWorkouts();
-    // 按日期倒序
-    var dates = Object.keys(all).filter(function (d) { return all[d].length > 0; }).sort().reverse();
-    if (!dates.length) {
+    var workouts = YDJK.getWorkouts(currentDate);
+    if (!workouts.length) {
       list.innerHTML = '';
       if (empty) empty.classList.remove('hidden');
+      var ttl = document.getElementById('wkTotal');
+      if (ttl) ttl.style.display = 'none';
+      var et = document.getElementById('wkEmptyTitle');
+      if (et) et.textContent = (currentDate === YDJK.today()) ? '今天还没有训练记录' : fmtCN(currentDate) + '还没有训练记录';
       return;
     }
     if (empty) empty.classList.add('hidden');
-    list.innerHTML = dates.map(function (date) {
-      var workouts = all[date];
-      var totalMin = 0;
-      var items = workouts.map(function (w) {
-        totalMin += Number(w.minutes) || 0;
-        var muscleName = '';
-        var mu = MUSCLES.find(function (m) { return m.id === w.muscle; });
-        if (mu) muscleName = mu.label;
-        var setsReps = (w.sets ? w.sets + ' 组 × ' + (w.reps || '') + ' 次' : '');
-        var weight = w.weight ? ' · ' + w.weight + 'kg' : '';
-        var min = w.minutes ? ' · ⏱ ' + w.minutes + ' 分钟' : '';
-        return '<div class="wk-item">' +
-          '<div class="wk-item-head"><b>' + esc(w.action || '训练') + '</b>' +
-          '<div class="wk-item-actions"><button class="btn btn-ghost btn-xs js-edit-wk" data-date="' + date + '" data-id="' + w.id + '" title="编辑">✎</button>' +
-          '<button class="btn btn-ghost btn-xs js-del-wk" data-date="' + date + '" data-id="' + w.id + '">✕</button></div></div>' +
-          (muscleName ? '<div class="wk-item-meta">' + muscleName + '</div>' : '') +
-          (setsReps || weight || min ? '<div class="wk-item-meta">' + [setsReps, weight.replace(' · ', ''), min.replace(' · ', '')].filter(Boolean).join(' · ') + '</div>' : '') +
-          '</div>';
-      }).join('');
-      var header = '<div class="wk-day">' +
-        '<b>' + esc(date) + '</b>' +
-        '<span class="small muted">' + workouts.length + ' 项' + (totalMin ? ' · ' + totalMin + ' 分钟' : '') + '</span></div>';
-      return '<div class="wk-card">' + header + items + '</div>';
+    var totalKcal = 0;
+    var items = workouts.map(function (w) {
+      var kcal = workoutKcal(w);
+      totalKcal += kcal;
+      var muscleName = '';
+      var mu = MUSCLES.filter(function (m) { return m.id === w.muscle; })[0];
+      if (mu) muscleName = mu.label.replace(/^[^\u4e00-\u9fa5]*/, '');
+      var setsReps = (w.sets ? w.sets + ' 组 × ' + (w.reps || '') + ' 次' : '');
+      var weight = w.weight ? ' · ' + w.weight + 'kg' : '';
+      var min = (w.minutes ? ' · ' + w.minutes + ' 分钟' : ' · 约 ' + estMinutes(w) + ' 分钟');
+      return '<div class="wk-item">' +
+        '<div class="wk-item-head"><b>' + esc(w.action || '训练') + '</b>' +
+        '<div class="wk-item-actions"><button class="btn btn-ghost btn-xs js-edit-wk" data-date="' + currentDate + '" data-id="' + w.id + '" title="编辑">✎</button>' +
+        '<button class="btn btn-ghost btn-xs js-del-wk" data-date="' + currentDate + '" data-id="' + w.id + '">✕</button></div></div>' +
+        (muscleName ? '<div class="wk-item-meta">' + muscleName + '</div>' : '') +
+        '<div class="wk-item-meta">' + [setsReps, weight.replace(' · ', ''), min.replace(' · ', '')].filter(Boolean).join(' · ') + ' · 🔥 约 ' + kcal + ' kcal</div>' +
+        '</div>';
     }).join('');
+    list.innerHTML = items;
+    var ttl = document.getElementById('wkTotal');
+    if (ttl) {
+      ttl.style.display = 'block';
+      ttl.textContent = '共 ' + workouts.length + ' 项 · 消耗约 ' + totalKcal + ' kcal' + (currentDate === YDJK.today() ? '（今天）' : '');
+    }
+    // 列表标题
+    var dl = document.getElementById('wkDateLabel');
+    if (dl) dl.textContent = (currentDate === YDJK.today() ? '今天的训练' : fmtCN(currentDate) + '的训练');
+    // 编辑/删除事件
     list.querySelectorAll('.js-del-wk').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        YDJK.removeWorkout(btn.dataset.date, btn.dataset.id);
+        YDJK.removeWorkout(currentDate, btn.dataset.id);
         renderWorkoutList();
-        renderWeekStats();
         renderSuggest();
+        renderCalendar();
         window.YDJK_UI.toast('已删除该训练');
       });
     });
     list.querySelectorAll('.js-edit-wk').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var list2 = YDJK.getWorkouts(btn.dataset.date);
+        var list2 = YDJK.getWorkouts(currentDate);
         var w = list2.filter(function (x) { return x.id === btn.dataset.id; })[0];
         if (!w) return;
-        currentEditWk = { date: btn.dataset.date, id: btn.dataset.id };
+        currentEditWk = { date: currentDate, id: btn.dataset.id };
         var mu = MUSCLES.filter(function (m) { return m.id === w.muscle; })[0];
         var sub = document.getElementById('ewSub');
         if (sub) sub.textContent = esc(w.action || '训练') + (mu ? ' · ' + mu.label.replace(/^[^\u4e00-\u9fa5]*/, '') : '');
@@ -82,6 +118,13 @@
         window.YDJK_UI.openModal('editWorkoutModal');
       });
     });
+  }
+
+  /* 选中日期（日历点击驱动） */
+  function setWorkoutDate(d) {
+    currentDate = d;
+    renderWorkoutList();
+    renderCalendar();
   }
 
   /* ---------- 添加训练（点选动作） ---------- */
@@ -209,7 +252,7 @@
     });
   }
   function saveWorkout() {
-    var date = document.getElementById('wkDate').value || YDJK.today();
+    var date = document.getElementById('wkDate').value || currentDate;
     var minutes = Number(document.getElementById('wkMinutes').value) || 0;
     var ids = Object.keys(selectedActions);
     if (!ids.length) { window.YDJK_UI.toast('请至少点选一个动作', 'err'); return; }
@@ -222,36 +265,20 @@
         sets: s.sets || 3,
         reps: s.reps || 10,
         weight: s.weight ? Number(s.weight) : null,
-        minutes: minutes > 0 ? minutes : null
+        minutes: minutes > 0 ? minutes : null,
+        met: a ? metFor({ muscle: a.muscle, action: a.name }) : null
       });
     });
     window.YDJK_UI.closeModal('addWorkoutModal');
     window.YDJK_UI.toast('✅ 已记录 ' + ids.length + ' 个动作');
     selectedActions = {};
     document.getElementById('wkMinutes').value = '';
+    currentDate = date;
     renderWorkoutList();
-    renderWeekStats();
     renderSuggest();
+    renderCalendar();
   }
   /* ---------- 本周运动概览 ---------- */
-  function renderWeekStats() {
-    var week = YDJK.weekDates(YDJK.today());
-    var days = 0, minutes = 0;
-    week.forEach(function (d) {
-      var ws = YDJK.getWorkouts(d);
-      if (ws.length) { days++; ws.forEach(function (w) { minutes += Number(w.minutes) || 0; }); }
-    });
-    var de = document.getElementById('wsDays');
-    if (de) de.textContent = days + ' 天';
-    var me = document.getElementById('wsMinutes');
-    if (me) me.textContent = minutes;
-    var se = document.getElementById('wsStreak');
-    if (se) se.textContent = YDJK.checkinStreak() + ' 天';
-    var det = document.getElementById('weekWorkoutDetail');
-    if (det) det.textContent = days ? '本周训练 ' + days + ' 天' + (minutes ? '，累计 ' + minutes + ' 分钟' : '') + '，继续保持！' : '本周还没训练，从今天开始吧 💪';
-  }
-
-  /* ---------- 运动建议（基于记录） ---------- */
   function renderSuggest() {
     var body = document.getElementById('suggestBody');
     if (!body) return;
@@ -300,16 +327,26 @@
       data[d] = lv;
     });
     var hm = document.getElementById('calHeatmap');
-    if (hm) YDJK_CHARTS.calendarHeatmap(hm, y, m, data);
+    if (hm) {
+      YDJK_CHARTS.calendarHeatmap(hm, y, m, data, { selected: currentDate });
+      // 点日期 → 查看/记录那天
+      hm.querySelectorAll('.cal-cell').forEach(function (cell) {
+        cell.addEventListener('click', function () {
+          var d = cell.getAttribute('data-date');
+          if (!d || d > YDJK.today()) return;
+          setWorkoutDate(d);
+        });
+      });
+    }
   }
 
   /* ---------- 初始化 ---------- */
   document.addEventListener('DOMContentLoaded', function () {
-    var dEl = document.getElementById('exerciseDate');
-    if (dEl) dEl.textContent = YDJK.fmtDateCN(YDJK.today());
+    var todayBtn = document.getElementById('wkTodayBtn');
+    if (todayBtn) todayBtn.addEventListener('click', function () { setWorkoutDate(YDJK.today()); });
     var addBtn = document.getElementById('btnAddWorkout');
     if (addBtn) addBtn.addEventListener('click', function () {
-      document.getElementById('wkDate').value = YDJK.today();
+      document.getElementById('wkDate').value = currentDate;
       document.getElementById('wkMinutes').value = '';
       selectedActions = {};
       wkCurrentMuscle = 'chest';
@@ -335,11 +372,10 @@
       window.YDJK_UI.closeModal('editWorkoutModal');
       window.YDJK_UI.toast('✅ 训练已更新');
       renderWorkoutList();
-      renderWeekStats();
       renderSuggest();
+      renderCalendar();
     });
     renderWorkoutList();
-    renderWeekStats();
     renderSuggest();
     // 日历
     renderCalendar();
