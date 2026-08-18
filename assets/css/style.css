@@ -987,6 +987,47 @@ html[data-theme="dark"] .hero-card {
 body{animation:pageIn .3s var(--ease) .18s both}
 @keyframes pageIn{from{opacity:0}to{opacity:1}}
 
+
+/* ============ 首页 v4：今日能量卡 ============ */
+.energy-card{
+  max-width:980px;margin:0 auto;padding:22px 24px;border-radius:24px;
+  background:linear-gradient(160deg,var(--surface) 0%,var(--primary-soft) 130%);
+  border:1px solid var(--border);box-shadow:var(--shadow);
+}
+.energy-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.energy-body{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.energy-ring{flex:none}
+.energy-info{flex:1;min-width:180px;display:flex;flex-direction:column;gap:10px}
+.ei-row{display:flex;align-items:baseline;gap:8px;font-size:.92rem}
+.ei-row b{font-size:1.35rem;font-weight:900;color:var(--text)}
+.ei-row .muted{font-size:.8rem}
+.energy-macros{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.em-item .em-head{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:3px;color:var(--text-2)}
+.energy-actions{display:flex;gap:12px;margin-top:20px}
+@media(max-width:600px){
+  .energy-body{gap:16px}
+  .energy-info b{font-size:1.15rem}
+  .energy-card{padding:18px 16px;border-radius:20px}
+}
+/* 今日记录简览 */
+.brief-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.brief-grid{grid-template-columns:1fr}}
+.brief-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px 16px}
+.brief-title{font-size:.85rem;font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.brief-title .ic{color:var(--primary)}
+.brief-chips{display:flex;flex-wrap:wrap;gap:6px}
+.brief-chip{font-size:.72rem;padding:4px 9px;border-radius:99px;background:var(--surface-2);color:var(--text-2)}
+.brief-chip.blue{background:var(--info-soft);color:var(--info)}
+.brief-chip.green{background:#e6f9f0;color:#0d9f6e}
+/* 一周圆点 */
+.week-dots{display:flex;justify-content:space-between;gap:6px}
+.wd{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1}
+.wd-dot{width:26px;height:26px;border-radius:50%;background:var(--surface-2);border:1px solid var(--border)}
+.wd-dot.meal{background:var(--info);border-color:var(--info)}
+.wd-dot.workout{background:#10b981;border-color:#10b981}
+.wd-dot.both{background:linear-gradient(135deg,var(--info) 50%,#10b981 50%)}
+.wd-lbl{font-size:.66rem;color:var(--muted);font-weight:600}
+
 /* ============ 图标库 .ic（SVG 线性图标） ============ */
 .ic{display:inline-flex;align-items:center;justify-content:center;width:1.25em;height:1.25em;vertical-align:-0.22em;flex:none}
 .ic svg{width:100%;height:100%;display:block}

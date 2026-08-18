@@ -73,52 +73,46 @@
 </nav>
 
 <!-- 首页（与其他页面统一的 page-hero 风格） -->
-<header class="page-hero" style="padding-bottom:24px">
-  <div class="container">
-    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>今日状态</span></div>
     <div class="flex-between flex-wrap" style="gap:10px">
       <div>
         <h1 style="margin:0"><i class="ic" data-icon="home"></i> 首页</h1>
-        <p style="margin-top:6px;margin-bottom:0">记录你的每一餐、每一次运动，见证健康改变</p>
+        <p style="margin-top:6px;margin-bottom:0">记录每一餐、每一次运动</p>
       </div>
       <div id="welcomeMini"></div>
     </div>
-    <div class="dash-grid" style="margin-top:18px">
-      <div class="dash-main">
-        <div class="dash-title">
-          <div>
-            <h1 style="font-size:1.2rem;font-weight:900;margin:0">今日状态</h1>
-            <span class="muted small" id="dashDate"></span>
-          </div>
-          <span class="streak-chip" id="streakChip"><i class="ic" data-icon="flame"></i> <b id="statStreak">0</b> 天</span>
-        </div>
-        <div class="dash-rings">
-          <div class="dash-ring" id="ringMeal" title="今日摄入"></div>
-          <div class="dash-ring" id="ringWorkout" title="今日运动"></div>
-        </div>
-        <div class="daily-goal" id="dailyGoal" style="display:none"></div>
-        <div class="dash-quick">
-          <button class="btn btn-primary btn-sm" onclick="location.href='foods.html'"><i class="ic" data-icon="food"></i> 记一餐</button>
-          <button class="btn btn-outline btn-sm" onclick="location.href='plans.html'"><i class="ic" data-icon="run"></i> 记录运动</button>
+
+    <!-- 今日能量卡（主视觉） -->
+    <div class="energy-card" style="margin-top:18px">
+      <div class="energy-head">
+        <span class="muted small" id="dashDate"></span>
+        <span class="streak-chip" id="streakChip"><i class="ic" data-icon="flame"></i> <b id="statStreak">0</b> 天</span>
+      </div>
+      <div class="energy-body">
+        <div class="energy-ring"><div id="ringMeal"></div></div>
+        <div class="energy-info">
+          <div class="ei-row"><span>已摄入</span><b id="eiIntake">0</b><span class="muted">/ 目标 <b id="eiGoal">2000</b> kcal</span></div>
+          <div class="ei-row"><span>运动消耗</span><b id="eiBurn">0</b><span class="muted">kcal</span></div>
+          <div class="ei-row"><span>净摄入</span><b id="eiNet">0</b><span class="muted">kcal</span></div>
         </div>
       </div>
-      <div class="dash-side">
-        <div class="dash-tip" id="dashTip">
-          <div class="dash-tip-title"><i class="ic" data-icon="tip"></i> 今日建议</div>
-          <div class="dash-tip-body" id="dashTipBody">记录数据后，这里会给你专属建议</div>
-        </div>
-        <div class="dash-tip">
-          <div class="dash-tip-title"><i class="ic" data-icon="grid"></i> 快速入口</div>
-          <div class="dash-shortcuts">
-            <a href="foods.html" class="ds-item"><i class="ic" data-icon="food"></i> 记饮食</a>
-            <a href="plans.html" class="ds-item"><i class="ic" data-icon="run"></i> 记运动</a>
-          </div>
-        </div>
+      <div class="energy-macros" id="energyMacros"></div>
+      <div class="energy-actions">
+        <button class="btn btn-primary btn-lg" style="flex:1" onclick="location.href='foods.html'"><i class="ic" data-icon="food"></i> 记一餐</button>
+        <button class="btn btn-outline btn-lg" style="flex:1" onclick="location.href='plans.html'"><i class="ic" data-icon="run"></i> 记运动</button>
       </div>
     </div>
-        <div id="todayTasks" class="today-tasks" style="max-width:980px;margin:16px auto 0"></div>
-    <div id="weekRate" style="max-width:980px;margin:16px auto 0"></div>
-  </div>
+
+    <!-- 今日记录简览（有记录时显示） -->
+    <div id="todayBrief" style="max-width:980px;margin:16px auto 0"></div>
+
+    <!-- 一周一览 -->
+    <div id="weekCard" style="max-width:980px;margin:16px auto 0"></div>
+
+    <!-- 今日建议 -->
+    <div class="dash-tip" id="dashTip" style="max-width:980px;margin:16px auto 0">
+      <div class="dash-tip-title"><i class="ic" data-icon="tip"></i> 今日建议</div>
+      <div class="dash-tip-body" id="dashTipBody">记录数据后，这里会给你专属建议</div>
+    </div>
 </header>
 
 <footer class="footer">

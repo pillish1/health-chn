@@ -12,149 +12,152 @@
     if (dateEl) dateEl.textContent = YDJK.fmtDateCN(today);
 
     var p = YDJK.getProfile();
-    var weight = p ? p.weight : 0;
-    var lw = YDJK.latestWeight();
-    if (lw) weight = lw.weight;
+    var weight = p ? p.weight : 60;
 
-    /* 三环数据 */
+    /* 目标热量 */
     var goalCal = 2000;
     if (p) {
       var bmr = YDJK.calcBMR({ gender: p.gender, age: p.age, height: p.height, weight: weight });
       var tdee = YDJK.calcTDEE(bmr, p.activity);
       goalCal = YDJK.goalCalories(tdee, p.goal);
     }
+
+    /* 摄入 / 消耗 */
     var meal = YDJK.mealSummary(today);
-    var todayWorkouts = YDJK.getWorkouts(today);
-    var workoutCount = todayWorkouts.length;
-    var workoutKcal = 0;
-    todayWorkouts.forEach(function (w) {
+    var intake = Math.round(meal.kcal);
+    var workouts = YDJK.getWorkouts(today);
+    var burn = 0;
+    workouts.forEach(function (w) {
       var met = Number(w.met) || 5;
       var mins = (Number(w.minutes) || 0) > 0 ? Number(w.minutes) : (w.sets ? w.sets * 3 : 20);
-      workoutKcal += Math.round(met * 3.5 * (weight || 60) / 200 * mins);
+      burn += Math.round(met * 3.5 * weight / 200 * mins);
     });
-    var workoutDone = workoutCount > 0;
+    var net = intake - burn;
     var streak = YDJK.checkinStreak();
 
-    /* 渲染双环（摄入蓝、运动绿） */
+    /* 摄入环 */
     YDJK_CHARTS.donutChart(document.getElementById('ringMeal'), {
-      value: Math.round(meal.kcal), max: Math.round(goalCal), unit: ' kcal', label: '摄入', size: 118, decimals: 0,
-      color: meal.kcal > goalCal ? '#ef4444' : '#2563eb'
-    });
-    YDJK_CHARTS.donutChart(document.getElementById('ringWorkout'), {
-      value: workoutDone ? Math.min(500, workoutKcal) : 0, max: 500, unit: ' kcal', label: workoutDone ? '消耗 ' + workoutKcal : '运动', size: 118, decimals: 0,
-      color: '#10b981'
+      value: intake, max: Math.round(goalCal), unit: ' kcal', label: '摄入', size: 140, decimals: 0,
+      color: intake > goalCal ? '#ef4444' : '#2563eb'
     });
 
-    /* 数据速览 */
+    /* 能量信息 */
+    var gEl = document.getElementById('eiGoal');
+    if (gEl) gEl.textContent = Math.round(goalCal);
+    var iEl = document.getElementById('eiIntake');
+    if (iEl) iEl.textContent = intake;
+    var bEl = document.getElementById('eiBurn');
+    if (bEl) bEl.textContent = burn;
+    var nEl = document.getElementById('eiNet');
+    if (nEl) { nEl.textContent = net; nEl.style.color = net > 0 ? 'var(--danger)' : 'var(--text)'; }
+
+    /* 连续天数 */
     var sc = document.getElementById('statStreak');
     if (sc) sc.textContent = streak;
-    // 每日目标（个性化：建档后显示热量+营养素）
-    var dgEl = document.getElementById('dailyGoal');
-    if (dgEl) {
-      if (p) {
-        var m = YDJK.macros(goalCal, p.goal);
-        dgEl.style.display = 'block';
-        dgEl.innerHTML = '<div class="dg-title">' + (window.YDJK_ICON ? window.YDJK_ICON('target') : '🎯') + ' 你的每日目标</div>' +
-          '<div class="dg-items">' +
-          '<div class="dg-item"><b>' + Math.round(goalCal) + '</b><span>热量 kcal</span></div>' +
-          '<div class="dg-item"><b>' + Math.round(m.protein) + 'g</b><span>蛋白质</span></div>' +
-          '<div class="dg-item"><b>' + Math.round(m.carbs) + 'g</b><span>碳水</span></div>' +
-          '<div class="dg-item"><b>' + Math.round(m.fat) + 'g</b><span>脂肪</span></div>' +
-          '</div>';
-      } else {
-        dgEl.style.display = 'none';
-      }
+
+    /* 三大营养素进度条 */
+    var mm = p ? YDJK.macros(goalCal, p.goal) : { protein: 60, carbs: 250, fat: 60 };
+    var macrosEl = document.getElementById('energyMacros');
+    if (macrosEl) {
+      var items = [
+        { name: '蛋白质', v: Math.round(meal.protein), t: Math.round(mm.protein), color: '#38bdf8' },
+        { name: '碳水', v: Math.round(meal.carbs), t: Math.round(mm.carbs), color: '#f59e0b' },
+        { name: '脂肪', v: Math.round(meal.fat), t: Math.round(mm.fat), color: '#ef4444' }
+      ];
+      macrosEl.innerHTML = items.map(function (it) {
+        var pct = Math.min(100, Math.round(it.v / it.t * 100));
+        return '<div class="em-item"><div class="em-head"><span>' + it.name + ' <b>' + it.v + '/' + it.t + 'g</b></span><b>' + pct + '%</b></div>' +
+          '<div class="progress" style="height:6px"><div class="progress-bar" style="width:' + pct + '%;background:' + it.color + '"></div></div></div>';
+      }).join('');
     }
-    // 无档案时优先显示建档引导
-    var hasProfile = !!p;
-    if (!hasProfile) {
-      var tipBody2 = document.getElementById('dashTipBody');
-      if (tipBody2) {
-        tipBody2.innerHTML = '<a href="index.html?setup=1" style="color:var(--primary);font-weight:700">先建立健康档案，让记录更有意义 →</a>';
-      }
-    } else {
-    // 今日建议（基于数据动态生成）
+
+    /* 今日记录简览 */
+    renderTodayBrief(today, meal, workouts);
+
+    /* 一周一览 */
+    renderWeekCard(today, streak);
+
+    /* 今日建议 */
     var tipBody = document.getElementById('dashTipBody');
     if (tipBody) {
       var tips = [];
+      if (!p) tips.push('<a href="index.html?setup=1" style="color:var(--primary);font-weight:700">先建立健康档案，让记录更有意义 →</a>');
       if (meal.count === 0) tips.push('还没有记录饮食，点「记一餐」开始 🍽️');
       else if (meal.kcal < goalCal * 0.5) tips.push('今日摄入偏低，记得补充优质蛋白 🥚');
       else if (meal.kcal > goalCal * 1.2) tips.push('今日摄入略高，可适当增加运动消耗 🏃');
-      if (!workoutDone) tips.push('今天还没运动，来 30 分钟动一动吧 💪');
+      if (!workouts.length) tips.push('今天还没运动，来 30 分钟动一动吧 💪');
       if (!tips.length) tips.push('今日各项指标都很棒，继续保持！🌟');
-      tipBody.textContent = tips[0];
+      tipBody.textContent = tips[0].replace(/<[^>]+>/g, '');
+      tipBody.innerHTML = tips[0];
     }
-    }
-
   }
 
-  /* 体重趋势迷你图 */
-  function renderTasks() {
-    var el = document.getElementById('todayTasks');
+  /* 今日记录简览：饮食按餐次 + 运动列表 */
+  function renderTodayBrief(today, meal, workouts) {
+    var el = document.getElementById('todayBrief');
     if (!el) return;
-    var today = YDJK.today();
-    var meal = YDJK.mealSummary(today);
-    var todayWk = YDJK.getWorkouts(today);
-    var workoutDone = todayWk.length > 0;
-    var p = YDJK.getProfile();
-    var goalCal = 2000;
-    if (p) { var bmr = YDJK.calcBMR(p); var tdee = YDJK.calcTDEE(bmr, p.activity); goalCal = YDJK.goalCalories(tdee, p.goal); }
-    var tasks = [
-      { icon: (window.YDJK_ICON ? window.YDJK_ICON('food') : '🍽️'), label: '记录饮食', done: meal.count > 0, sub: meal.kcal + ' / ' + Math.round(goalCal) + ' kcal', href: 'foods.html', action: null },
-      { icon: (window.YDJK_ICON ? window.YDJK_ICON('run') : '🏃'), label: '记录运动', done: workoutDone, sub: workoutDone ? todayWk.length + ' 项训练' : '记录今天的训练', href: 'plans.html', action: workoutDone ? null : 'quickCheckin' }
-    ];
-    el.innerHTML = '<div class="task-list">' + tasks.map(function (t) {
-      var actionHtml = t.action ? '<button class="btn btn-primary btn-xs js-task-action" data-action="' + t.action + '" style="margin-left:8px">' + (t.action === 'quickWater' ? '+250ml' : '打卡') + '</button>' : '';
-      return '<div class="task-item' + (t.done ? ' done' : '') + '" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;text-decoration:none;color:var(--text)">' +
-        '<span class="task-ico">' + t.icon + '</span>' +
-        '<div class="task-main" style="flex:1"><b>' + t.label + '</b><span class="task-sub" style="display:block;font-size:.78rem;color:var(--muted)">' + t.sub + '</span></div>' +
-        (t.done ? '<span style="color:var(--success,#10b981);font-weight:800">✓</span>' : (t.href ? '<button class="btn btn-ghost btn-xs js-task-go" data-href="' + t.href + '" style="color:var(--primary)">去记录</button>' : '')) +
-        actionHtml + '</div>';
-    }).join('') + '</div>';
-    // 绑定快捷操作
-    el.querySelectorAll('.js-task-action').forEach(function (b) {
-      b.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var act = b.dataset.action;
-        if (act === 'quickCheckin') {
-          location.href = 'plans.html';
-        }
-      });
-    });
-    el.querySelectorAll('.js-task-go').forEach(function (b) {
-      b.addEventListener('click', function (e) {
-        e.stopPropagation();
-        location.href = b.dataset.href;
-      });
-    });
+    if (meal.count === 0 && !workouts.length) { el.innerHTML = ''; return; }
+    var html = '<div class="brief-grid">';
+    if (meal.count > 0) {
+      var meals = YDJK.getMeals(today);
+      var byType = {};
+      meals.forEach(function (m) { byType[m.type] = (byType[m.type] || 0) + 1; });
+      var typeNames = { breakfast: '早餐', lunch: '午餐', dinner: '晚餐', snack: '加餐' };
+      var typeStr = DATA.MEAL_TYPES.map(function (t) {
+        if (!byType[t.id]) return '';
+        var kcal = 0;
+        meals.forEach(function (m) { if (m.type === t.id) kcal += m.kcal; });
+        return '<span class="brief-chip blue"><b>' + typeNames[t.id] || t.label + '</b> ' + byType[t.id] + ' 条 · ' + Math.round(kcal) + ' kcal</span>';
+      }).filter(Boolean).join('');
+      html += '<div class="brief-card"><div class="brief-title"><i class="ic" data-icon="food"></i> 今日饮食</div>' +
+        '<div class="brief-chips">' + typeStr + '</div></div>';
+    }
+    if (workouts.length) {
+      var wkHtml = workouts.slice(0, 4).map(function (w) {
+        var kcal = 0;
+        var met = Number(w.met) || 5;
+        var mins = (Number(w.minutes) || 0) > 0 ? Number(w.minutes) : (w.sets ? w.sets * 3 : 20);
+        kcal = Math.round(met * 3.5 * ((window.YDJK.getProfile() || {}).weight || 60) / 200 * mins);
+        return '<span class="brief-chip green">' + esc(w.action) + ' · ' + (w.sets ? w.sets + '×' + (w.reps || '') : '') + ' · ' + kcal + ' kcal</span>';
+      }).join('');
+      html += '<div class="brief-card"><div class="brief-title"><i class="ic" data-icon="run"></i> 今日运动</div>' +
+        '<div class="brief-chips">' + wkHtml + '</div></div>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
   }
 
-  /* 本周达成率（App 化数据卡片） */
-  function renderWeekRate() {
-    var el = document.getElementById('weekRate');
+  /* 一周一览：7 天圆点（饮食蓝/运动绿）+ 连续天数 */
+  function renderWeekCard(today, streak) {
+    var el = document.getElementById('weekCard');
     if (!el) return;
-    var today = YDJK.today();
     var week = YDJK.weekDates(today);
-    var doneDays = 0;
-    week.forEach(function (d) {
-      if (YDJK.getWorkouts(d).length > 0) doneDays++;
-    });
-    var total = week.length;
-    var pct = Math.round(doneDays / total * 100);
-    var barColor = pct >= 80 ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444';
-    el.innerHTML =
-      '<div class="card" style="padding:16px 18px">' +
-      '<div class="flex-between" style="margin-bottom:8px">' +
-      '<span class="card-title" style="margin:0">' + (window.YDJK_ICON ? window.YDJK_ICON('stats') : '📊') + ' 本周训练</span>' +
-      '<span class="small"><b style="color:' + barColor + '">' + doneDays + '/' + total + '</b> 天</span></div>' +
-      '<div class="week-bar" style="height:8px;background:var(--border);border-radius:99px;overflow:hidden">' +
-      '<div style="width:' + pct + '%;height:100%;background:' + barColor + ';border-radius:99px;transition:width .6s ease"></div></div>' +
-      '<div class="small muted mt-2">' +
-      (pct === 0 ? '本周还没训练，现在开始吧 💪' : pct >= 80 ? '本周状态很棒，继续保持！🌟' : pct >= 50 ? '过半了，再坚持一下！' : '本周训练偏少，加油！') +
+    var dots = week.map(function (d) {
+      var meals = YDJK.getMeals(d).length > 0;
+      var wks = YDJK.getWorkouts(d).length > 0;
+      var cls = meals && wks ? 'both' : meals ? 'meal' : wks ? 'workout' : '';
+      var label = fmtCN(d);
+      return '<div class="wd"><div class="wd-dot' + (cls ? ' ' + cls : '') + '" title="' + label + (meals ? ' · 有饮食' : '') + (wks ? ' · 有运动' : '') + '"></div><span class="wd-lbl">' + label.replace('月', '/').replace('日', '') + '</span></div>';
+    }).join('');
+    el.innerHTML = '<div class="card" style="padding:16px 18px">' +
+      '<div class="flex-between" style="margin-bottom:12px">' +
+      '<span class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 本周记录</span>' +
+      '<span class="small muted">连续 <b style="color:var(--accent)">' + streak + '</b> 天记录</span></div>' +
+      '<div class="week-dots">' + dots + '</div>' +
+      '<div class="week-legend" style="margin-top:10px;display:flex;gap:14px;justify-content:center">' +
+      '<span class="small muted" style="display:inline-flex;align-items:center;gap:4px"><i class="wd-dot meal" style="width:10px;height:10px;display:inline-block"></i>饮食</span>' +
+      '<span class="small muted" style="display:inline-flex;align-items:center;gap:4px"><i class="wd-dot workout" style="width:10px;height:10px;display:inline-block"></i>运动</span>' +
+      '<span class="small muted" style="display:inline-flex;align-items:center;gap:4px"><i class="wd-dot both" style="width:10px;height:10px;display:inline-block"></i>都有</span>' +
       '</div></div>';
   }
 
-
+  function fmtCN(d) {
+    var today = YDJK.today();
+    if (d === today) return '今天';
+    if (d === YDJK.addDays(today, -1)) return '昨天';
+    var p = String(d).split('-');
+    return (p[1] ? Number(p[1]) : 0) + '月' + (p[2] ? Number(p[2]) : 0) + '日';
+  }
   /* 新用户引导：无任何数据时显示欢迎卡 */
   function applyGuestMode() {
     var hasData = false;
@@ -184,14 +187,12 @@
   document.addEventListener('DOMContentLoaded', function () {
     applyGuestMode();
     renderDashboard();
-    renderTasks();
-    renderWeekRate();
     // 登录后引导建档
     if (location.search.indexOf('setup=1') >= 0 && !YDJK.getProfile() && window.YDJK_UI) {
       setTimeout(function () { window.YDJK_UI.openProfileEditor(); }, 600);
     }
   });
 
-  window.onProfileSaved = function () { renderDashboard(); renderTasks(); renderWeekRate(); };
-  window.onDataChanged = function () { renderDashboard(); renderTasks(); renderWeekRate(); };
+  window.onProfileSaved = function () { renderDashboard(); };
+  window.onDataChanged = function () { renderDashboard(); };
 })();
