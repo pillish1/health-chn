@@ -54,14 +54,14 @@ html[data-theme="dark"] {
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: clip; }
 body {
   font-family: var(--font);
   color: var(--text);
   background: var(--bg);
   line-height: 1.7;
   font-size: 16px;
-  overflow-x: hidden;
+  overflow-x: clip;
   transition: background .3s var(--ease), color .3s var(--ease);
 }
 img { max-width: 100%; display: block; }
@@ -1027,7 +1027,7 @@ html[data-theme="dark"] .hero-card {
 
 /* ============ 页面进入过渡（跳转衔接更丝滑） ============ */
 body{animation:pageIn .3s var(--ease) .18s both}
-@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pageIn{from{opacity:0}to{opacity:1}}
 
 /* ============ 图标库 .ic（SVG 线性图标） ============ */
 .ic{display:inline-flex;align-items:center;justify-content:center;width:1.25em;height:1.25em;vertical-align:-0.22em;flex:none}

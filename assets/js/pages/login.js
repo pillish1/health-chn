@@ -135,6 +135,20 @@
       if (txt) txt.textContent = show ? '隐藏' : '显示';
     });
 
+    /* 忘记密码（测试阶段说明） */
+    var forgotBtn = document.getElementById('forgotPw');
+    if (forgotBtn) forgotBtn.addEventListener('click', function () {
+      var phone = document.getElementById('authPhone').value.trim();
+      var msg = '当前为测试版，暂未接入短信验证码找回密码。<br>你可以用一个新的手机号注册新账号，本地数据登录后会自动同步到新账号（正式版将支持找回）。';
+      if (!validPhone(phone)) msg = '请先输入你的手机号（仅用于记录），然后按提示操作。<br>' + msg;
+      window.YDJK_UI.confirmDialog({
+        title: '忘记密码',
+        message: msg,
+        okText: '知道了',
+        cancelText: '关闭'
+      });
+    });
+
     /* 手机号 + 密码 登录/注册 */
     document.getElementById('authSubmit').addEventListener('click', async function () {
       var phone = document.getElementById('authPhone').value.trim();
