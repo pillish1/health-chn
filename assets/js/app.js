@@ -229,13 +229,13 @@
       return '<option value="' + l.id + '"' + sel + '>' + l.label + '（' + l.factor + '）</option>';
     }).join('');
     var male = p.gender !== 'female';
-    return '<div class="form-section">👤 基本信息</div><div class="field"><label>性别</label><div class="radio-group">' +
+    return '<div class="form-section">' + (window.YDJK_ICON ? window.YDJK_ICON('user') : '👤') + ' 基本信息</div><div class="field"><label>性别</label><div class="radio-group">' +
       '<div class="radio-pill"><input type="radio" name="gender" id="g-male" value="male"' + (male ? ' checked' : '') + '><label for="g-male"><span class="emoji">👨</span>男</label></div>' +
       '<div class="radio-pill"><input type="radio" name="gender" id="g-female" value="female"' + (!male ? ' checked' : '') + '><label for="g-female"><span class="emoji">👩</span>女</label></div></div></div>' +
       '<div class="grid grid-2" style="gap:14px"><div class="field"><label>年龄</label><input class="input" type="number" id="pf-age" min="10" max="100" value="' + (p.age || 25) + '"></div>' +
       '<div class="field"><label>身高 (cm)</label><input class="input" type="number" id="pf-height" min="80" max="250" value="' + (p.height || 170) + '"></div></div>' +
       '<div class="field"><label>当前体重 (kg)</label><input class="input" type="number" id="pf-weight" min="20" max="300" step="0.1" value="' + (p.weight || 60) + '"></div>' +
-      '<div class="form-section">🎯 健康目标</div><div class="field"><label>你的目标</label><div class="radio-group">' + goals + '</div></div>' +
+      '<div class="form-section">' + (window.YDJK_ICON ? window.YDJK_ICON('target') : '🎯') + ' 健康目标</div><div class="field"><label>你的目标</label><div class="radio-group">' + goals + '</div></div>' +
       '<div class="field"><label>日常活动水平</label><select class="input" id="pf-activity">' + levels + '</select></div>';
   }
 
@@ -345,8 +345,8 @@
         openModal('searchModal');
         setTimeout(function () { var i = document.getElementById('searchInput'); if (i) i.focus(); }, 80);
       } else {
-        // 没有搜索面板则跳发现页
-        location.href = 'discover.html';
+        // 没有搜索面板则回首页
+        location.href = 'index.html';
       }
     });
   }
@@ -448,23 +448,10 @@
       var h = now.getHours();
       var m = now.getMinutes();
       var t = h * 60 + m;
-      if (cfg.water) {
-        var ws = (typeof cfg.waterStart === 'number' ? cfg.waterStart : 9) * 60;
-        var we = (typeof cfg.waterEnd === 'number' ? cfg.waterEnd : 21) * 60;
-        var wInt = (typeof cfg.waterInterval === 'number' && cfg.waterInterval > 0 ? cfg.waterInterval : 2) * 60;
-        if (t >= ws && t <= we && (t - ws) % wInt === 0) {
-          var today = YDJK.today();
-          var water = YDJK.getWater(today);
-          var goal = YDJK.getWaterGoal();
-          if (water < goal) fireNotif('💧 该喝水啦', '今日饮水 ' + water + '/' + goal + ' ml，记得补水', 'water');
-        }
-      }
       if (cfg.checkin) {
         var ch = typeof cfg.checkinHour === 'number' ? cfg.checkinHour : 20;
         if (h === ch && m === 0) {
-          var c = YDJK.getCheckin(YDJK.today());
-          var done = c && ((c.types && c.types.length) || c.plan || (c.minutes && c.minutes > 0));
-          if (!done) fireNotif('🏃 今天还没运动', '来 30 分钟运动，完成今天的打卡吧', 'checkin');
+          if (YDJK.getWorkouts(YDJK.today()).length === 0) fireNotif('🏃 今天还没运动', '来 30 分钟运动，记录今天的训练吧', 'checkin');
         }
       }
       if (cfg.meal) {
@@ -489,16 +476,8 @@
       var at = null;
       var title = '';
       var body = '';
-      if (cfg.water) {
-        var ws = (typeof cfg.waterStart === 'number' ? cfg.waterStart : 9);
-        var we = (typeof cfg.waterEnd === 'number' ? cfg.waterEnd : 21);
-        var wInt = (typeof cfg.waterInterval === 'number' && cfg.waterInterval > 0 ? cfg.waterInterval : 2);
-        if (m === 0 && min >= ws * 60 && min <= we * 60 && (min - ws * 60) % (wInt * 60) === 0) {
-          at = t; title = '💧 该喝水啦'; body = '起来喝杯水，保持水分充足';
-        }
-      }
       if (!at && cfg.checkin && h === (typeof cfg.checkinHour === 'number' ? cfg.checkinHour : 20) && m === 0) {
-        at = t; title = '🏃 今天还没运动'; body = '来 30 分钟运动，完成今天的打卡吧';
+        at = t; title = '🏃 今天还没运动'; body = '来 30 分钟运动，记录今天的训练吧';
       }
       if (!at && cfg.meal) {
         var mealTimes = { 7: ['🍽️ 早餐时间', '记得记录今天的早餐'], 12: ['🍽️ 午餐时间', '记得记录今天的午餐'], 18: ['🍽️ 晚餐时间', '记得记录今天的晚餐'] };
@@ -511,8 +490,8 @@
     return list;
   }
   function getReminderCfg() {
-    try { return JSON.parse(localStorage.getItem('ydjk:reminders') || '{"enabled":false,"water":true,"checkin":true,"meal":false,"waterStart":9,"waterEnd":21,"waterInterval":2,"checkinHour":20}'); }
-    catch (e) { return { enabled: false, water: true, checkin: true, meal: false, waterStart: 9, waterEnd: 21, waterInterval: 2, checkinHour: 20 }; }
+    try { return JSON.parse(localStorage.getItem('ydjk:reminders') || '{"enabled":false,"water":false,"checkin":true,"meal":false,"waterStart":9,"waterEnd":21,"waterInterval":2,"checkinHour":20}'); }
+    catch (e) { return { enabled: false, water: false, checkin: true, meal: false, waterStart: 9, waterEnd: 21, waterInterval: 2, checkinHour: 20 }; }
   }
   function setReminderCfg(cfg) {
     try { localStorage.setItem('ydjk:reminders', JSON.stringify(cfg)); } catch (e) {}
@@ -676,18 +655,14 @@
     if (!D) { box.innerHTML = '<div class="empty"><div class="e-title">数据未就绪</div></div>'; return; }
     var foods = D.FOODS.filter(function (f) { return f.name.toLowerCase().indexOf(q) !== -1; }).slice(0, 6);
     var acts = D.ACTIONS.filter(function (a) { return a.name.toLowerCase().indexOf(q) !== -1 || a.desc.toLowerCase().indexOf(q) !== -1; }).slice(0, 6);
-    var arts = D.ARTICLES.filter(function (a) { return (a.title + a.excerpt).toLowerCase().indexOf(q) !== -1; }).slice(0, 6);
     var html = '';
-    if (foods.length) html += '<div class="search-group"><b class="search-group-title">🥗 食物</b>' + foods.map(function (f) {
+    if (foods.length) html += '<div class="search-group"><b class="search-group-title">' + (window.YDJK_ICON ? window.YDJK_ICON('meal') : '🥗') + ' 食物</b>' + foods.map(function (f) {
       return '<a class="list-row" href="foods.html"><div class="lr-main"><b class="small">' + escHtml(f.name) + '</b><span class="lr-sub">' + f.cat + ' · ' + f.kcal + ' kcal/100g</span></div><span class="tag gray">去查看 →</span></a>';
     }).join('') + '</div>';
-    if (acts.length) html += '<div class="search-group"><b class="search-group-title">🏋️ 动作</b>' + acts.map(function (a) {
+    if (acts.length) html += '<div class="search-group"><b class="search-group-title">' + (window.YDJK_ICON ? window.YDJK_ICON('dumbbell') : '🏋️') + ' 动作</b>' + acts.map(function (a) {
       return '<a class="list-row" href="plans.html"><div class="lr-main"><b class="small">' + escHtml(a.name) + '</b><span class="lr-sub">' + escHtml(a.sets) + '</span></div><span class="tag gray">去查看 →</span></a>';
     }).join('') + '</div>';
-    if (arts.length) html += '<div class="search-group"><b class="search-group-title">📖 文章</b>' + arts.map(function (a) {
-      return '<a class="list-row" href="articles.html#article-' + a.id + '"><div class="lr-main"><b class="small">' + escHtml(a.title) + '</b></div><span class="tag gray">去阅读 →</span></a>';
-    }).join('') + '</div>';
-    if (!html) html = '<div class="empty"><div class="e-icon">🤔</div><div class="e-title">没有找到「' + escHtml(q) + '」</div><div class="e-desc">换个关键词试试</div></div>';
+    if (!html) html = '<div class="empty"><div class="e-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🤔') + '</div><div class="e-title">没有找到「' + escHtml(q) + '」</div><div class="e-desc">换个关键词试试</div></div>';
     box.innerHTML = html;
   }
   function initSearch() {
@@ -758,40 +733,25 @@
     }
     var today = YDJK.today();
     var meal = YDJK.mealSummary(today);
-    var c = YDJK.getCheckin(today);
-    var water = YDJK.getWater(today);
-    var goal = YDJK.getWaterGoal();
+    var wk = YDJK.getWorkouts(today);
     var streak = YDJK.checkinStreak(today);
     var bmr = YDJK.calcBMR(p);
     var tdee = YDJK.calcTDEE(bmr, p.activity);
     var goalCal = Math.round(YDJK.goalCalories(tdee, p.goal));
 
     // 运动
-    var workoutDone = c && ((c.types && c.types.length) || c.plan || (c.minutes && c.minutes > 0));
-    if (!workoutDone) tips.push({ type: 'warn', icon: '🏃', text: '今天还没运动，来 30 分钟快走或一组训练吧' });
-    else if (c.minutes && c.minutes < 20) tips.push({ type: 'info', icon: '⏱️', text: '今天运动 ' + c.minutes + ' 分钟，再坚持一会儿效果更好' });
+    if (!wk.length) tips.push({ type: 'warn', icon: '🏃', text: '今天还没运动，来 30 分钟快走或一组训练吧' });
+    else if (wk.length < 2) tips.push({ type: 'info', icon: '⏱️', text: '今天已记录 ' + wk.length + ' 项训练，再坚持一会儿效果更好' });
 
     // 饮食
     var diff = meal.kcal - goalCal;
     if (meal.kcal > 0 && diff > 150) tips.push({ type: 'warn', icon: '🍽️', text: '今日摄入已超目标 ' + Math.round(diff) + ' kcal，晚餐清淡些' });
     else if (meal.kcal > 0 && diff < -400) tips.push({ type: 'info', icon: '🥗', text: '今日摄入偏少，注意保证蛋白质和营养' });
 
-    // 饮水
-    var wdiff = goal - water;
-    if (wdiff > 500) tips.push({ type: 'info', icon: '💧', text: '饮水还差 ' + wdiff + ' ml 达标，记得多喝水' });
+    // 连续训练
+    if (streak >= 3) tips.push({ type: 'ok', icon: '🔥', text: '已连续训练 ' + streak + ' 天，习惯正在养成！' });
+    else if (streak === 1) tips.push({ type: 'ok', icon: '🌟', text: '今天开始训练，好的开始是成功的一半！' });
 
-    // 打卡
-    if (streak >= 3) tips.push({ type: 'ok', icon: '🔥', text: '已连续打卡 ' + streak + ' 天，习惯正在养成！' });
-    else if (streak === 1) tips.push({ type: 'ok', icon: '🌟', text: '今天开始打卡，好的开始是成功的一半！' });
-
-    // 体重目标
-    var wg = YDJK.getWeightGoal();
-    var lw = YDJK.latestWeight();
-    if (wg && lw) {
-      var d = lw.weight - wg;
-      if (d > 0.5) tips.push({ type: 'info', icon: '⚖️', text: '距目标体重还差 ' + d.toFixed(1) + ' kg，坚持计划' });
-      else if (d < -0.5) tips.push({ type: 'ok', icon: '🎯', text: '体重已低于目标，太棒了！' });
-    }
     if (!tips.length) tips.push({ type: 'ok', icon: '✨', text: '今日各项指标都不错，继续保持！' });
     return tips;
   }

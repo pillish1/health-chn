@@ -156,7 +156,8 @@
     var c = getCheckins();
     var streak = 0;
     var d = dateStr || today();
-    while (c[d]) { streak++; d = addDays(d, -1); }
+    // 连续天数：打卡记录 或 训练记录 均可计入
+    while (c[d] || getWorkouts(d).length > 0) { streak++; d = addDays(d, -1); }
     return streak;
   }
 
@@ -323,6 +324,7 @@
       profile: getProfile(),
       weights: getWeights(),
       checkins: getCheckins(),
+      workouts: getAllWorkouts(),
       favs: getFavs(),
       mealsAll: (function () {
         var m = {};
@@ -368,6 +370,7 @@
       if (cloud.profile && !getProfile()) { saveProfile(cloud.profile); merged = true; }
       if (cloud.weights && cloud.weights.length) { setJSON('weights', cloud.weights); merged = true; }
       if (cloud.checkins) { Object.keys(cloud.checkins).forEach(function (d) { setCheckin(d, cloud.checkins[d]); }); merged = true; }
+      if (cloud.workouts) { Object.keys(cloud.workouts).forEach(function (d) { setJSON('workouts:' + d, cloud.workouts[d]); }); merged = true; }
       if (cloud.favs && cloud.favs.length) { setJSON('favs', cloud.favs); merged = true; }
       if (cloud.mealsAll) { Object.keys(cloud.mealsAll).forEach(function (d) { setJSON('meals:' + d, cloud.mealsAll[d]); }); merged = true; }
       if (cloud.waterAll) { Object.keys(cloud.waterAll).forEach(function (d) { setJSON('water:' + d, cloud.waterAll[d]); }); merged = true; }

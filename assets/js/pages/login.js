@@ -53,6 +53,7 @@
         profile: YDJK.getProfile() || null,
         weights: YDJK.getWeights() || [],
         checkins: YDJK.getCheckins() || {},
+        workouts: (window.YDJK.getAllWorkouts ? YDJK.getAllWorkouts() : {}),
         favs: (function(){ try { return JSON.parse(localStorage.getItem('ydjk:favs') || '[]'); } catch(e){ return []; } })(),
         mealsAll: (function(){
           var m = {};
@@ -109,6 +110,7 @@
     if (cloud.profile && !local.profile) merged.profile = cloud.profile;
     if (cloud.weights && cloud.weights.length >= (local.weights || []).length) merged.weights = cloud.weights;
     if (cloud.checkins) { var c = Object.assign({}, cloud.checkins, local.checkins || {}); merged.checkins = c; }
+    if (cloud.workouts) { var w = Object.assign({}, cloud.workouts, local.workouts || {}); merged.workouts = w; }
     if (cloud.favs && cloud.favs.length) merged.favs = cloud.favs;
     if (cloud.mealsAll) { var mm = Object.assign({}, cloud.mealsAll, local.mealsAll || {}); merged.mealsAll = mm; }
     if (cloud.waterAll) { var ww = Object.assign({}, cloud.waterAll, local.waterAll || {}); merged.waterAll = ww; }

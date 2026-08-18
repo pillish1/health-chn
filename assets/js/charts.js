@@ -156,7 +156,7 @@
       dEl.className = 'd';
       dEl.textContent = dayNum;
       cell.appendChild(dEl);
-      cell.title = ds + '：' + (lv > 0 ? '已打卡（' + lv + ' 项）' : '未打卡');
+      cell.title = ds + '：' + (lv > 0 ? '已训练（' + lv + ' 项）' : '未训练');
       wrap.appendChild(cell);
     });
     container.appendChild(wrap);
