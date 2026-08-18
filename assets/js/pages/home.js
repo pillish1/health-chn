@@ -87,8 +87,6 @@
     }
     }
 
-    /* 欢迎语/登录 */
-    renderWelcome();
   }
 
   /* 体重趋势迷你图 */
@@ -175,30 +173,10 @@
       '</div></div>';
   }
 
-  function renderWelcome() {
-    var el = document.getElementById('welcomeBar');
-    var mini = document.getElementById('welcomeMini');
-    if (!el) return;
-    var cloud = window.YD_CLOUD;
-    var user = cloud && cloud.isLoggedIn() ? cloud.currentUser() : null;
-    if (user) {
-      var nick = '';
-      try { nick = localStorage.getItem('ydjk:nickname') || ''; } catch (e) {}
-      var name = nick || (user.email || '').split('@')[0] || '用户';
-      el.innerHTML = '<div class="alert success"><span>' + (window.YDJK_ICON ? window.YDJK_ICON('wave') : '👋') + '</span><span style="flex:1">欢迎回来，<b>' + esc(name) + '</b>！数据已云端同步 ☁️</span>' +
-        '<div class="flex gap-sm" style="gap:8px;flex:none">' +
-        '<button class="btn btn-ghost btn-sm" onclick="location.href=\'profile.html\'">' + (window.YDJK_ICON ? window.YDJK_ICON('user') : '👤') + ' 资料</button>' +
-        '<button class="btn btn-primary btn-sm" onclick="location.href=\'plans.html\'">去记录 →</button></div></div>';
-    } else {
-      el.innerHTML = '<div class="alert info"><span>' + (window.YDJK_ICON ? window.YDJK_ICON('wave') : '👋') + '</span><span style="flex:1">登录后数据云端同步，多设备随时查看。</span>' +
-        '<button class="btn btn-primary btn-sm" onclick="location.href=\'login.html\'">登录 / 注册</button></div>';
-    }
-  }
 
   /* 访客/用户差异化：营销区块仅访客可见 */
   function applyGuestMode() {
-    var cloud = window.YD_CLOUD;
-    var isLogged = cloud && cloud.isLoggedIn();
+    var isLogged = false; // 本地模式：无登录
     var hasData = false;
     try {
       hasData = !!YDJK.getProfile() || YDJK.getWeights().length > 0 ||

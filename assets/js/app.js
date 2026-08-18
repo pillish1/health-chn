@@ -309,7 +309,7 @@
       var hasSetup = location.search.indexOf('setup=1') >= 0;
       var skipped = false;
       try { skipped = localStorage.getItem('ydjk:onboard-dismissed') === '1'; } catch (e) {}
-      if (!hasAnyData && !skipped && !hasSetup && page !== 'welcome.html' && page !== 'login.html') {
+      if (!hasAnyData && !skipped && !hasSetup && page !== 'welcome.html') {
         location.href = 'welcome.html';
         return;
       }
@@ -510,93 +510,13 @@
     });
   }
 
-  /* 移动端顶部头像按钮（mProfileBtn） */
-  function updateMobileProfileBtn(avatarUrl, display, logged) {
+  /* 移动端顶部头像按钮（mProfileBtn，本地模式直达我的页） */
+  function updateMobileProfileBtn() {
     var mp = document.getElementById('mProfileBtn');
     if (!mp) return;
-    if (logged && avatarUrl) {
-      mp.innerHTML = '<img src="' + avatarUrl + '" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block">';
-      mp.style.padding = '0';
-      mp.style.width = '36px';
-      mp.style.height = '36px';
-      mp.style.display = 'grid';
-      mp.style.placeItems = 'center';
-    } else if (logged) {
-      mp.innerHTML = '<span style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;display:grid;place-items:center;font-size:.9rem;font-weight:800">' + ((display || '?').charAt(0) || '?').toUpperCase() + '</span>';
-      mp.style.padding = '0';
-      mp.style.width = '36px';
-      mp.style.height = '36px';
-      mp.style.display = 'grid';
-      mp.style.placeItems = 'center';
-    } else {
-      mp.innerHTML = window.YDJK_ICON ? window.YDJK_ICON('user') : '👤';
-      mp.style.padding = '';
-      mp.style.width = '';
-      mp.style.height = '';
-      mp.style.display = '';
-    }
-    mp.title = logged ? (display + ' · 我的') : '登录 / 注册';
-    mp.onclick = function () { location.href = logged ? 'profile.html' : 'login.html'; };
-  }
-
-  /* ---------- 登录状态导航 ---------- */
-  function initAuthNav() {
-    var actions = document.querySelector('.nav-actions');
-    if (!actions || actions.querySelector('.js-auth-btn')) return;
-    var btn = document.createElement('button');
-    btn.className = 'icon-btn js-auth-btn';
-    btn.title = '登录';
-    btn.setAttribute('aria-label', '登录');
-    actions.insertBefore(btn, actions.firstChild);
-    function render() {
-      var cloud = window.YD_CLOUD;
-      if (cloud && cloud.isLoggedIn()) {
-        var user = cloud.currentUser();
-        var email = (user && user.email) || '用户';
-        var nick = '';
-        try { nick = localStorage.getItem('ydjk:nickname') || ''; } catch (e) {}
-        var avatarUrl = '';
-        try { avatarUrl = localStorage.getItem('ydjk:avatar') || ''; } catch (e) {}
-        function updateBtn() {
-          var display = nick || (email || '用').split('@')[0];
-          if (avatarUrl) {
-            btn.innerHTML = '<img src="' + avatarUrl + '" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block">';
-            btn.style.padding = '0';
-            btn.style.border = 'none';
-            btn.style.width = '40px';
-            btn.style.height = '40px';
-          } else {
-            btn.innerHTML = '<span style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;display:grid;place-items:center;font-size:.95rem;font-weight:800">' + (display.charAt(0) || '?').toUpperCase() + '</span>';
-            btn.style.padding = '0';
-            btn.style.border = 'none';
-          }
-          btn.title = display + '（' + email + '）· 点击管理账号';
-        }
-        updateBtn();
-        updateMobileProfileBtn(avatarUrl, nick || (email || '用').split('@')[0], true);
-        // 从云端加载昵称/头像
-        if (cloud.loadProfile) {
-          cloud.loadProfile().then(function (p) {
-            if (p) {
-              if (p.nickname) { try { localStorage.setItem('ydjk:nickname', p.nickname); } catch (e) {} nick = p.nickname; }
-              if (p.avatar_url) { try { localStorage.setItem('ydjk:avatar', p.avatar_url); } catch (e) {} avatarUrl = p.avatar_url; }
-              updateBtn();
-            }
-          }).catch(function () {});
-        }
-        btn.onclick = function () { location.href = 'profile.html'; };
-      } else {
-        btn.innerHTML = window.YDJK_ICON ? window.YDJK_ICON('user') : '👤';
-        btn.title = '登录 / 注册';
-        btn.onclick = function () { location.href = 'login.html'; };
-        updateMobileProfileBtn('', '', false);
-      }
-    }
-    render();
-    // 登录状态变化时刷新（登录页跳转回来）
-    window.addEventListener('storage', function (e) {
-      if (e.key === 'ydjk:session' || e.key === 'ydjk:cloud-logged') render();
-    });
+    mp.innerHTML = window.YDJK_ICON ? window.YDJK_ICON('user') : '👤';
+    mp.title = '我的';
+    mp.onclick = function () { location.href = 'profile.html'; };
   }
 
   /* ---------- PWA 安装引导 ---------- */
@@ -833,26 +753,9 @@
     initSWUpdate();
     initCrossTab();
     initInstallPrompt();
-    initAuthNav();
     initTabBar();
     initMSearch();
     initNotifications();
-    // 已登录时自动拉取云端最新数据
-    if (window.YDJK && window.YDJK.isCloudLogged && window.YDJK.isCloudLogged()) {
-      window.YDJK.cloudPull().then(function (merged) {
-        // 缓存云端数据供首页统计
-        if (window.YD_CLOUD) {
-          window.YD_CLOUD.loadUserData().then(function (doc) {
-            if (doc && doc.data_json) {
-              try { window.YD_CLOUD_LAST_DATA = JSON.parse(doc.data_json); } catch (e) {}
-            }
-          }).catch(function () {});
-        }
-        if (merged && typeof window.onDataChanged === 'function') {
-          try { window.onDataChanged(); } catch (e) {}
-        }
-      }).catch(function () {});
-    }
     initTheme();
     initNav();
     initNavScroll();

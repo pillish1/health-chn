@@ -1,71 +1,32 @@
-/* 我的页逻辑（精简版：个人资料 + 云数据 + 退出） */
+/* 我的页逻辑（本地化：个人形象 + 数据备份，无账号体系） */
 (function () {
   'use strict';
-  var cloud = window.YD_CLOUD;
 
   function esc(s) { return String(s || '').replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
-  async function api(path, opts) {
-    var session = cloud.getSession();
-    var headers = { apikey: cloud.anonKey, 'Content-Type': 'application/json' };
-    if (session && session.access_token) headers.Authorization = 'Bearer ' + session.access_token;
-    if (opts && opts.headers) Object.assign(headers, opts.headers);
-    var res = await fetch(cloud.url + path, { method: (opts && opts.method) || 'GET', headers: headers, body: opts && opts.body ? JSON.stringify(opts.body) : undefined });
-    var text = await res.text();
-    return { ok: res.ok, status: res.status, data: text ? JSON.parse(text) : null };
+  function setStatus(msg, ok) {
+    var el = document.getElementById('backupStatus');
+    if (el) { el.textContent = msg || ''; el.style.color = ok ? 'var(--primary)' : 'var(--danger)'; }
   }
 
-  function renderUser() {
-    var user = cloud.currentUser();
-    if (!user) return;
-    var e = document.getElementById('pEmail');
-    if (e) e.textContent = user.email || '-';
-    var created = user.created_at ? new Date(user.created_at).toLocaleString('zh-CN') : '-';
-    var last = user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString('zh-CN') : '-';
-    var ce = document.getElementById('pCreated');
-    if (ce) ce.textContent = created;
-    var le = document.getElementById('pLastSignIn');
-    if (le) le.textContent = last;
-    loadUserProfile();
-  }
-
-  function defaultAvatar(email) {
-    return (email || '?').charAt(0).toUpperCase();
-  }
-  function renderAvatar(avatarUrl, email) {
+  /* 本地头像/昵称 */
+  function renderLocal() {
     var box = document.getElementById('avatarPreview');
-    if (!box) return;
-    if (avatarUrl) {
-      box.innerHTML = '<img src="' + esc(avatarUrl) + '" style="width:100%;height:100%;object-fit:cover">';
-    } else {
-      box.textContent = defaultAvatar(email);
-    }
-  }
-
-  async function loadUserProfile() {
+    var nick = document.getElementById('nicknameInput');
     try {
-      var p = await cloud.loadProfile();
-      var nick = document.getElementById('nicknameInput');
-      if (nick) nick.value = (p && p.nickname) || '';
-      renderAvatar(p && p.avatar_url, cloud.currentUser().email);
+      var avatar = localStorage.getItem('ydjk:avatar') || '';
+      if (avatar && box) box.innerHTML = '<img src="' + esc(avatar) + '" style="width:100%;height:100%;object-fit:cover">';
+      else if (box) box.textContent = '悦';
+      if (nick) nick.value = localStorage.getItem('ydjk:nickname') || '';
     } catch (e) {}
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    if (!cloud || !cloud.isLoggedIn()) {
-      var g = document.getElementById('profileGate');
-      var panel = document.getElementById('profilePanel');
-      if (g) g.style.display = 'block';
-      if (panel) panel.style.display = 'none';
-      return;
-    }
-    var g = document.getElementById('profileGate');
     var panel = document.getElementById('profilePanel');
-    if (g) g.style.display = 'none';
     if (panel) panel.style.display = 'block';
-    renderUser();
+    renderLocal();
 
-    // 头像上传
+    /* 头像上传（本地 base64 存储） */
     var avatarInput = document.getElementById('avatarInput');
     var uploadBtn = document.getElementById('btnUploadAvatar');
     if (avatarInput && uploadBtn) {
@@ -74,75 +35,91 @@
         var file = avatarInput.files[0];
         if (!file) return;
         if (file.size > 2 * 1024 * 1024) { window.YDJK_UI.toast('图片不能超过 2MB', 'err'); return; }
-        if (!/^image\/(png|jpe?g|webp|gif)$/.test(file.type)) { window.YDJK_UI.toast('请上传图片文件', 'err'); return; }
+        if (!/^image\/(png|jpe?g|webp)$/.test(file.type)) { window.YDJK_UI.toast('仅支持 JPG/PNG/WebP', 'err'); return; }
         var reader = new FileReader();
         reader.onload = function () {
-          var dataUrl = reader.result;
-          renderAvatar(dataUrl, cloud.currentUser().email);
-          cloud.saveProfile({ avatar_url: dataUrl }).then(function (r) {
-            if (r.ok) window.YDJK_UI.toast('✅ 头像已更新');
-            else window.YDJK_UI.toast('❌ 头像保存失败', 'err');
-          });
+          try { localStorage.setItem('ydjk:avatar', reader.result); } catch (e) { window.YDJK_UI.toast('图片过大，存储失败', 'err'); return; }
+          renderLocal();
+          window.YDJK_UI.toast('✅ 头像已更新（仅存本机）');
         };
         reader.readAsDataURL(file);
         avatarInput.value = '';
       });
     }
 
-    // 保存昵称
+    /* 保存昵称（本地） */
     var saveBtn = document.getElementById('btnSaveProfile');
-    if (saveBtn) saveBtn.addEventListener('click', async function () {
-      var nick = document.getElementById('nicknameInput').value.trim();
-      if (!nick) { window.YDJK_UI.toast('请输入昵称', 'err'); return; }
-      var r = await cloud.saveProfile({ nickname: nick });
-      if (r.ok) {
-        window.YDJK_UI.toast('✅ 昵称已更新');
-        try { localStorage.setItem('ydjk:nickname', nick); } catch (e) {}
-      } else {
-        window.YDJK_UI.toast('❌ 保存失败', 'err');
-      }
+    if (saveBtn) saveBtn.addEventListener('click', function () {
+      var nick = document.getElementById('nicknameInput');
+      try { localStorage.setItem('ydjk:nickname', (nick && nick.value.trim()) || ''); } catch (e) {}
+      window.YDJK_UI.toast('✅ 资料已保存（仅存本机）');
     });
 
-    // 立即同步
-    var syncBtn = document.getElementById('btnSyncNow');
-    if (syncBtn) syncBtn.addEventListener('click', async function () {
-      var st = document.getElementById('syncStatus');
-      if (st) st.textContent = '同步中…';
-      var ok = await window.YDJK.cloudPull();
-      window.YDJK.cloudSave();
-      if (st) st.textContent = ok ? '✅ 已从云端拉取最新数据' : '✅ 已推送本地数据到云端';
-    });
-
-    // 导出数据
-    var expBtn = document.getElementById('btnExportData');
-    if (expBtn) expBtn.addEventListener('click', function () {
-      var all = window.YDJK.collectAllData ? window.YDJK.collectAllData() : null;
-      var data = {
-        exportedAt: new Date().toISOString(),
-        app: '悦动健康',
-        data: all || {}
-      };
+    /* 导出备份（JSON 文件） */
+    var exportBtn = document.getElementById('btnExportData');
+    if (exportBtn) exportBtn.addEventListener('click', function () {
+      var data = window.YDJK ? window.YDJK.collectAllData() : {};
       var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       var a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = '悦动健康-数据备份-' + window.YDJK.today() + '.json';
+      a.download = '悦动健康备份-' + new Date().toISOString().slice(0, 10) + '.json';
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
-      window.YDJK_UI.toast('📤 数据已导出');
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 300);
+      window.YDJK_UI.toast('📤 备份文件已导出');
     });
 
-    // 退出登录
-    var logoutBtn = document.getElementById('btnLogout');
-    if (logoutBtn) logoutBtn.addEventListener('click', function () {
-      window.YDJK_UI.confirmDialog({ title: '退出登录？', message: '本地数据会保留，下次登录自动同步。', okText: '退出', danger: true, icon: (window.YDJK_ICON ? window.YDJK_ICON('logout') : '👋') }).then(function (ok) {
-        if (!ok) return;
-        cloud.logout();
-        try { localStorage.removeItem('ydjk:cloud-logged'); } catch (e) {}
-        window.YDJK_UI.toast('已退出登录');
-        setTimeout(function () { location.href = 'index.html'; }, 600);
+    /* 导入备份 */
+    var importInput = document.getElementById('importInput');
+    var importBtn = document.getElementById('btnImportData');
+    if (importInput && importBtn) {
+      importBtn.addEventListener('click', function () { importInput.click(); });
+      importInput.addEventListener('change', function () {
+        var file = importInput.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+          try {
+            var data = JSON.parse(reader.result);
+            if (!data || typeof data !== 'object') throw new Error('bad');
+            importData(data);
+            setStatus('✅ 导入完成，记录已恢复');
+          } catch (e) {
+            setStatus('❌ 备份文件格式不正确，请选择本 App 导出的 JSON');
+          }
+        };
+        reader.readAsText(file);
+        importInput.value = '';
       });
-    });
+    }
   });
+
+  /* 把备份数据合并写入本地存储 */
+  function importData(data) {
+    var Y = window.YDJK;
+    try {
+      if (data.profile && Y && Y.saveProfile) Y.saveProfile(data.profile);
+      if (data.weights && Y && Y.removeWeight) { data.weights.forEach(function (w) { Y.addWeight(w.date, w.weight); }); }
+      if (data.checkins && Y && Y.setCheckin) {
+        Object.keys(data.checkins).forEach(function (d) { Y.setCheckin(d, data.checkins[d]); });
+      }
+      if (data.workouts && Y && Y.addWorkout) {
+        Object.keys(data.workouts).forEach(function (d) {
+          (data.workouts[d] || []).forEach(function (w) { Y.addWorkout(d, w); });
+        });
+      }
+      if (data.mealsAll && Y && Y.addMeal) {
+        Object.keys(data.mealsAll).forEach(function (d) {
+          (data.mealsAll[d] || []).forEach(function (m) { Y.addMeal(d, m); });
+        });
+      }
+      if (data.favs) { try { localStorage.setItem('ydjk:favs', JSON.stringify(data.favs)); } catch (e) {} }
+      if (typeof window.onDataChanged === 'function') {
+        try { window.onDataChanged(); } catch (e) {}
+      }
+    } catch (e) {
+      setStatus('❌ 导入失败：' + (e && e.message ? e.message : '未知错误'));
+      return;
+    }
+  }
 })();

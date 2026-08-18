@@ -39,18 +39,13 @@
 <section class="page-hero">
   <div class="container">
     <h1><i class="ic" data-icon="user"></i> 个人资料</h1>
-    <p>管理你的账号信息</p>
+    <p>个人形象与数据备份</p>
   </div>
 </section>
 
 <section class="section-sm">
   <div class="container" style="max-width:640px">
-    <div id="profileGate" class="card text-center">
-      <p class="muted">请先登录</p>
-      <button class="btn btn-primary" onclick="location.href='login.html'">去登录 →</button>
-    </div>
-
-    <div id="profilePanel" style="display:none">
+    <div id="profilePanel">
       <!-- 头像昵称 -->
       <div class="card mb-3">
         <div class="card-title"><i class="ic" data-icon="photo"></i> 个人形象</div>
@@ -66,34 +61,23 @@
         <button class="btn btn-primary btn-block" id="btnSaveProfile"><i class="ic" data-icon="save"></i> 保存资料</button>
       </div>
 
-      <!-- 账号信息 -->
+      <!-- 数据备份（本地模式） -->
       <div class="card mb-3">
-        <div class="card-title"><i class="ic" data-icon="mail"></i> 账号信息</div>
-        <div class="list-row"><div class="lr-main"><b class="small">邮箱</b></div><div class="lr-side" id="pEmail"></div></div>
-        <div class="list-row"><div class="lr-main"><b class="small">注册时间</b></div><div class="lr-side" id="pCreated"></div></div>
-        <div class="list-row"><div class="lr-main"><b class="small">最近登录</b></div><div class="lr-side" id="pLastSignIn"></div></div>
-      </div>
-
-      <!-- 数据管理 -->
-      <div class="card mb-3">
-        <div class="card-title"><i class="ic" data-icon="cloud"></i> 云数据</div>
-        <p class="text-2 small">你的健康档案、饮食与运动记录保存在云端，登录任意设备即可查看。</p>
-        <div class="flex gap-sm">
-          <button class="btn btn-outline btn-sm" id="btnSyncNow"><i class="ic" data-icon="refresh"></i> 立即同步</button>
-          <button class="btn btn-ghost btn-sm" id="btnExportData"><i class="ic" data-icon="upload"></i> 导出数据</button>
+        <div class="card-title"><i class="ic" data-icon="folder"></i> 数据备份</div>
+        <p class="text-2 small">数据仅保存在这台设备上。导出 JSON 文件可随时备份，换手机时在新设备导入即可恢复全部记录。</p>
+        <div class="flex gap-sm" style="flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" id="btnExportData"><i class="ic" data-icon="upload"></i> 导出备份</button>
+          <button class="btn btn-outline btn-sm" id="btnImportData"><i class="ic" data-icon="save"></i> 导入备份</button>
         </div>
-        <div class="small muted mt-2" id="syncStatus"></div>
-        <div class="small muted mt-1"><i class="ic" data-icon="tip"></i> 导出为 JSON 文件，可离线保存或迁移到其他设备</div>
+        <input type="file" id="importInput" accept=".json,application/json" style="display:none">
+        <div class="small muted mt-2" id="backupStatus"></div>
       </div>
-
-      <!-- 退出 -->
-      <button class="btn btn-danger btn-block" id="btnLogout"><i class="ic" data-icon="logout"></i> 退出登录</button>
     </div>
   </div>
 </section>
 
 <script src="assets/js/storage.js?v=90"></script>
-<script src="assets/js/supabase-config.js?v=90"></script>
+
 <script src="assets/js/app.js?v=90"></script>
 <script src="assets/js/pages/profile.js?v=90"></script>
 

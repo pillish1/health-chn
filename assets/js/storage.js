@@ -313,12 +313,11 @@
     };
   }
 
-  /* ---------- 云同步（登录状态下实时保存） ---------- */
-  var cloudQueue = 0;
-  function isCloudLogged() {
-    try { return localStorage.getItem('ydjk:cloud-logged') === '1' && window.YD_CLOUD && window.YD_CLOUD.isLoggedIn(); } catch (e) { return false; }
-  }
-  /* 收集当前本地全部数据 */
+  /* ---------- 数据备份（彻底本地化：无云端同步） ---------- */
+  function cloudSave() { /* 本地模式：无需云端同步 */ }
+  function isCloudLogged() { return false; }
+  async function cloudPull() { return false; }
+  /* 收集当前本地全部数据（用于导出备份） */
   function collectAllData() {
     return {
       profile: getProfile(),
@@ -334,52 +333,9 @@
         }
         return m;
       })(),
-      waterAll: (function () {
-        var w = {};
-        for (var i = 0; i < LS.length; i++) {
-          var k = LS.key(i);
-          if (k.indexOf(NS + 'water:') === 0) w[k.replace(NS + 'water:', '')] = Number(LS.getItem(k)) || 0;
-        }
-        return w;
-      })(),
       myPlans: getMyPlans(),
-      userArticles: getUserArticles(),
-      weightGoal: getWeightGoal(),
-      waterGoal: getWaterGoal()
+      userArticles: getUserArticles()
     };
-  }
-  /* 云端保存（防抖：500ms 内多次修改合并为一次） */
-  function cloudSave() {
-    if (!isCloudLogged()) return;
-    cloudQueue++;
-    clearTimeout(window._cloudTimer);
-    window._cloudTimer = setTimeout(function () {
-      cloudQueue = 0;
-      var payload = { data_json: JSON.stringify(collectAllData()), updated_at: new Date().toISOString() };
-      window.YD_CLOUD.saveUserData(payload).catch(function () {});
-    }, 500);
-  }
-  /* 从云端拉取并合并到本地 */
-  async function cloudPull() {
-    if (!isCloudLogged()) return false;
-    try {
-      var doc = await window.YD_CLOUD.loadUserData();
-      if (!doc || !doc.data_json) return false;
-      var cloud = JSON.parse(doc.data_json);
-      var merged = false;
-      if (cloud.profile && !getProfile()) { saveProfile(cloud.profile); merged = true; }
-      if (cloud.weights && cloud.weights.length) { setJSON('weights', cloud.weights); merged = true; }
-      if (cloud.checkins) { Object.keys(cloud.checkins).forEach(function (d) { setCheckin(d, cloud.checkins[d]); }); merged = true; }
-      if (cloud.workouts) { Object.keys(cloud.workouts).forEach(function (d) { setJSON('workouts:' + d, cloud.workouts[d]); }); merged = true; }
-      if (cloud.favs && cloud.favs.length) { setJSON('favs', cloud.favs); merged = true; }
-      if (cloud.mealsAll) { Object.keys(cloud.mealsAll).forEach(function (d) { setJSON('meals:' + d, cloud.mealsAll[d]); }); merged = true; }
-      if (cloud.waterAll) { Object.keys(cloud.waterAll).forEach(function (d) { setJSON('water:' + d, cloud.waterAll[d]); }); merged = true; }
-      if (cloud.myPlans && cloud.myPlans.length) { setJSON('myplans', cloud.myPlans); merged = true; }
-      if (cloud.userArticles && cloud.userArticles.length) { setJSON('articles', cloud.userArticles); merged = true; }
-      if (cloud.weightGoal) setWeightGoal(cloud.weightGoal);
-      if (cloud.waterGoal) setWaterGoal(cloud.waterGoal);
-      return merged;
-    } catch (e) { return false; }
   }
 
   window.YDJK = {
