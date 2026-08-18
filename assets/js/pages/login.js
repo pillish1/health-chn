@@ -105,7 +105,7 @@
       var target;
       if (!hasProfile) target = 'index.html?setup=1';
       else if (back) target = back;
-      else target = 'tracker.html';
+      else target = 'index.html';
       setTimeout(function () { location.href = target; }, 900);
     } catch (e) {
       setMsg('⚠️ 登录成功，数据同步异常');
@@ -113,7 +113,7 @@
       var hasP = YDJK.getProfile();
       var back = '';
       try { var rp = new URLSearchParams(location.search).get('back'); if (rp && rp.indexOf('http') !== 0) back = rp; } catch (e) {}
-      setTimeout(function () { location.href = hasP ? (back || 'tracker.html') : 'index.html?setup=1'; }, 1200);
+      setTimeout(function () { location.href = hasP ? (back || 'index.html') : 'index.html?setup=1'; }, 1200);
     }
   }
 
@@ -135,7 +135,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     if (window.YD_CLOUD && window.YD_CLOUD.isLoggedIn()) {
-      location.href = 'tracker.html';
+      location.href = 'index.html';
       return;
     }
 

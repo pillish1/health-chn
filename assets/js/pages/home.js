@@ -188,7 +188,7 @@
       el.innerHTML = '<div class="alert success"><span>👋</span><span style="flex:1">欢迎回来，<b>' + esc(name) + '</b>！数据已云端同步 ☁️</span>' +
         '<div class="flex gap-sm" style="gap:8px;flex:none">' +
         '<button class="btn btn-ghost btn-sm" onclick="location.href=\'profile.html\'">👤 资料</button>' +
-        '<button class="btn btn-primary btn-sm" onclick="location.href=\'tracker.html\'">去记录 →</button></div></div>';
+        '<button class="btn btn-primary btn-sm" onclick="location.href=\'plans.html\'">去记录 →</button></div></div>';
     } else {
       el.innerHTML = '<div class="alert info"><span>👋</span><span style="flex:1">登录后数据云端同步，多设备随时查看。</span>' +
         '<button class="btn btn-primary btn-sm" onclick="location.href=\'login.html\'">登录 / 注册</button></div>';

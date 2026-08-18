@@ -285,7 +285,7 @@
     toast(isEdit ? '✅ 健康档案已更新' : '✅ 健康档案已建立');
     if (typeof window.onProfileSaved === 'function') window.onProfileSaved(profile);
     if (!isEdit && window.location.pathname.split('/').pop() === 'index.html') {
-      setTimeout(function () { location.href = 'tracker.html'; }, 800);
+      setTimeout(function () { location.href = 'plans.html'; }, 800);
     }
   }
 
@@ -899,10 +899,8 @@
     renderHealthTip('healthTip');
     initReveal();
     initFooter();
-    // 非追踪页也允许主动打开引导
-    if (window.location.pathname.split('/').pop() !== 'tracker.html') {
-      initOnboarding(false);
-    }
+    // 所有页面都允许打开新用户引导（原 tracker 页已移除）
+    initOnboarding(false);
   });
 
   window.YDJK_UI = {
