@@ -360,6 +360,7 @@
     cloudSave: cloudSave, cloudPull: cloudPull, isCloudLogged: isCloudLogged,
     getWater: getWater, setWater: setWater, getWaterGoal: getWaterGoal, setWaterGoal: setWaterGoal,
     getWeightGoal: getWeightGoal, setWeightGoal: setWeightGoal,
+  collectAllData: collectAllData,
     getTheme: getTheme, setTheme: setTheme,
     calcBMI: calcBMI, bmiLevel: bmiLevel, calcBMR: calcBMR, calcTDEE: calcTDEE,
     goalCalories: goalCalories, idealWeight: idealWeight, macros: macros

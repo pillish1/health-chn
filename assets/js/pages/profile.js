@@ -134,12 +134,117 @@
       }
     });
 
+    // 健康目标加载与保存
+    var gwInp = document.getElementById('goalWeightInput');
+    var gwaInp = document.getElementById('goalWaterInput');
+    if (gwInp && gwaInp) {
+      gwInp.value = YDJK.getWeightGoal() || '';
+      gwaInp.value = YDJK.getWaterGoal() || 2000;
+      document.getElementById('btnSaveGoals').addEventListener('click', function () {
+        var w = Number(gwInp.value);
+        var wt = Number(gwaInp.value);
+        if (w > 0 && (w < 30 || w > 300)) { window.YDJK_UI.toast('目标体重请在 30-300 kg 之间', 'err'); return; }
+        if (wt < 500 || wt > 6000) { window.YDJK_UI.toast('饮水目标请在 500-6000 ml 之间', 'err'); return; }
+        if (w > 0) YDJK.setWeightGoal(w);
+        YDJK.setWaterGoal(wt);
+        var st = document.getElementById('goalStatus');
+        st.textContent = '✅ 已保存：目标体重 ' + (w || '未设') + ' kg · 饮水 ' + wt + ' ml';
+        setTimeout(function () { st.textContent = ''; }, 3000);
+        window.YDJK_UI.toast('✅ 目标已更新');
+      });
+    }
+
+    // 提醒时段加载与保存
+    var wsInp = document.getElementById('rmWaterStart');
+    var weInp = document.getElementById('rmWaterEnd');
+    var wiInp = document.getElementById('rmWaterInterval');
+    var chInp = document.getElementById('rmCheckinHour');
+    if (wsInp) {
+      var rc = window.YDJK_UI.getReminderCfg();
+      wsInp.value = rc.waterStart != null ? rc.waterStart : 9;
+      weInp.value = rc.waterEnd != null ? rc.waterEnd : 21;
+      wiInp.value = rc.waterInterval || 2;
+      chInp.value = rc.checkinHour != null ? rc.checkinHour : 20;
+      document.getElementById('btnSaveTimes').addEventListener('click', function () {
+        var s = Number(wsInp.value), e = Number(weInp.value);
+        if (s < 0 || s > 23 || e < 0 || e > 23) { window.YDJK_UI.toast('时段请输入 0-23 小时', 'err'); return; }
+        if (e <= s) { window.YDJK_UI.toast('结束时间需晚于开始时间', 'err'); return; }
+        var c = Number(chInp.value);
+        if (c < 0 || c > 23) { window.YDJK_UI.toast('打卡时间请输入 0-23 小时', 'err'); return; }
+        window.YDJK_UI.setReminderCfg({
+          enabled: document.getElementById('rmEnable').checked,
+          water: document.getElementById('rmWater').checked,
+          checkin: document.getElementById('rmCheckin').checked,
+          meal: document.getElementById('rmMeal').checked,
+          waterStart: s, waterEnd: e,
+          waterInterval: Number(wiInp.value) || 2,
+          checkinHour: c
+        });
+        window.YDJK_UI.toast('✅ 提醒时段已更新');
+      });
+    }
+
+    // 主题选择
+    var themeSel = document.getElementById('themeSelect');
+    if (themeSel) {
+      var curTheme = localStorage.getItem('ydjk:theme') || 'auto';
+      themeSel.value = curTheme === 'dark' || curTheme === 'light' ? curTheme : 'auto';
+      themeSel.addEventListener('change', function () {
+        var v = themeSel.value;
+        if (v === 'auto') {
+          localStorage.removeItem('ydjk:theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+          window.YDJK.setTheme(prefersDark ? 'dark' : 'light');
+        } else {
+          localStorage.setItem('ydjk:theme', v);
+          document.documentElement.setAttribute('data-theme', v);
+          window.YDJK.setTheme(v);
+        }
+        window.YDJK_UI.toast('✅ 主题已切换');
+      });
+    }
+
+    // 导出数据（JSON 下载）
+    document.getElementById('btnExportData').addEventListener('click', function () {
+      var all = YDJK.collectAllData ? YDJK.collectAllData() : null;
+      var data = {
+        exportedAt: new Date().toISOString(),
+        app: '悦动健康',
+        version: 'v55',
+        data: all || {
+          profile: YDJK.getProfile(),
+          weights: YDJK.getWeights(),
+          checkins: YDJK.getCheckins(),
+          myPlans: YDJK.getMyPlans(),
+          userArticles: YDJK.getUserArticles(),
+          weightGoal: YDJK.getWeightGoal(),
+          waterGoal: YDJK.getWaterGoal()
+        }
+      };
+      var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = '悦动健康-数据备份-' + YDJK.today() + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+      window.YDJK_UI.toast('📤 数据已导出');
+    });
+
+    // 同步状态显示
+    var lastSync = localStorage.getItem('ydjk:last-sync');
+    var syncSt = document.getElementById('syncStatus');
+    if (syncSt && lastSync) syncSt.textContent = '上次同步：' + new Date(Number(lastSync)).toLocaleString('zh-CN');
+
     // 立即同步
     document.getElementById('btnSyncNow').addEventListener('click', async function () {
       var st = document.getElementById('syncStatus');
       st.textContent = '同步中…';
       var ok = await window.YDJK.cloudPull();
       window.YDJK.cloudSave();
+      localStorage.setItem('ydjk:last-sync', String(Date.now()));
       st.textContent = ok ? '✅ 已从云端拉取最新数据' : '✅ 已推送本地数据到云端';
     });
 

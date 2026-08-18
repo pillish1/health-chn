@@ -329,17 +329,41 @@
     });
   }
 
-  /* ---------- 通知与提醒（PWA App 化核心） ---------- */
+  /* ---------- 通知与提醒（PWA/App 双端） ---------- */
   var notifTimer = null;
-  function notifSupported() { return 'Notification' in window; }
+  var lastFired = {};
+  function capNotifPlugin() {
+    try {
+      var cap = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications;
+      return cap || null;
+    } catch (e) { return null; }
+  }
+  function notifSupported() {
+    if (capNotifPlugin()) return true;
+    return 'Notification' in window;
+  }
   function initNotifications() {
-    // 启动时检查已授权的提醒
     if (!notifSupported()) return;
+    if (capNotifPlugin()) { scheduleReminders(); return; }
     if (Notification.permission === 'granted') scheduleReminders();
-    // 刷新时检查是否该提醒
   }
   function requestNotifPermission() {
-    if (!notifSupported()) { YDJK_UI.toast('当前浏览器不支持通知', 'err'); return false; }
+    if (!notifSupported()) { YDJK_UI.toast('当前环境不支持通知', 'err'); return false; }
+    var cap = capNotifPlugin();
+    if (cap) {
+      cap.requestPermissions().then(function (res) {
+        if (res && (res.display === 'granted' || res.display === true)) {
+          YDJK_UI.toast('✅ 通知已开启，记得设置提醒');
+          scheduleReminders();
+        } else {
+          YDJK_UI.toast('❌ 通知被拒绝，可在系统设置中开启', 'err');
+        }
+      }).catch(function () {
+        YDJK_UI.toast('✅ 通知已开启');
+        scheduleReminders();
+      });
+      return true;
+    }
     if (Notification.permission === 'granted') { YDJK_UI.toast('✅ 通知已开启'); return true; }
     Notification.requestPermission().then(function (p) {
       if (p === 'granted') {
@@ -351,14 +375,33 @@
     });
     return true;
   }
-  function fireNotif(title, body) {
-    if (!notifSupported() || Notification.permission !== 'granted') return;
+  function fireNotif(title, body, key) {
+    if (!notifSupported()) return;
+    var nowTs = Date.now();
+    if (key && lastFired[key] && nowTs - lastFired[key] < 30 * 60 * 1000) return;
+    if (key) lastFired[key] = nowTs;
+    var cap = capNotifPlugin();
+    if (cap) {
+      try {
+        cap.schedule({
+          notifications: [{
+            id: Math.floor(Math.random() * 100000),
+            title: title,
+            body: body,
+            smallIcon: 'ic_stat_icon',
+            iconColor: '#3b82f6'
+          }]
+        });
+        return;
+      } catch (e) {}
+    }
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
     try {
       var n = new Notification(title, { body: body, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png' });
       n.onclick = function () { window.focus(); n.close(); };
     } catch (e) {}
   }
-  /* 定时提醒（喝水/打卡）——基于设置 */
+  /* 定时提醒（喝水/打卡/用餐）——基于可配置时段 */
   function scheduleReminders() {
     if (notifTimer) { clearInterval(notifTimer); notifTimer = null; }
     var cfg = getReminderCfg();
@@ -366,35 +409,41 @@
     notifTimer = setInterval(function () {
       var now = new Date();
       var h = now.getHours();
-      // 喝水提醒：9:00-21:00 每 2 小时
-      if (cfg.water && h >= 9 && h <= 21) {
-        var today = YDJK.today();
-        var water = YDJK.getWater(today);
-        var goal = YDJK.getWaterGoal();
-        if (water < goal) fireNotif('💧 该喝水啦', '今日饮水 ' + water + '/' + goal + ' ml，记得补水');
+      var m = now.getMinutes();
+      var t = h * 60 + m;
+      if (cfg.water) {
+        var ws = (typeof cfg.waterStart === 'number' ? cfg.waterStart : 9) * 60;
+        var we = (typeof cfg.waterEnd === 'number' ? cfg.waterEnd : 21) * 60;
+        var wInt = (typeof cfg.waterInterval === 'number' && cfg.waterInterval > 0 ? cfg.waterInterval : 2) * 60;
+        if (t >= ws && t <= we && (t - ws) % wInt === 0) {
+          var today = YDJK.today();
+          var water = YDJK.getWater(today);
+          var goal = YDJK.getWaterGoal();
+          if (water < goal) fireNotif('💧 该喝水啦', '今日饮水 ' + water + '/' + goal + ' ml，记得补水', 'water');
+        }
       }
-      // 打卡提醒：晚间 20:00 未打卡
-      if (cfg.checkin && h === 20) {
-        var c = YDJK.getCheckin(YDJK.today());
-        var done = c && ((c.types && c.types.length) || c.plan || (c.minutes && c.minutes > 0));
-        if (!done) fireNotif('🏃 今天还没运动', '来 30 分钟运动，完成今天的打卡吧');
+      if (cfg.checkin) {
+        var ch = typeof cfg.checkinHour === 'number' ? cfg.checkinHour : 20;
+        if (h === ch && m === 0) {
+          var c = YDJK.getCheckin(YDJK.today());
+          var done = c && ((c.types && c.types.length) || c.plan || (c.minutes && c.minutes > 0));
+          if (!done) fireNotif('🏃 今天还没运动', '来 30 分钟运动，完成今天的打卡吧', 'checkin');
+        }
       }
-      // 早餐/午餐/晚餐提醒
       if (cfg.meal) {
         var mealTimes = { 7: '早餐', 12: '午餐', 18: '晚餐' };
-        if (mealTimes[h]) fireNotif('🍽️ ' + mealTimes[h] + '时间', '记得记录今天的' + mealTimes[h] + '，营养均衡很重要');
+        if (mealTimes[h] && m === 0) fireNotif('🍽️ ' + mealTimes[h] + '时间', '记得记录今天的' + mealTimes[h] + '，营养均衡很重要', 'meal-' + h);
       }
-    }, 60000); // 每分钟检查一次（实际提醒按小时）
+    }, 30000);
   }
   function getReminderCfg() {
-    try { return JSON.parse(localStorage.getItem('ydjk:reminders') || '{"enabled":false,"water":true,"checkin":true,"meal":false}'); }
-    catch (e) { return { enabled: false, water: true, checkin: true, meal: false }; }
+    try { return JSON.parse(localStorage.getItem('ydjk:reminders') || '{"enabled":false,"water":true,"checkin":true,"meal":false,"waterStart":9,"waterEnd":21,"waterInterval":2,"checkinHour":20}'); }
+    catch (e) { return { enabled: false, water: true, checkin: true, meal: false, waterStart: 9, waterEnd: 21, waterInterval: 2, checkinHour: 20 }; }
   }
   function setReminderCfg(cfg) {
     try { localStorage.setItem('ydjk:reminders', JSON.stringify(cfg)); } catch (e) {}
     scheduleReminders();
   }
-
   /* ---------- 底部 Tab 导航 ---------- */
   function initTabBar() {
     var path = location.pathname.split('/').pop() || 'index.html';
