@@ -73,27 +73,26 @@
       <div id="workoutEmpty" class="empty hidden"><div class="e-icon">🏋️</div><div class="e-title">还没有训练记录</div><div class="e-desc">点右上角「添加训练」，记下今天的训练</div></div>
     </div>
 
-    <!-- 添加训练弹窗 -->
+    <!-- 添加训练弹窗（点选动作模式） -->
     <div class="modal-overlay" id="addWorkoutModal">
-      <div class="modal" style="max-width:500px">
+      <div class="modal" style="max-width:520px">
         <div class="modal-title">🏋️ 添加训练</div>
-        <div class="modal-sub">记录一次训练的内容</div>
+        <div class="modal-sub">点选今天练了哪些动作</div>
         <div class="field">
           <label>训练日期</label>
           <input class="input" type="date" id="wkDate">
         </div>
         <div class="field">
-          <label>训练部位</label>
-          <div class="radio-group" id="wkMuscleGroup"></div>
+          <label>① 选择部位</label>
+          <div class="wk-muscle-chips" id="wkMuscleGroup"></div>
         </div>
         <div class="field">
-          <label>训练动作</label>
-          <input class="input" id="wkAction" placeholder="如：卧推、深蹲、跑步…" maxlength="20">
+          <label>② 点选动作（可多选）</label>
+          <div class="wk-action-grid" id="wkActionGrid"></div>
         </div>
-        <div class="grid grid-3" style="gap:10px">
-          <div class="field" style="margin:0"><label>组数</label><input class="input" type="number" id="wkSets" min="1" max="20" placeholder="组" inputmode="numeric"></div>
-          <div class="field" style="margin:0"><label>每组次数</label><input class="input" type="number" id="wkReps" min="1" max="100" placeholder="次" inputmode="numeric"></div>
-          <div class="field" style="margin:0"><label>重量(kg)</label><input class="input" type="number" id="wkWeight" min="0" placeholder="可选" inputmode="decimal"></div>
+        <div class="field">
+          <label>③ 已选动作 · 组数×次数</label>
+          <div id="wkSelected"></div>
         </div>
         <div class="field">
           <label>训练时长（分钟，可选）</label>
@@ -137,29 +136,8 @@
         <p style="margin:0">开始记录运动后，这里会根据你的运动习惯给出建议 💪</p>
       </div>
     </div>
-
-    <!-- 动作参考库 -->
-    <div class="card">
-      <div class="card-title">🧭 运动参考</div>
-      <p class="small muted mb-2" style="margin-top:0">不知道做什么运动？看看这些常见动作，点击查看要领</p>
-      <div class="search-box" style="margin-bottom:12px">
-        <span class="s-ico">🔍</span>
-        <input class="input" id="actionSearch" placeholder="搜索动作，如：深蹲、卧推…">
-      </div>
-      <div class="tabs" id="muscleTabs" style="margin-bottom:14px"></div>
-      <div class="grid grid-3" id="actionGrid"></div>
-    </div>
   </div>
 </section>
-
-<!-- 动作详情弹窗 -->
-<div class="modal-overlay" id="actionModal">
-  <div class="modal" style="max-width:520px">
-    <div class="modal-title" id="amTitle"></div>
-    <div class="modal-sub" id="amMeta"></div>
-    <div class="mt-2 text-2" id="amDesc" style="line-height:1.8"></div>
-  </div>
-</div>
 
 <script src="assets/js/supabase-config.js?v=73"></script>
 <script src="assets/js/storage.js?v=73"></script>
