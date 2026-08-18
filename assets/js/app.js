@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    悦动健康 · 通用 UI app.js
    主题切换 / 导航 / Toast / Modal / 档案引导 / 动效
    ============================================================ */
@@ -334,22 +334,6 @@
     setTimeout(function () { openModal('onboardModal'); }, force ? 0 : 500);
   }
 
-  /* ---------- 移动端搜索入口 ---------- */
-  function initMSearch() {
-    var s = document.querySelector('.m-search');
-    if (!s) return;
-    s.addEventListener('click', function () {
-      // 打开全局搜索
-      var ov = document.getElementById('searchModal');
-      if (ov) {
-        openModal('searchModal');
-        setTimeout(function () { var i = document.getElementById('searchInput'); if (i) i.focus(); }, 80);
-      } else {
-        // 没有搜索面板则回首页
-        location.href = 'index.html';
-      }
-    });
-  }
 
   /* ---------- 通知与提醒（PWA/App 双端） ---------- */
   var notifTimer = null;
@@ -556,82 +540,6 @@
     });
   }
 
-  /* ---------- 全站搜索 ---------- */
-  function escHtml(s) {
-    return String(s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
-  function doSearch() {
-    var inp = document.getElementById('searchInput');
-    var box = document.getElementById('searchResults');
-    if (!inp || !box) return;
-    var q = inp.value.trim().toLowerCase();
-    if (!q) {
-      box.innerHTML = '<div class="empty"><div class="e-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍') + '</div><div class="e-title">输入关键词开始搜索</div><div class="e-desc">支持食物热量、训练动作、健康文章</div></div>';
-      return;
-    }
-    var D = window.YDJK_DATA;
-    if (!D) { box.innerHTML = '<div class="empty"><div class="e-title">数据未就绪</div></div>'; return; }
-    var foods = D.FOODS.filter(function (f) { return f.name.toLowerCase().indexOf(q) !== -1; }).slice(0, 6);
-    var acts = D.ACTIONS.filter(function (a) { return a.name.toLowerCase().indexOf(q) !== -1 || a.desc.toLowerCase().indexOf(q) !== -1; }).slice(0, 6);
-    var html = '';
-    if (foods.length) html += '<div class="search-group"><b class="search-group-title">' + (window.YDJK_ICON ? window.YDJK_ICON('meal') : '🥗') + ' 食物</b>' + foods.map(function (f) {
-      return '<a class="list-row" href="foods.html"><div class="lr-main"><b class="small">' + escHtml(f.name) + '</b><span class="lr-sub">' + f.cat + ' · ' + f.kcal + ' kcal/100g</span></div><span class="tag gray">去查看 →</span></a>';
-    }).join('') + '</div>';
-    if (acts.length) html += '<div class="search-group"><b class="search-group-title">' + (window.YDJK_ICON ? window.YDJK_ICON('dumbbell') : '🏋️') + ' 动作</b>' + acts.map(function (a) {
-      return '<a class="list-row" href="plans.html"><div class="lr-main"><b class="small">' + escHtml(a.name) + '</b><span class="lr-sub">' + escHtml(a.sets) + '</span></div><span class="tag gray">去查看 →</span></a>';
-    }).join('') + '</div>';
-    if (!html) html = '<div class="empty"><div class="e-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🤔') + '</div><div class="e-title">没有找到「' + escHtml(q) + '」</div><div class="e-desc">换个关键词试试</div></div>';
-    box.innerHTML = html;
-  }
-  function initSearch() {
-    var actions = document.querySelector('.nav-actions');
-    if (!actions || document.getElementById('globalSearchBtn')) return;
-    // 注入搜索按钮（导航最左）
-    var btn = document.createElement('button');
-    btn.className = 'icon-btn';
-    btn.id = 'globalSearchBtn';
-    btn.innerHTML = window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍';
-    btn.title = '全站搜索（Ctrl+K）';
-    btn.setAttribute('aria-label', '全站搜索');
-    actions.insertBefore(btn, actions.firstChild);
-    // 注入搜索面板
-    var ov = document.createElement('div');
-    ov.className = 'modal-overlay';
-    ov.id = 'searchModal';
-    ov.innerHTML = '<div class="modal" style="max-width:640px;padding:24px">' +
-      '<div class="modal-header"><span class="m-icon purple">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍') + '</span><div><div class="modal-title">全站搜索</div><div class="modal-sub">搜索食物、训练动作、健康知识 · Ctrl+K 快速唤起</div></div></div>' +
-      '<div class="search-box" style="margin:0 0 14px"><span class="s-ico">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍') + '</span><input class="input" id="searchInput" placeholder="输入关键词，如：鸡胸肉、深蹲、热身…"></div>' +
-      '<div id="searchResults" style="max-height:44vh;overflow-y:auto"></div></div>';
-    document.body.appendChild(ov);
-    // ✕ 关闭按钮（动态弹窗手动注入）
-    var box = ov.querySelector('.modal');
-    var x = document.createElement('button');
-    x.className = 'modal-close';
-    x.setAttribute('aria-label', '关闭');
-    x.innerHTML = '✕';
-    x.onclick = function () { closeOverlay(ov); };
-    box.appendChild(x);
-    // 打开逻辑
-    function openSearch() {
-      openModal('searchModal');
-      setTimeout(function () { var i = document.getElementById('searchInput'); if (i) i.focus(); }, 80);
-    }
-    btn.onclick = openSearch;
-    document.getElementById('searchInput').addEventListener('input', doSearch);
-    // Ctrl+K 快捷
-    document.addEventListener('keydown', function (e) {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        openSearch();
-      }
-    });
-    // 初始空状态
-    var box0 = document.getElementById('searchResults');
-    if (box0) box0.innerHTML = '<div class="empty"><div class="e-icon">' + (window.YDJK_ICON ? window.YDJK_ICON('search') : '🔍') + '</div><div class="e-title">输入关键词开始搜索</div><div class="e-desc">支持食物热量、训练动作、健康文章</div></div>';
-  }
-
   /* ---------- 导航滚动阴影 ---------- */
   function initNavScroll() {
     var nav = document.querySelector('.navbar');
@@ -754,13 +662,13 @@
     initCrossTab();
     initInstallPrompt();
     initTabBar();
-    initMSearch();
+
     initNotifications();
     initTheme();
     initNav();
     initNavScroll();
     initModals();
-    initSearch();
+
     renderHealthTip('healthTip');
     initReveal();
     initFooter();

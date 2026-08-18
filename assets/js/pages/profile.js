@@ -1,4 +1,4 @@
-/* 我的页逻辑（本地化：个人形象 + 数据备份，无账号体系） */
+/* 我的页逻辑（设置：健康档案 + 主题 + 数据备份，纯本地） */
 (function () {
   'use strict';
 
@@ -9,51 +9,31 @@
     if (el) { el.textContent = msg || ''; el.style.color = ok ? 'var(--primary)' : 'var(--danger)'; }
   }
 
-  /* 本地头像/昵称 */
-  function renderLocal() {
-    var box = document.getElementById('avatarPreview');
-    var nick = document.getElementById('nicknameInput');
-    try {
-      var avatar = localStorage.getItem('ydjk:avatar') || '';
-      if (avatar && box) box.innerHTML = '<img src="' + esc(avatar) + '" style="width:100%;height:100%;object-fit:cover">';
-      else if (box) box.textContent = '悦';
-      if (nick) nick.value = localStorage.getItem('ydjk:nickname') || '';
-    } catch (e) {}
-  }
-
   document.addEventListener('DOMContentLoaded', function () {
     var panel = document.getElementById('profilePanel');
     if (panel) panel.style.display = 'block';
-    renderLocal();
 
-    /* 头像上传（本地 base64 存储） */
-    var avatarInput = document.getElementById('avatarInput');
-    var uploadBtn = document.getElementById('btnUploadAvatar');
-    if (avatarInput && uploadBtn) {
-      uploadBtn.addEventListener('click', function () { avatarInput.click(); });
-      avatarInput.addEventListener('change', function () {
-        var file = avatarInput.files[0];
-        if (!file) return;
-        if (file.size > 2 * 1024 * 1024) { window.YDJK_UI.toast('图片不能超过 2MB', 'err'); return; }
-        if (!/^image\/(png|jpe?g|webp)$/.test(file.type)) { window.YDJK_UI.toast('仅支持 JPG/PNG/WebP', 'err'); return; }
-        var reader = new FileReader();
-        reader.onload = function () {
-          try { localStorage.setItem('ydjk:avatar', reader.result); } catch (e) { window.YDJK_UI.toast('图片过大，存储失败', 'err'); return; }
-          renderLocal();
-          window.YDJK_UI.toast('✅ 头像已更新（仅存本机）');
-        };
-        reader.readAsDataURL(file);
-        avatarInput.value = '';
-      });
-    }
-
-    /* 保存昵称（本地） */
-    var saveBtn = document.getElementById('btnSaveProfile');
-    if (saveBtn) saveBtn.addEventListener('click', function () {
-      var nick = document.getElementById('nicknameInput');
-      try { localStorage.setItem('ydjk:nickname', (nick && nick.value.trim()) || ''); } catch (e) {}
-      window.YDJK_UI.toast('✅ 资料已保存（仅存本机）');
+    /* 健康档案编辑（复用建档弹窗） */
+    var editBtn = document.getElementById('btnEditProfile');
+    if (editBtn) editBtn.addEventListener('click', function () {
+      if (window.YDJK_UI && window.YDJK_UI.openProfileEditor) window.YDJK_UI.openProfileEditor();
+      else window.YDJK_UI.toast('请先返回首页建立健康档案', 'err');
     });
+
+    /* 主题切换（浅色/深色） */
+    var themeBtn = document.getElementById('btnThemeToggle');
+    var themeState = document.getElementById('themeState');
+    function refreshThemeState() {
+      var cur = (document.documentElement.getAttribute('data-theme') || 'light') === 'dark' ? '深色' : '浅色';
+      if (themeState) themeState.textContent = cur;
+    }
+    if (themeBtn) themeBtn.addEventListener('click', function () {
+      var cur = (document.documentElement.getAttribute('data-theme') || 'light') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', cur);
+      try { localStorage.setItem('ydjk:theme', cur); } catch (e) {}
+      refreshThemeState();
+    });
+    refreshThemeState();
 
     /* 导出备份（JSON 文件） */
     var exportBtn = document.getElementById('btnExportData');
@@ -99,7 +79,7 @@
     var Y = window.YDJK;
     try {
       if (data.profile && Y && Y.saveProfile) Y.saveProfile(data.profile);
-      if (data.weights && Y && Y.removeWeight) { data.weights.forEach(function (w) { Y.addWeight(w.date, w.weight); }); }
+      if (data.weights && Y && Y.addWeight) { data.weights.forEach(function (w) { Y.addWeight(w.date, w.weight); }); }
       if (data.checkins && Y && Y.setCheckin) {
         Object.keys(data.checkins).forEach(function (d) { Y.setCheckin(d, data.checkins[d]); });
       }
