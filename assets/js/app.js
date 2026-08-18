@@ -306,9 +306,10 @@
         for (var i = 0; i < localStorage.length; i++) { if ((localStorage.key(i) || '').indexOf('ydjk:meals:') === 0) { hasAnyData = true; break; } }
       } catch (e) {}
       var page = location.pathname.split('/').pop() || 'index.html';
+      var hasSetup = location.search.indexOf('setup=1') >= 0;
       var skipped = false;
       try { skipped = localStorage.getItem('ydjk:onboard-dismissed') === '1'; } catch (e) {}
-      if (!hasAnyData && !skipped && page !== 'welcome.html' && page !== 'login.html') {
+      if (!hasAnyData && !skipped && !hasSetup && page !== 'welcome.html' && page !== 'login.html') {
         location.href = 'welcome.html';
         return;
       }

@@ -54,13 +54,14 @@ html[data-theme="dark"] {
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
 body {
   font-family: var(--font);
   color: var(--text);
   background: var(--bg);
   line-height: 1.7;
   font-size: 16px;
+  overflow-x: hidden;
   transition: background .3s var(--ease), color .3s var(--ease);
 }
 img { max-width: 100%; display: block; }

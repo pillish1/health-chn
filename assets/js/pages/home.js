@@ -231,9 +231,6 @@
     if (location.search.indexOf('setup=1') >= 0 && !YDJK.getProfile() && window.YDJK_UI) {
       setTimeout(function () { window.YDJK_UI.openProfileEditor(); }, 600);
     }
-    renderWeek();
-    renderHot();
-    renderArticles();
   });
 
   function renderWeek() {
