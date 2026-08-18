@@ -526,6 +526,35 @@
     }
   }
 
+  /* 移动端顶部头像按钮（mProfileBtn） */
+  function updateMobileProfileBtn(avatarUrl, display, logged) {
+    var mp = document.getElementById('mProfileBtn');
+    if (!mp) return;
+    if (logged && avatarUrl) {
+      mp.innerHTML = '<img src="' + avatarUrl + '" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block">';
+      mp.style.padding = '0';
+      mp.style.width = '36px';
+      mp.style.height = '36px';
+      mp.style.display = 'grid';
+      mp.style.placeItems = 'center';
+    } else if (logged) {
+      mp.innerHTML = '<span style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;display:grid;place-items:center;font-size:.9rem;font-weight:800">' + ((display || '?').charAt(0) || '?').toUpperCase() + '</span>';
+      mp.style.padding = '0';
+      mp.style.width = '36px';
+      mp.style.height = '36px';
+      mp.style.display = 'grid';
+      mp.style.placeItems = 'center';
+    } else {
+      mp.innerHTML = '👤';
+      mp.style.padding = '';
+      mp.style.width = '';
+      mp.style.height = '';
+      mp.style.display = '';
+    }
+    mp.title = logged ? (display + ' · 我的') : '登录 / 注册';
+    mp.onclick = function () { location.href = logged ? 'profile.html' : 'login.html'; };
+  }
+
   /* ---------- 登录状态导航 ---------- */
   function initAuthNav() {
     var actions = document.querySelector('.nav-actions');
@@ -560,6 +589,7 @@
           btn.title = display + '（' + email + '）· 点击管理账号';
         }
         updateBtn();
+        updateMobileProfileBtn(avatarUrl, nick || (email || '用').split('@')[0], true);
         // 从云端加载昵称/头像
         if (cloud.loadProfile) {
           cloud.loadProfile().then(function (p) {
@@ -575,6 +605,7 @@
         btn.innerHTML = '👤';
         btn.title = '登录 / 注册';
         btn.onclick = function () { location.href = 'login.html'; };
+        updateMobileProfileBtn('', '', false);
       }
     }
     render();
