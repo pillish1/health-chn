@@ -1050,9 +1050,76 @@ body{animation:pageIn .3s var(--ease) .18s both}
 .meal-item-actions{display:inline-flex;align-items:center;gap:4px;flex:none}
 .meal-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px dashed var(--border)}
 
+
+/* ============ 视觉升级 v2 补充 ============ */
+/* 首页能量卡：装饰光晕 */
+.energy-card { position: relative; overflow: hidden; }
+.energy-card::before { content: ""; position: absolute; width: 190px; height: 190px; border-radius: 50%; background: rgba(139, 92, 246, .1); filter: blur(38px); top: -70px; right: -50px; pointer-events: none; }
+.energy-card::after { content: ""; position: absolute; width: 150px; height: 150px; border-radius: 50%; background: rgba(59, 130, 246, .12); filter: blur(34px); bottom: -60px; left: -40px; pointer-events: none; }
+.energy-card > * { position: relative; z-index: 1; }
+
+/* 时段分组头部：细分隔线 */
+.meal-group-head { padding-bottom: 8px; border-bottom: 1px dashed var(--border); margin-bottom: 4px; }
+.meal-group { margin-bottom: 18px; }
+
+/* 统计卡顶部色条更柔和 */
+.stat-card { border-top-width: 3px; border-top-style: solid; }
+
+/* 周圆点阴影 */
+.wd-dot { box-shadow: 0 2px 6px rgba(15, 23, 42, .08); }
+
+/* 徽章/圆片过渡 */
+.wk-chip, .tab-btn, .recent-chip { transition: transform .15s var(--ease), border-color .2s, background .2s, color .2s; }
+.wk-chip:active, .tab-btn:active, .recent-chip:active { transform: scale(.94); }
+
 /* ============ 训练记录项操作按钮 ============ */
 .wk-item-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .wk-item-actions{display:inline-flex;align-items:center;gap:4px;flex:none}
+
+
+/* ============================================================
+   视觉升级 v2：质感与层次（渐变 / 光晕 / 微交互）
+   ============================================================ */
+
+/* 页头：渐变 + 柔光晕 */
+.page-hero { position: relative; overflow: hidden; background: linear-gradient(165deg, var(--primary-soft) 0%, var(--bg) 78%); }
+.page-hero::before, .page-hero::after { content: ""; position: absolute; border-radius: 50%; filter: blur(48px); pointer-events: none; z-index: 0; }
+.page-hero::before { width: 280px; height: 280px; background: rgba(59, 130, 246, .16); top: -110px; right: -60px; }
+.page-hero::after { width: 210px; height: 210px; background: rgba(139, 92, 246, .14); bottom: -110px; left: -50px; }
+.page-hero .container { position: relative; z-index: 1; }
+html[data-theme="dark"] .page-hero::before { background: rgba(59, 130, 246, .22); }
+html[data-theme="dark"] .page-hero::after { background: rgba(139, 92, 246, .2); }
+html[data-theme="dark"] .page-hero { background: linear-gradient(165deg, var(--primary-soft) 0%, var(--bg) 80%); }
+
+/* 卡片：更圆润 + 柔和层次 */
+.card { border-radius: 22px; box-shadow: 0 4px 22px rgba(15, 23, 42, .05); border-color: color-mix(in srgb, var(--border) 88%, transparent); }
+.card-title { font-size: 1.04rem; }
+.card-title .ic { width: 30px; height: 30px; border-radius: 10px; background: var(--primary-soft); color: var(--primary); display: inline-grid; place-items: center; font-size: 1rem; flex: none; }
+html[data-theme="dark"] .card-title .ic { background: rgba(59, 130, 246, .16); }
+
+/* 主按钮：蓝紫渐变 */
+.btn-primary { background-image: linear-gradient(135deg, #3b82f6, #6366f1); box-shadow: 0 8px 20px rgba(59, 130, 246, .28); }
+.btn-primary:hover { background-image: linear-gradient(135deg, #2563eb, #4f46e5); box-shadow: 0 12px 26px rgba(59, 130, 246, .36); }
+
+/* 大数字渐变强调 */
+#intakeKcalNum, #eiIntake { background: linear-gradient(120deg, #2563eb, #8b5cf6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+html[data-theme="dark"] #intakeKcalNum, html[data-theme="dark"] #eiIntake { background: linear-gradient(120deg, #60a5fa, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* 输入框 focus 光晕 */
+.input:focus, textarea.input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, .15); outline: none; }
+
+/* 列表 / 记录项 hover 微交互 */
+.meal-item:hover, .wk-item:hover, .list-row:hover, .ds-item:hover, .week-item:hover { background: var(--primary-soft); }
+html[data-theme="dark"] .meal-item:hover, html[data-theme="dark"] .wk-item:hover, html[data-theme="dark"] .list-row:hover, html[data-theme="dark"] .ds-item:hover { background: rgba(59, 130, 246, .1); }
+
+/* 日历格子圆角 */
+.cal-cell { border-radius: 9px; }
+
+/* 徽章图标更精致 */
+.icon-badge { box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .05); }
+
+/* 页脚柔和 */
+.footer { border-top: 1px solid transparent; }
 
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
