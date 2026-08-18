@@ -88,16 +88,69 @@
     var goalCal = 2000;
     if (p) { var bmr = YDJK.calcBMR(p); var tdee = YDJK.calcTDEE(bmr, p.activity); goalCal = YDJK.goalCalories(tdee, p.goal); }
     var tasks = [
-      { icon: '🍽️', label: '记录饮食', done: meal.count > 0, sub: meal.kcal + ' / ' + Math.round(goalCal) + ' kcal', href: 'foods.html' },
-      { icon: '🏃', label: '今日运动', done: !!workoutDone, sub: workoutDone ? (checkin.minutes ? checkin.minutes + ' 分钟' : '已打卡') : '30 分钟起', href: 'tracker.html#workout' },
-      { icon: '💧', label: '饮水达标', done: water >= waterGoal, sub: water + ' / ' + waterGoal + ' ml', href: 'tracker.html' }
+      { icon: '🍽️', label: '记录饮食', done: meal.count > 0, sub: meal.kcal + ' / ' + Math.round(goalCal) + ' kcal', href: 'foods.html', action: null },
+      { icon: '🏃', label: '今日运动', done: !!workoutDone, sub: workoutDone ? (checkin.minutes ? checkin.minutes + ' 分钟' : '已打卡') : '30 分钟起', href: 'tracker.html#workout', action: workoutDone ? null : 'quickCheckin' },
+      { icon: '💧', label: '饮水达标', done: water >= waterGoal, sub: water + ' / ' + waterGoal + ' ml', href: 'tracker.html', action: water >= waterGoal ? null : 'quickWater' }
     ];
     el.innerHTML = '<div class="task-list">' + tasks.map(function (t) {
-      return '<a class="task-item' + (t.done ? ' done' : '') + '" href="' + t.href + '">' +
+      var actionHtml = t.action ? '<button class="btn btn-primary btn-xs js-task-action" data-action="' + t.action + '" style="margin-left:8px">' + (t.action === 'quickWater' ? '+250ml' : '打卡') + '</button>' : '';
+      return '<div class="task-item' + (t.done ? ' done' : '') + '" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:8px;text-decoration:none;color:var(--text)">' +
         '<span class="task-ico">' + t.icon + '</span>' +
-        '<div class="task-main"><b>' + t.label + '</b><span class="task-sub">' + t.sub + '</span></div>' +
-        '<span class="task-check">' + (t.done ? '✓' : '○') + '</span></a>';
+        '<div class="task-main" style="flex:1"><b>' + t.label + '</b><span class="task-sub" style="display:block;font-size:.78rem;color:var(--muted)">' + t.sub + '</span></div>' +
+        (t.done ? '<span style="color:var(--success,#10b981);font-weight:800">✓</span>' : (t.href ? '<button class="btn btn-ghost btn-xs js-task-go" data-href="' + t.href + '" style="color:var(--primary)">去记录</button>' : '')) +
+        actionHtml + '</div>';
     }).join('') + '</div>';
+    // 绑定快捷操作
+    el.querySelectorAll('.js-task-action').forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var act = b.dataset.action;
+        if (act === 'quickWater') {
+          YDJK.setWater(today, water + 250);
+          window.YDJK_UI.toast('💧 +250 ml');
+          renderTasks();
+    renderWeekRate();
+          renderDashboard();
+        } else if (act === 'quickCheckin') {
+          YDJK.setCheckin(today, { types: ['other'], minutes: 30, plan: 'quick' });
+          window.YDJK_UI.toast('🏃 已打卡 30 分钟');
+          renderTasks();
+          renderDashboard();
+        }
+      });
+    });
+    el.querySelectorAll('.js-task-go').forEach(function (b) {
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        location.href = b.dataset.href;
+      });
+    });
+  }
+
+  /* 本周达成率（App 化数据卡片） */
+  function renderWeekRate() {
+    var el = document.getElementById('weekRate');
+    if (!el) return;
+    var today = YDJK.today();
+    var week = YDJK.weekDates(today);
+    var doneDays = 0;
+    week.forEach(function (d) {
+      var c = YDJK.getCheckin(d);
+      if (c && ((c.types && c.types.length) || c.plan || (c.minutes && c.minutes > 0))) doneDays++;
+    });
+    var total = week.length;
+    var pct = Math.round(doneDays / total * 100);
+    var barColor = pct >= 80 ? '#10b981' : pct >= 50 ? '#f59e0b' : '#ef4444';
+    el.innerHTML =
+      '<div class="card" style="padding:16px 18px">' +
+      '<div class="flex-between" style="margin-bottom:8px">' +
+      '<span class="card-title" style="margin:0">📊 本周打卡</span>' +
+      '<span class="small"><b style="color:' + barColor + '">' + doneDays + '/' + total + '</b> 天 · ' + pct + '%</span></div>' +
+      '<div class="week-bar" style="height:8px;background:var(--border);border-radius:99px;overflow:hidden">' +
+      '<div style="width:' + pct + '%;height:100%;background:' + barColor + ';border-radius:99px;transition:width .6s ease"></div></div>' +
+      '<div class="small muted mt-2">' +
+      (pct === 0 ? '本周还没打卡，现在开始吧 💪' : pct >= 80 ? '本周状态很棒，继续保持！🌟' : pct >= 50 ? '过半了，再坚持一下！' : '本周打卡率偏低，加油！') +
+      '</div></div>';
   }
 
   function renderWelcome() {
