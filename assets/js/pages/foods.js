@@ -6,13 +6,46 @@
   var currentCat = 'all';
   var currentKcal = 'all';
   var currentFood = null;
+  var currentDate = YDJK.today(); // 当前查看/记录的日期（支持历史补记）
   var FOOD_CATS = ['all', 'fav', '主食', '肉蛋', '蔬菜', '水果', '坚果', '饮品', '零食', '快餐'];
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
+  /* ---------- 日期导航（查看/补记任意一天） ---------- */
+  function fmtCN(d) {
+    var today = YDJK.today();
+    if (d === today) return '今天';
+    if (d === YDJK.addDays(today, -1)) return '昨天';
+    var p = String(d).split('-');
+    return (p[1] ? Number(p[1]) : 0) + '月' + (p[2] ? Number(p[2]) : 0) + '日';
+  }
+  function renderDateNav() {
+    var cn = document.getElementById('dateTextCN');
+    var dt = document.getElementById('dateText');
+    var it = document.getElementById('intakeTitle');
+    var di = document.getElementById('dateInput');
+    if (cn) cn.textContent = fmtCN(currentDate);
+    if (dt) dt.textContent = currentDate;
+    if (it) it.textContent = (currentDate === YDJK.today()) ? '今日摄入' : fmtCN(currentDate) + '摄入';
+    if (di) di.value = currentDate;
+    var nxt = document.getElementById('dateNext');
+    if (nxt) nxt.disabled = currentDate >= YDJK.today();
+    var emptyT = document.getElementById('mealEmptyTitle');
+    var emptyD = document.getElementById('mealEmptyDesc');
+    if (emptyT) emptyT.textContent = (currentDate === YDJK.today()) ? '今天还没有饮食记录' : fmtCN(currentDate) + '还没有饮食记录';
+    if (emptyD) emptyD.textContent = (currentDate === YDJK.today()) ? '点「记一餐」，搜索食物记下今天吃的' : '点「记一餐」，补记这一天的饮食';
+  }
+  function setCurrentDate(d) {
+    currentDate = d;
+    renderDateNav();
+    renderSummary();
+    renderMealList();
+    renderWeekOverview();
+  }
+
   /* ---------- 今日摄入摘要 ---------- */
   function renderSummary() {
-    var today = YDJK.today();
+    var today = currentDate;
     var s = YDJK.mealSummary(today);
     var p = YDJK.getProfile();
     var goalCal = 2000;
@@ -46,7 +79,7 @@
   function renderWeekOverview() {
     var el = document.getElementById('weekOverview');
     if (!el) return;
-    var week = YDJK.weekDates(YDJK.today());
+    var week = YDJK.weekDates(currentDate);
     var total = 0, days = 0;
     week.forEach(function (d) {
       var m = YDJK.mealSummary(d);
@@ -201,7 +234,7 @@
       fat: Math.round(currentFood.f * ratio * 10) / 10,
       photo: window._mealPhotoData ? window._mealPhotoData() : null
     };
-    YDJK.addMeal(YDJK.today(), meal);
+    YDJK.addMeal(currentDate, meal);
     // 记录最近使用
     var recent = [];
     try { recent = JSON.parse(localStorage.getItem('ydjk:recent-foods') || '[]'); } catch (e) {}
@@ -221,6 +254,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     // 分步初始化：任一步出错都不影响其它功能绑定
+    safe(renderDateNav);
     safe(renderSummary);
     safe(renderWeekOverview);
     safe(renderRecent);
@@ -311,7 +345,7 @@
         if (!name || kcal <= 0) { window.YDJK_UI.toast('请填写食物名称和热量', 'err'); return; }
         var typeEl = document.getElementById('manualType');
         var pEl = document.getElementById('manualP'), cEl = document.getElementById('manualC'), fEl = document.getElementById('manualF');
-        YDJK.addMeal(YDJK.today(), {
+        YDJK.addMeal(currentDate, {
           type: typeEl ? typeEl.value : 'breakfast',
           name: name, kcal: kcal,
           protein: Number(pEl ? pEl.value : 0) || 0,
@@ -325,13 +359,36 @@
         renderWeekOverview();
       });
     });
+
+    /* 日期导航事件 */
+    safe(function () {
+      var prev = document.getElementById('datePrev');
+      var next = document.getElementById('dateNext');
+      var todayBtn = document.getElementById('dateToday');
+      var label = document.getElementById('dateLabel');
+      var input = document.getElementById('dateInput');
+      if (prev) prev.addEventListener('click', function () { setCurrentDate(YDJK.addDays(currentDate, -1)); });
+      if (next) next.addEventListener('click', function () {
+        var d = YDJK.addDays(currentDate, 1);
+        if (d <= YDJK.today()) setCurrentDate(d);
+      });
+      if (todayBtn) todayBtn.addEventListener('click', function () { setCurrentDate(YDJK.today()); });
+      if (label && input) label.addEventListener('click', function () {
+        try { if (input.showPicker) input.showPicker(); } catch (e) {}
+        input.click();
+      });
+      if (input) input.addEventListener('change', function () {
+        if (input.value && input.value <= YDJK.today()) setCurrentDate(input.value);
+        else if (input.value > YDJK.today()) window.YDJK_UI.toast('不能查看未来的日期', 'err');
+      });
+    });
   });
 
-  /* 今日饮食记录列表（今天吃了什么） */
+  /* 当日饮食记录列表（所选日期吃了什么） */
   function renderMealList() {
     var list = document.getElementById('mealList');
     if (!list) return;
-    var today = YDJK.today();
+    var today = currentDate;
     var meals = YDJK.getMeals(today);
     var empty = document.getElementById('mealEmpty');
     var total = document.getElementById('mealTotal');
@@ -373,7 +430,7 @@
     });
     if (total) {
       total.style.display = 'block';
-      total.textContent = '今日共 ' + meals.length + ' 餐 · ' + Math.round(sum) + ' kcal';
+      total.textContent = (currentDate === YDJK.today() ? '今日' : fmtCN(currentDate)) + '共 ' + meals.length + ' 餐 · ' + Math.round(sum) + ' kcal';
     }
   }
 })();

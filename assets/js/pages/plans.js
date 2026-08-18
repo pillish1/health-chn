@@ -17,6 +17,7 @@
     { id: 'yoga', label: '🧘 瑜伽拉伸' }
   ];
   var selectedMuscle = 'chest';
+  var currentEditWk = null; // 正在编辑的训练 {date, id}
 
   /* ---------- 训练记录列表 ---------- */
   function renderWorkoutList() {
@@ -45,7 +46,8 @@
         var min = w.minutes ? ' · ⏱ ' + w.minutes + ' 分钟' : '';
         return '<div class="wk-item">' +
           '<div class="wk-item-head"><b>' + esc(w.action || '训练') + '</b>' +
-          '<button class="btn btn-ghost btn-xs js-del-wk" data-date="' + date + '" data-id="' + w.id + '">✕</button></div>' +
+          '<div class="wk-item-actions"><button class="btn btn-ghost btn-xs js-edit-wk" data-date="' + date + '" data-id="' + w.id + '" title="编辑">✎</button>' +
+          '<button class="btn btn-ghost btn-xs js-del-wk" data-date="' + date + '" data-id="' + w.id + '">✕</button></div></div>' +
           (muscleName ? '<div class="wk-item-meta">' + muscleName + '</div>' : '') +
           (setsReps || weight || min ? '<div class="wk-item-meta">' + [setsReps, weight.replace(' · ', ''), min.replace(' · ', '')].filter(Boolean).join(' · ') + '</div>' : '') +
           '</div>';
@@ -62,6 +64,22 @@
         renderWeekStats();
         renderSuggest();
         window.YDJK_UI.toast('已删除该训练');
+      });
+    });
+    list.querySelectorAll('.js-edit-wk').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var list2 = YDJK.getWorkouts(btn.dataset.date);
+        var w = list2.filter(function (x) { return x.id === btn.dataset.id; })[0];
+        if (!w) return;
+        currentEditWk = { date: btn.dataset.date, id: btn.dataset.id };
+        var mu = MUSCLES.filter(function (m) { return m.id === w.muscle; })[0];
+        var sub = document.getElementById('ewSub');
+        if (sub) sub.textContent = esc(w.action || '训练') + (mu ? ' · ' + mu.label.replace(/^[^\u4e00-\u9fa5]*/, '') : '');
+        document.getElementById('ewSets').value = w.sets || 3;
+        document.getElementById('ewReps').value = w.reps || 10;
+        document.getElementById('ewWeight').value = w.weight || '';
+        document.getElementById('ewMinutes').value = w.minutes || '';
+        window.YDJK_UI.openModal('editWorkoutModal');
       });
     });
   }
@@ -302,6 +320,24 @@
     });
     var saveBtn = document.getElementById('btnSaveWorkout');
     if (saveBtn) saveBtn.addEventListener('click', saveWorkout);
+    var saveEditBtn = document.getElementById('btnSaveEditWk');
+    if (saveEditBtn) saveEditBtn.addEventListener('click', function () {
+      if (!currentEditWk) return;
+      var list2 = YDJK.getWorkouts(currentEditWk.date);
+      var w = list2.filter(function (x) { return x.id === currentEditWk.id; })[0];
+      if (!w) return;
+      w.sets = Number(document.getElementById('ewSets').value) || 3;
+      w.reps = Number(document.getElementById('ewReps').value) || 10;
+      w.weight = Number(document.getElementById('ewWeight').value) || null;
+      w.minutes = Number(document.getElementById('ewMinutes').value) || null;
+      YDJK.updateWorkout(currentEditWk.date, w);
+      currentEditWk = null;
+      window.YDJK_UI.closeModal('editWorkoutModal');
+      window.YDJK_UI.toast('✅ 训练已更新');
+      renderWorkoutList();
+      renderWeekStats();
+      renderSuggest();
+    });
     renderWorkoutList();
     renderWeekStats();
     renderSuggest();

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -65,9 +65,23 @@
 
 <section class="section-sm">
   <div class="container">
-    <!-- 今日摄入摘要 -->
+    <!-- 日期导航（查看/补记任意一天的饮食） -->
+    <div class="card mb-3" style="padding:10px 12px">
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="btn btn-ghost btn-sm" id="datePrev" type="button" style="flex:none;padding:6px 12px" aria-label="前一天">‹</button>
+        <button type="button" id="dateLabel" class="btn-link" style="flex:1;text-align:center;font-weight:800;font-size:1rem;display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;border:none;background:none">
+          <span id="dateTextCN">今天</span>
+          <span id="dateText" class="small muted" style="font-weight:600">--</span>
+        </button>
+        <button class="btn btn-ghost btn-sm" id="dateNext" type="button" style="flex:none;padding:6px 12px" aria-label="后一天">›</button>
+        <button class="btn btn-outline btn-xs" id="dateToday" type="button" style="flex:none;margin-left:4px">今天</button>
+      </div>
+      <input type="date" id="dateInput" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" tabindex="-1" aria-hidden="true">
+    </div>
+
+    <!-- 当日摄入摘要 -->
     <div class="card mb-3">
-      <div class="card-title"><i class="ic" data-icon="stats"></i> 今日摄入</div>
+      <div class="card-title"><i class="ic" data-icon="stats"></i> <span id="intakeTitle">今日摄入</span></div>
       <div id="foodSummary" class="grid grid-2" style="align-items:center">
         <div id="calRing" style="display:flex;justify-content:center"></div>
         <div id="macroBar"></div>
@@ -84,7 +98,7 @@
         </div>
       </div>
       <div id="mealList"></div>
-      <div id="mealEmpty" class="empty hidden"><div class="e-icon"><i class="ic" data-icon="food"></i></div><div class="e-title">今天还没有饮食记录</div><div class="e-desc">点「记一餐」，搜索食物记下今天吃的</div></div>
+      <div id="mealEmpty" class="empty hidden"><div class="e-icon"><i class="ic" data-icon="food"></i></div><div class="e-title" id="mealEmptyTitle">今天还没有饮食记录</div><div class="e-desc" id="mealEmptyDesc">点「记一餐」，搜索食物记下今天吃的</div></div>
       <div class="alert success mt-2" id="mealTotal" style="display:none"></div>
     </div>
 
