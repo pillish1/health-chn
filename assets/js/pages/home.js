@@ -216,9 +216,13 @@
     if (isGuest) {
       var wm = document.getElementById('welcomeMini');
       if (wm && !wm.innerHTML.trim()) {
-        wm.innerHTML = '<div class="welcome-card"><div class="wc-top"><span class="wc-emoji">👋</span><div><b>欢迎来到悦动健康</b><p>先建立你的健康档案，让所有计算为你量身定制</p></div></div>' +
-          '<div class="wc-actions"><button class="btn btn-primary btn-sm" onclick="location.href=\'index.html?setup=1\'">⚡ 30秒建立档案</button>' +
-          '<button class="btn btn-ghost btn-sm" onclick="location.href=\'login.html\'">登录已有账号</button></div></div>';
+        wm.innerHTML = '<div class="welcome-card"><div class="wc-top"><span class="wc-emoji">👋</span><div><b>欢迎使用悦动健康</b><p>简单两步，开始记录你的健康生活</p></div></div>' +
+          '<div class="wc-steps">' +
+          '<div class="wc-step"><span class="wc-n">1</span><div><b>记饮食</b><p>点下方「饮食」，搜索食物记下每餐</p></div></div>' +
+          '<div class="wc-step"><span class="wc-n">2</span><div><b>记运动</b><p>点下方「运动」，记录今天的锻炼</p></div></div>' +
+          '</div>' +
+          '<div class="wc-actions"><button class="btn btn-primary btn-sm" onclick="location.href=\'foods.html\'">🍽️ 去记饮食</button>' +
+          '<button class="btn btn-ghost btn-sm" onclick="location.href=\'plans.html\'">🏃 去记运动</button></div></div>';
       }
     }
     return isGuest;

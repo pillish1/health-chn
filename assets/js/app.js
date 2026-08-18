@@ -526,21 +526,7 @@
     document.querySelectorAll('.tab-item').forEach(function (t) {
       if (t.dataset.tab === active) t.classList.add('active');
     });
-    var plus = document.getElementById('tabPlusBtn');
-    if (plus) plus.addEventListener('click', function () { openModal('quickModal'); });
-    // 锚点滚动（tracker#workout / #weight）
-    if (path === 'tracker.html' && location.hash) {
-      var target = location.hash.slice(1);
-      setTimeout(function () {
-        var el = target === 'workout' ? document.querySelector('.card .card-title') : null;
-        if (target === 'workout' && document.getElementById('todayCheckin')) {
-          document.getElementById('todayCheckin').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        if (target === 'weight' && document.getElementById('weightInput')) {
-          document.getElementById('weightInput').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 300);
-    }
+
   }
 
   /* 移动端顶部头像按钮（mProfileBtn） */

@@ -178,22 +178,9 @@ if ('serviceWorker' in navigator) {
 <nav class="tab-bar">
   <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
   <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico">🍽️</span><span class="tab-lbl">饮食</span></a>
-  <button class="tab-plus" id="tabPlusBtn" aria-label="快速记录"><span>＋</span></button>
   <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">运动</span></a>
   <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
 </nav>
-
-<!-- 快速记录面板 -->
-<div class="modal-overlay" id="quickModal">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-title">⚡ 快速记录</div>
-    <div class="modal-sub">随手记，养成习惯更简单</div>
-    <div class="quick-grid">
-      <button class="quick-btn" onclick="location.href='foods.html'"><span class="qb-ico">🍽️</span><b>记一餐</b><small>记录饮食摄入</small></button>
-      <button class="quick-btn" onclick="location.href='plans.html'"><span class="qb-ico">🏃</span><b>记录运动</b><small>记录今日运动</small></button>
-    </div>
-  </div>
-</div>
 
 <style>
 .tab-bar{display:none}

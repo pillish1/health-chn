@@ -1460,3 +1460,9 @@ html[data-theme="dark"] .hero-card {
 .dg-item { flex: 1; text-align: center; padding: 6px 4px; background: var(--surface); border-radius: 10px; }
 .dg-item b { display: block; font-size: .9rem; font-weight: 900; color: var(--primary); }
 .dg-item span { font-size: .62rem; color: var(--muted); }
+/* 新用户三步引导 */
+.wc-steps { display: grid; gap: 10px; margin: 4px 0; }
+.wc-step { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: var(--surface-2); border-radius: 12px; }
+.wc-n { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: #fff; display: grid; place-items: center; font-size: .8rem; font-weight: 800; flex: none; }
+.wc-step b { font-size: .85rem; display: block; }
+.wc-step p { font-size: .75rem; color: var(--muted); margin: 2px 0 0; }
