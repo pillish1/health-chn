@@ -112,7 +112,7 @@
     if (p) { var bmr = YDJK.calcBMR(p); var tdee = YDJK.calcTDEE(bmr, p.activity); goalCal = YDJK.goalCalories(tdee, p.goal); }
     var tasks = [
       { icon: '🍽️', label: '记录饮食', done: meal.count > 0, sub: meal.kcal + ' / ' + Math.round(goalCal) + ' kcal', href: 'foods.html', action: null },
-      { icon: '🏃', label: '今日运动', done: !!workoutDone, sub: workoutDone ? (checkin.minutes ? checkin.minutes + ' 分钟' : '已打卡') : '30 分钟起', href: 'tracker.html#workout', action: workoutDone ? null : 'quickCheckin' },
+      { icon: '🏃', label: '今日运动', done: !!workoutDone, sub: workoutDone ? (checkin.minutes ? checkin.minutes + ' 分钟' : '已记录') : '记录今天的运动', href: 'plans.html', action: workoutDone ? null : 'quickCheckin' },
       { icon: '💧', label: '饮水达标', done: water >= waterGoal, sub: water + ' / ' + waterGoal + ' ml', href: 'tracker.html', action: water >= waterGoal ? null : 'quickWater' }
     ];
     el.innerHTML = '<div class="task-list">' + tasks.map(function (t) {

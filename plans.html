@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>科学运动计划 · 动作库 · 悦动健康</title>
-<meta name="description" content="减脂、增肌、健康保持三套科学周计划，配套 30+ 标准动作库，支持每日训练打卡。">
+<title>运动记录 · 悦动健康</title>
+<meta name="description" content="自由记录你的每一次运动，获取个性化的运动建议。">
 <meta name="theme-color" content="#2563eb">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
@@ -12,12 +12,9 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="悦动健康">
-<link rel="stylesheet" href="assets/css/style.css?v=62">
+<link rel="stylesheet" href="assets/css/style.css?v=73">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="悦动健康">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:title" content="科学运动计划 · 动作库 · 悦动健康">
-<meta property="og:description" content="减脂、增肌、健康保持三套科学周计划，配套 30+ 标准动作库，支持每日训练打卡。">
+<meta property="og:title" content="运动记录 · 悦动健康">
 <meta property="og:image" content="icons/icon-512.png">
 <meta name="twitter:card" content="summary">
 </head>
@@ -45,9 +42,8 @@
     <div class="nav-links">
       <a href="index.html">首页</a>
       <a href="tracker.html">健康追踪</a>
-      <a href="plans.html">运动计划</a>
+      <a href="plans.html">运动记录</a>
       <a href="foods.html">食物热量</a>
-      <a href="articles.html">健康知识</a>
     </div>
     <div class="nav-actions">
       <button class="icon-btn" id="themeToggle" title="切换主题">🌙</button>
@@ -55,108 +51,97 @@
     </div>
   </div>
 </nav>
+
 <header class="page-hero">
   <div class="container">
-    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>运动计划</span></div>
-    <h1>💪 科学运动计划</h1>
-    <p>根据你的目标选择一套计划，每天完成训练后点击打卡。打卡数据会自动同步到健康追踪页。</p>
+    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>运动记录</span></div>
+    <h1>🏃 运动记录</h1>
+    <p>记录你今天的运动，这里会给你合适的建议</p>
   </div>
 </header>
 
 <section class="section-sm">
   <div class="container">
-    <div class="myplan-banner" id="myPlanBanner" role="button" tabindex="0" aria-label="构建自定义运动计划">
-      <div class="mpb-icon">🧩</div>
-      <div class="mpb-text">
-        <b>打造你的专属运动计划</b>
-        <span>从 30+ 标准动作卡片中自由拼装，按周安排，保存后即可打卡</span>
-        <div class="mpb-count" id="myPlanCount"></div>
+    <!-- 今日运动记录（自由记录） -->
+    <div class="card mb-3">
+      <div class="flex-between" style="margin-bottom:14px">
+        <div class="card-title" style="margin:0">💪 今天做了什么运动？</div>
+        <span class="small muted" id="exerciseDate"></span>
       </div>
-      <button class="mpb-btn">立即构建 →</button>
+      <p class="small muted mb-2" style="margin-top:0">自由选择，想记多少记多少，记录后生成你的专属建议</p>
+      <div id="workoutTypes" class="flex gap-sm flex-wrap" style="margin-bottom:16px"></div>
+      <div class="field" style="margin-bottom:12px">
+        <label class="small">运动时长（分钟）</label>
+        <div class="range-wrap">
+          <input type="range" id="workoutMinutes" min="0" max="300" value="30" step="5">
+          <span class="range-val" id="workoutMinutesVal">30 分钟</span>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:14px">
+        <label class="small">备注（可选）</label>
+        <input class="input" id="workoutNote" placeholder="如：跑步 5 公里，感觉不错…" maxlength="50">
+      </div>
+      <div class="flex gap-sm">
+        <button class="btn btn-primary btn-sm" id="saveWorkout" style="flex:1">✅ 记录今日运动</button>
+        <button class="btn btn-ghost btn-sm" id="clearWorkout" style="flex:none">清空</button>
+      </div>
     </div>
-    <div class="tabs" id="planTabs"></div>
-    <div id="planContent"></div>
+
+    <!-- 本周运动概览 -->
+    <div class="card mb-3">
+      <div class="card-title">📊 本周运动概览</div>
+      <div class="stat-grid" id="weekWorkoutStats">
+        <div class="stat-card blue"><div class="s-icon">📅</div><div class="s-value" id="wsDays">--</div><div class="s-label">运动天数</div></div>
+        <div class="stat-card green"><div class="s-icon">⏱️</div><div class="s-value" id="wsMinutes">--</div><div class="s-label">总时长(分)</div></div>
+        <div class="stat-card orange"><div class="s-icon">🔥</div><div class="s-value" id="wsStreak">--</div><div class="s-label">连续天数</div></div>
+      </div>
+      <div class="small muted mt-2" id="weekWorkoutDetail"></div>
+    </div>
+
+    <!-- 运动建议（基于记录生成） -->
+    <div class="card mb-3" id="suggestCard">
+      <div class="card-title">💡 运动建议</div>
+      <div id="suggestBody" class="text-2" style="font-size:.92rem;line-height:1.8">
+        <p style="margin:0">开始记录运动后，这里会根据你的运动习惯给出建议 💪</p>
+      </div>
+    </div>
+
+    <!-- 动作参考库 -->
+    <div class="card">
+      <div class="card-title">🧭 运动参考</div>
+      <p class="small muted mb-2" style="margin-top:0">不知道做什么运动？看看这些常见动作，点击查看要领</p>
+      <div class="search-box" style="margin-bottom:12px">
+        <span class="s-ico">🔍</span>
+        <input class="input" id="actionSearch" placeholder="搜索动作，如：深蹲、卧推…">
+      </div>
+      <div class="tabs" id="muscleTabs" style="margin-bottom:14px"></div>
+      <div class="grid grid-3" id="actionGrid"></div>
+    </div>
   </div>
 </section>
 
-<section class="section" style="background:var(--surface);border-top:1px solid var(--border)">
-  <div class="container">
-    <h2 class="section-title">🧭 动作标准库</h2>
-    <p class="section-sub">训练前花 30 秒读一遍要领，动作标准是安全与效果的前提</p>
-    <div class="search-box">
-      <span class="s-ico">🔍</span>
-      <input class="input" id="actionSearch" placeholder="搜索动作，如：深蹲、卧推…">
-    </div>
-    <div class="tabs" id="muscleTabs"></div>
-    <div class="grid grid-3" id="actionGrid"></div>
-  </div>
-</section>
-<!-- 自定义计划构建器 -->
-<div class="modal-overlay" id="planBuilderModal">
-  <div class="modal" style="max-width:780px">
-    <div class="modal-title">🧩 自定义运动计划</div>
-    <div class="modal-sub">从动作库挑选动作卡片，按星期拼出你的专属周计划（保存后可像内置计划一样打卡）</div>
-    <div class="grid grid-3" style="gap:12px">
-      <div class="field" style="margin:0"><label>计划名称</label><input class="input" id="pbName" placeholder="如：我的胸背计划" maxlength="20"></div>
-      <div class="field" style="margin:0"><label>目标</label>
-        <select class="input" id="pbGoal">
-          <option value="cut">🔥 减脂塑形</option>
-          <option value="keep" selected>🌿 保持健康</option>
-          <option value="bulk">💪 增肌增重</option>
-        </select></div>
-      <div class="field" style="margin:0"><label>描述</label><input class="input" id="pbDesc" placeholder="可选" maxlength="30"></div>
-    </div>
-    <div class="mt-3">
-      <div class="small muted mb-1">① 选择星期 → ② 从下方动作库点「＋ 添加」拼装动作卡片</div>
-      <div class="tabs" id="pbDayTabs" style="margin:0 0 14px"></div>
-      <div id="pbDayContent"></div>
-    </div>
-    <div class="mt-3" style="border-top:1px solid var(--border);padding-top:14px">
-      <div class="small muted mb-1">动作库（点击添加）</div>
-      <div class="search-box" style="margin:0 0 10px">
-        <span class="s-ico">🔍</span>
-        <input class="input" id="pbSearch" placeholder="搜索动作…">
-      </div>
-      <div class="flex gap-sm flex-wrap" id="pbMuscles" style="margin-bottom:12px"></div>
-      <div id="pbActionList" style="max-height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:12px;padding:0 10px"></div>
-    </div>
-    <div class="flex gap-sm mt-3" style="justify-content:flex-end">
-      <button type="button" class="btn btn-ghost" onclick="window.YDJK_UI.closeModal('planBuilderModal')">取消</button>
-      <button class="btn btn-primary" id="pbSave">💾 保存计划</button>
-    </div>
+<!-- 动作详情弹窗 -->
+<div class="modal-overlay" id="actionModal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-title" id="amTitle"></div>
+    <div class="modal-sub" id="amMeta"></div>
+    <div class="mt-2 text-2" id="amDesc" style="line-height:1.8"></div>
   </div>
 </div>
 
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <a class="logo" href="index.html" style="color:var(--text)"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
-        <p class="f-desc">科学运动 + 均衡饮食 + 数据追踪，一站式私人健康管理平台。所有数据仅保存在你的浏览器本地。</p>
-      </div>
-      <div><h4>核心功能</h4><a href="foods.html">记一餐</a><a href="plans.html">运动计划</a><a href="tracker.html">健康记录</a></div>
-      
-      <div><h4>关于</h4><a href="about.html">关于本站</a><a href="about.html#privacy">隐私说明</a><a href="about.html#disclaimer">免责声明</a></div>
-    </div>
-    <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
-  </div>
-</footer><script src="assets/js/supabase-config.js?v=62"></script>
-<script src="assets/js/storage.js?v=62"></script>
-<script src="assets/js/data.js?v=62"></script>
-<script src="assets/js/charts.js?v=62"></script>
-<script src="assets/js/app.js?v=62"></script><script src="assets/js/pages/plans.js?v=62"></script><script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js').catch(function () {});
-  });
-}
-</script>
+<script src="assets/js/supabase-config.js?v=73"></script>
+<script src="assets/js/storage.js?v=73"></script>
+<script src="assets/js/data.js?v=73"></script>
+<script src="assets/js/charts.js?v=73"></script>
+<script src="assets/js/app.js?v=73"></script>
+<script src="assets/js/pages/plans.js?v=73"></script>
+
 <!-- 底部 Tab 导航（移动端 App 式） -->
 <nav class="tab-bar">
   <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico">🏠</span><span class="tab-lbl">首页</span></a>
-  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">计划</span></a>
-  <button class="tab-plus" id="tabPlusBtn" aria-label="快速记录"><span>＋</span></button>
   <a class="tab-item" data-tab="tracker" href="tracker.html"><span class="tab-ico">📊</span><span class="tab-lbl">记录</span></a>
+  <button class="tab-plus" id="tabPlusBtn" aria-label="快速记录"><span>＋</span></button>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico">💪</span><span class="tab-lbl">运动</span></a>
   <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico">👤</span><span class="tab-lbl">我的</span></a>
 </nav>
 
@@ -167,7 +152,7 @@ if ('serviceWorker' in navigator) {
     <div class="modal-sub">随手记，养成习惯更简单</div>
     <div class="quick-grid">
       <button class="quick-btn" onclick="location.href='foods.html'"><span class="qb-ico">🍽️</span><b>记一餐</b><small>查询食物热量</small></button>
-      <button class="quick-btn" onclick="location.href='tracker.html#workout'"><span class="qb-ico">🏃</span><b>运动打卡</b><small>记录今日运动</small></button>
+      <button class="quick-btn" onclick="location.href='plans.html'"><span class="qb-ico">🏃</span><b>记录运动</b><small>记录今日运动</small></button>
       <button class="quick-btn" onclick="location.href='tracker.html#weight'"><span class="qb-ico">⚖️</span><b>记录体重</b><small>追踪体重变化</small></button>
       <button class="quick-btn" onclick="location.href='tracker.html'"><span class="qb-ico">💧</span><b>饮水打卡</b><small>补充水分</small></button>
     </div>
@@ -203,4 +188,5 @@ if ('serviceWorker' in navigator) {
   .quick-btn small{font-size:.7rem;color:var(--muted)}
 }
 </style>
-</body></html>
+</body>
+</html>
