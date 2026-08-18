@@ -1164,3 +1164,19 @@ html[data-theme="dark"] .hero-card {
   font-size: .66rem; font-weight: 700; padding: 2px 8px;
   border-radius: 99px; background: var(--border); color: var(--muted);
 }
+
+/* ============ 首页 v2（对标主流健康App） ============ */
+.streak-chip { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border-radius: 99px; background: var(--surface-2); border: 1px solid var(--border); font-size: .78rem; font-weight: 700; color: var(--muted); }
+.streak-chip b { color: var(--primary); }
+.dash-meta { display: flex; gap: 10px; margin-top: 18px; }
+.dm-item { flex: 1; display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); }
+.dm-ico { font-size: 1.1rem; }
+.dm-item b { display: block; font-size: .95rem; font-weight: 900; color: var(--text); }
+.dm-item span:not(.dm-ico) { font-size: .68rem; color: var(--muted); }
+.dash-tip { padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; }
+.dash-tip-title { font-size: .82rem; font-weight: 800; margin-bottom: 8px; color: var(--text); }
+.dash-tip-body { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+.dash-shortcuts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ds-item { padding: 10px 12px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); font-size: .8rem; font-weight: 700; text-decoration: none; text-align: center; transition: all .2s; }
+.ds-item:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
+@media (max-width: 900px) { .dash-meta { flex-wrap: wrap; } .dash-side { grid-template-columns: 1fr; } }

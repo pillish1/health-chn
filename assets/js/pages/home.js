@@ -50,7 +50,24 @@
     var level = bmi ? YDJK.bmiLevel(bmi) : null;
     document.getElementById('statBmi').innerHTML = '<b>' + (bmi ? bmi.toFixed(1) : '--') + '</b><span>' + (level ? 'BMI · ' + level.name : 'BMI') + '</span>';
     document.getElementById('statKcal').innerHTML = '<b>' + Math.round(meal.kcal) + '</b><span>摄入 / ' + Math.round(goalCal) + ' kcal</span>';
-    document.getElementById('statStreak').innerHTML = '<b>' + streak + '</b><span>连续打卡 天</span>';
+    var sc = document.getElementById('statStreak');
+    if (sc) sc.textContent = streak;
+    var statKcalEl = document.getElementById('statKcal');
+    if (statKcalEl) statKcalEl.textContent = Math.round(meal.kcal) + ' / ' + Math.round(goalCal);
+    var statBmiEl = document.getElementById('statBmi');
+    if (statBmiEl) statBmiEl.textContent = bmi ? bmi.toFixed(1) : '--';
+    // 今日建议（基于数据动态生成）
+    var tipBody = document.getElementById('dashTipBody');
+    if (tipBody) {
+      var tips = [];
+      if (meal.count === 0) tips.push('还没有记录饮食，点「记一餐」开始 🍽️');
+      else if (meal.kcal < goalCal * 0.5) tips.push('今日摄入偏低，记得补充优质蛋白 🥚');
+      else if (meal.kcal > goalCal * 1.2) tips.push('今日摄入略高，可适当增加运动消耗 🏃');
+      if (!workoutDone) tips.push('今天还没运动，来 30 分钟动一动吧 💪');
+      if (water < waterGoal * 0.6) tips.push('饮水还差 ' + (waterGoal - water) + ' ml，记得补水 💧');
+      if (!tips.length) tips.push('今日各项指标都很棒，继续保持！🌟');
+      tipBody.textContent = tips[0];
+    }
 
     /* 欢迎语/登录 */
     renderWelcome();

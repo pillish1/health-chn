@@ -76,32 +76,46 @@
 <header class="hero" style="padding:40px 0 56px">
   <div class="container">
     <div class="hero-welcome" id="welcomeMini"></div>
-    <div class="dash-grid">
-      <!-- 左：今日仪表盘 -->
+        <div class="dash-grid">
       <div class="dash-main">
         <div class="dash-title">
-          <h1 style="font-size:1.35rem;font-weight:900">今日状态</h1>
-          <span class="muted small" id="dashDate"></span>
+          <div>
+            <h1 style="font-size:1.2rem;font-weight:900;margin:0">浠婃棩鐘舵€?/h1>
+            <span class="muted small" id="dashDate"></span>
+          </div>
+          <span class="streak-chip" id="streakChip">馃敟 <b id="statStreak">0</b> 澶?/span>
         </div>
         <div class="dash-rings">
-          <div class="dash-ring" id="ringMeal" title="今日摄入"></div>
-          <div class="dash-ring" id="ringWorkout" title="今日运动"></div>
-          <div class="dash-ring" id="ringWater" title="今日饮水"></div>
+          <div class="dash-ring" id="ringMeal" title="浠婃棩鎽勫叆"></div>
+          <div class="dash-ring" id="ringWorkout" title="浠婃棩杩愬姩"></div>
+          <div class="dash-ring" id="ringWater" title="浠婃棩楗按"></div>
+        </div>
+        <div class="dash-meta">
+          <div class="dm-item"><span class="dm-ico">馃搳</span><div><b id="statBmi">--</b><span>BMI</span></div></div>
+          <div class="dm-item"><span class="dm-ico">馃嵔锔?/span><div><b id="statKcal">--</b><span>鎽勫叆/kcal</span></div></div>
         </div>
         <div class="dash-quick">
-          <button class="btn btn-primary btn-sm" onclick="location.href='foods.html'">🍽️ 记一餐</button>
-          <button class="btn btn-outline btn-sm" onclick="location.href='tracker.html#workout'">🏃 打卡</button>
-          <button class="btn btn-ghost btn-sm" onclick="location.href='tracker.html#weight'">⚖️ 称重</button>
+          <button class="btn btn-primary btn-sm" onclick="location.href='foods.html'">馃嵔锔?璁颁竴椁?/button>
+          <button class="btn btn-outline btn-sm" onclick="location.href='tracker.html#workout'">馃弮 鎵撳崱</button>
+          <button class="btn btn-ghost btn-sm" onclick="location.href='tracker.html#weight'">鈿栵笍 绉伴噸</button>
         </div>
       </div>
-      <!-- 右：数据速览 -->
       <div class="dash-side">
-        <div class="dash-stat" id="statBmi"><b>--</b><span>BMI</span></div>
-        <div class="dash-stat" id="statKcal"><b>--</b><span>今日摄入</span></div>
-        <div class="dash-stat" id="statStreak"><b>0</b><span>连续打卡</span></div>
+        <div class="dash-tip" id="dashTip">
+          <div class="dash-tip-title">馃挕 浠婃棩寤鸿</div>
+          <div class="dash-tip-body" id="dashTipBody">璁板綍鏁版嵁鍚庯紝杩欓噷浼氱粰浣犱笓灞炲缓璁?/div>
+        </div>
+        <div class="dash-tip">
+          <div class="dash-tip-title">馃殌 蹇€熷叆鍙?/div>
+          <div class="dash-shortcuts">
+            <a href="report.html" class="ds-item">馃搱 鎶ュ憡</a>
+            <a href="achievements.html" class="ds-item">馃弲 鎴愬氨</a>
+            <a href="foods.html" class="ds-item">馃 椋熺墿搴?/a>
+            <a href="plans.html" class="ds-item">馃挭 璁″垝</a>
+          </div>
+        </div>
       </div>
-    </div>
-    <div id="welcomeBar" style="max-width:760px;margin:20px auto 0"></div>
+    </div><div id="welcomeBar" style="max-width:760px;margin:20px auto 0"></div>
     <div id="todayTasks" class="today-tasks" style="max-width:980px;margin:16px auto 0"></div>
     <div id="weekRate" style="max-width:980px;margin:16px auto 0"></div>
     <div class="home-chart" style="max-width:980px;margin:16px auto 0">
