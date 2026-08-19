@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    悦动健康 · 图表库 charts.js（纯 SVG，零依赖）
    折线图 / 环形进度图 / 日历热力图
    ============================================================ */
@@ -108,7 +108,7 @@
       var lg = el('linearGradient', { id: 'donutGrad' + donutGradSeq, x1: '0', y1: '0', x2: '1', y2: '1' });
       lg.appendChild(el('stop', { offset: '0%', 'stop-color': '#3b82f6' }));
       lg.appendChild(el('stop', { offset: '55%', 'stop-color': '#06b6d4' }));
-      lg.appendChild(el('stop', { offset: '100%', 'stop-color': '#8b5cf6' }));
+      lg.appendChild(el('stop', { offset: '100%', 'stop-color': '#14b8a6' }));
       defs.appendChild(lg);
       svg.appendChild(defs);
     }
