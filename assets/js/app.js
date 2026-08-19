@@ -545,7 +545,7 @@
     var tips = [];
     var p = YDJK.getProfile();
     if (!p) {
-      tips.push({ type: 'info', icon: '👋', text: '建立健康档案后，这里会给你个性化的每日建议' });
+      tips.push({ type: 'info', icon: '👋', iconName: 'clipboard', text: '建立健康档案后，这里会给你个性化的每日建议' });
       return tips;
     }
     var today = YDJK.today();
@@ -555,21 +555,56 @@
     var bmr = YDJK.calcBMR(p);
     var tdee = YDJK.calcTDEE(bmr, p.activity);
     var goalCal = Math.round(YDJK.goalCalories(tdee, p.goal));
+    var weight = p.weight || 60;
+    var macros = YDJK.macros(goalCal, p.goal);
 
-    // 运动
-    if (!wk.length) tips.push({ type: 'warn', icon: '🏃', text: '今天还没运动，来 30 分钟快走或一组训练吧' });
-    else if (wk.length < 2) tips.push({ type: 'info', icon: '⏱️', text: '今天已记录 ' + wk.length + ' 项训练，再坚持一会儿效果更好' });
+    /* 运动 */
+    if (!wk.length) {
+      tips.push({ type: 'warn', icon: '🏃', iconName: 'run', text: '今天还没运动，来 30 分钟快走或一组训练吧' });
+      // 连续 N 天没运动
+      var idle = 0;
+      for (var i = 1; i <= 4; i++) {
+        if (YDJK.getWorkouts(YDJK.addDays(today, -i)).length > 0) break;
+        idle++;
+      }
+      if (idle >= 2) tips.push({ type: 'info', icon: '⏳', iconName: 'clock', text: '已经 ' + idle + ' 天没运动了，来 20 分钟动一动，别让节奏断掉' });
+    } else if (wk.length < 2) {
+      tips.push({ type: 'info', icon: '⏱️', iconName: 'clock', text: '今天已记录 ' + wk.length + ' 项训练，再坚持一会儿效果更好' });
+    }
 
-    // 饮食
+    /* 饮食 */
     var diff = meal.kcal - goalCal;
-    if (meal.kcal > 0 && diff > 150) tips.push({ type: 'warn', icon: '🍽️', text: '今日摄入已超目标 ' + Math.round(diff) + ' kcal，晚餐清淡些' });
-    else if (meal.kcal > 0 && diff < -400) tips.push({ type: 'info', icon: '🥗', text: '今日摄入偏少，注意保证蛋白质和营养' });
+    if (meal.kcal > 0 && diff > 150) tips.push({ type: 'warn', icon: '🍽️', iconName: 'food', text: '今日摄入已超目标 ' + Math.round(diff) + ' kcal，晚餐清淡些' });
+    else if (meal.kcal > 0 && diff < -400) tips.push({ type: 'info', icon: '🥗', iconName: 'meal', text: '今日摄入偏少，注意保证蛋白质和营养' });
 
-    // 连续训练
-    if (streak >= 3) tips.push({ type: 'ok', icon: '🔥', text: '已连续训练 ' + streak + ' 天，习惯正在养成！' });
-    else if (streak === 1) tips.push({ type: 'ok', icon: '🌟', text: '今天开始训练，好的开始是成功的一半！' });
+    /* 蛋白质（个性化目标） */
+    var pTarget = Math.round(weight * 1.2);
+    if (meal.count > 0 && meal.protein < pTarget * 0.8) {
+      tips.push({ type: 'info', icon: '🥚', iconName: 'meal', text: '今天蛋白质 ' + Math.round(meal.protein) + 'g（目标约 ' + pTarget + 'g），加个鸡蛋或手掌大的鸡胸肉' });
+    }
 
-    if (!tips.length) tips.push({ type: 'ok', icon: '✨', text: '今日各项指标都不错，继续保持！' });
+    /* 本周部位单一 */
+    var week = YDJK.weekDates(today);
+    var muscleSet = {};
+    week.forEach(function (d) {
+      YDJK.getWorkouts(d).forEach(function (w) { if (w.muscle) muscleSet[w.muscle] = (muscleSet[w.muscle] || 0) + 1; });
+    });
+    if (Object.keys(muscleSet).length === 1) {
+      tips.push({ type: 'info', icon: '🏋️', iconName: 'workout', text: '这周都在练同一部位，试试搭配腿、背一起练更均衡' });
+    }
+
+    /* 记录中断鼓励 */
+    var yMeals = YDJK.getMeals(YDJK.addDays(today, -1)).length;
+    var yWk = YDJK.getWorkouts(YDJK.addDays(today, -1)).length;
+    if (yMeals === 0 && yWk === 0 && (meal.count > 0 || wk.length > 0)) {
+      tips.push({ type: 'ok', icon: '✨', iconName: 'check-circle', text: '昨天没记录，今天又开始了，坚持就是胜利！' });
+    }
+
+    /* 连续训练 */
+    if (streak >= 3) tips.push({ type: 'ok', icon: '🔥', iconName: 'flame', text: '已连续记录 ' + streak + ' 天，习惯正在养成！' });
+    else if (streak === 1) tips.push({ type: 'ok', icon: '🌟', iconName: 'star', text: '今天开始记录，好的开始是成功的一半！' });
+
+    if (!tips.length) tips.push({ type: 'ok', icon: '✨', iconName: 'check-circle', text: '今日各项指标都不错，继续保持！' });
     return tips;
   }
   function renderHealthTip(containerId) {
@@ -577,11 +612,14 @@
     if (!el) return;
     var tips = buildHealthTips();
     if (!tips.length) { el.innerHTML = ''; return; }
-    var t = tips[Math.floor(Math.random() * tips.length)];
-    var cls = t.type === 'warn' ? 'warn' : t.type === 'ok' ? 'success' : 'info';
-    el.innerHTML = '<div class="alert ' + cls + '"><span>' + t.icon + '</span><span style="flex:1">' + t.text + '</span><button class="btn btn-ghost btn-sm js-tip-close" aria-label="关闭提示">✕</button></div>';
-    var close = el.querySelector('.js-tip-close');
-    if (close) close.addEventListener('click', function () { el.innerHTML = ''; });
+    // 优先级：warn 在前；最多展示 4 条
+    tips.sort(function (a, b) { return (a.type === 'warn' ? 0 : 1) - (b.type === 'warn' ? 0 : 1); });
+    var shown = tips.slice(0, 4);
+    el.innerHTML = '<div class="tip-list">' + shown.map(function (t) {
+      var cls = t.type === 'warn' ? 'warn' : t.type === 'ok' ? 'ok' : 'info';
+      var ico = (window.YDJK_ICON && t.iconName) ? window.YDJK_ICON(t.iconName) : (t.icon || '💡');
+      return '<div class="tip-item ' + cls + '"><span class="tip-ico">' + ico + '</span><span class="tip-txt">' + t.text + '</span></div>';
+    }).join('') + '</div>';
   }
 
   /* ---------- 滚动显现 ---------- */
@@ -658,7 +696,7 @@
     initNavScroll();
     initModals();
 
-    renderHealthTip('healthTip');
+    renderHealthTip('dashTipBody'); // 首页智能建议（多条规则版）
     initReveal();
     initFooter();
     // 所有页面都允许打开新用户引导（原 tracker 页已移除）

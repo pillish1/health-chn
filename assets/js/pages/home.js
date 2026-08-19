@@ -95,19 +95,6 @@
     /* 一周一览 */
     renderWeekCard(today, streak);
 
-    /* 今日建议 */
-    var tipBody = document.getElementById('dashTipBody');
-    if (tipBody) {
-      var tips = [];
-      if (!p) tips.push('<a href="index.html?setup=1" style="color:var(--primary);font-weight:700">先建立健康档案，让记录更有意义 →</a>');
-      if (meal.count === 0) tips.push('还没有记录饮食，点「记一餐」开始 🍽️');
-      else if (meal.kcal < goalCal * 0.5) tips.push('今日摄入偏低，记得补充优质蛋白 🥚');
-      else if (meal.kcal > goalCal * 1.2) tips.push('今日摄入略高，可适当增加运动消耗 🏃');
-      if (!workouts.length) tips.push('今天还没运动，来 30 分钟动一动吧 💪');
-      if (!tips.length) tips.push('今日各项指标都很棒，继续保持！🌟');
-      tipBody.textContent = tips[0].replace(/<[^>]+>/g, '');
-      tipBody.innerHTML = tips[0];
-    }
   }
 
   /* 今日待办：记录饮食 / 记录运动 状态引导 */

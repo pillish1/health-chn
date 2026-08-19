@@ -1261,6 +1261,17 @@ svg.chart { filter: drop-shadow(0 6px 16px rgba(37, 99, 235, .14)); }
   .wr-grid{grid-template-columns:1fr}
   .wr-item{padding:10px 12px}
 }
+
+/* 智能建议列表 */
+.tip-list{display:flex;flex-direction:column;gap:8px}
+.tip-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:12px;font-size:.88rem;line-height:1.5;background:var(--surface);border:1px solid var(--border)}
+.tip-item .tip-ico{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:.95rem;flex:none;margin-top:1px}
+.tip-item.info .tip-ico{background:var(--info-soft);color:var(--info)}
+.tip-item.warn .tip-ico{background:var(--danger-soft);color:var(--danger)}
+.tip-item.ok .tip-ico{background:#e6f9f0;color:#0d9f6e}
+.tip-item .tip-txt{flex:1;color:var(--text-2)}
+.tip-item.warn .tip-txt{color:var(--text)}
+.tip-item.warn{border-color:rgba(239,68,68,.25);background:linear-gradient(90deg,var(--danger-soft),var(--surface))}
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
 .modal-overlay.sheet .modal {
