@@ -72,8 +72,9 @@
 5. **不主动抢活**：对方登记在案的任务，另一方不碰；有不同意见写进「当前状态」区留给用户决定。
 
 ### 当前状态
-- 当前操作者：**DeepSeek Harness（全权）**——记录体验打磨（修复记一餐排序失效 + 运动建议天数计数）
+- 当前操作者：**DeepSeek Harness（全权）**——记录体验打磨第二轮（运动肌肉归属/补记预设/深色模式对比度）
 - 最近操作记录：
+  - Harness 完成记录体验打磨第二轮（commit a22cd2b）：①运动收藏的跨部位动作保存时 muscle 误用当前部位 tab（wkCurrentMuscle），改回动作本身的 a.muscle（收藏了「慢跑」在胸 tab 里点选，之前会存成胸部）②记一餐「补记」取消后 presetMealType 残留，导致下次主「记一餐」误预设成别的餐次，主按钮点击时清空 ③深色模式 --primary-dark(#1d4ed8) 作文字色偏暗，food-card kcal/克数/选中 radio 低对比，暗色下改 #60a5fa。jsdom test-muscle/test-preset 通过，style.css?v=91
   - Harness 完成记录体验打磨（commit d97b679）：①记一餐排序失效——v1.23 换胶囊菜单后 renderFoods 仍读已删除的 sortSel，升/降序点了不生效，改为模块级 currentSort ②排序按钮点击后图标丢失——动态 innerHTML 的 <i data-icon> 未被 icons.js 注入，改用 YDJK_ICON('sort') ③运动建议「训练次数」原来按动作数累加、同一天多动作会误判为多次，改为按天计数。jsdom test-sort/test-suggest 通过，缓存版本 v77→v78
   - Harness 完成 UX 三问题（commit 7df8d6e）：①记一餐筛选/排序改胶囊按钮组+弹出菜单(原两个 select 丑且逻辑割裂) ②训练时长自动推导=组数×3并显示在汇总(去手动输入, 修逻辑脱节), 收藏加 toast 提示去向 ③storage 防崩溃: setJSON 捕获 QuotaExceeded + storage-error 事件提示, getAllWorkouts/collectAllData 解析保护
   - Harness 完成P0 #1（commit 0388368）：拼音搜索修复——py-foods.js 全拼索引(624条)+foodMatchScore 全拼/首字母双匹配；jsdom 验证 luosifen/jxr/mifan/jirou 全通过
