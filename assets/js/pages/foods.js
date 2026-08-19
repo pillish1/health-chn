@@ -321,8 +321,7 @@
       kcal: Math.round(currentFood.kcal * ratio),
       protein: Math.round(currentFood.p * ratio * 10) / 10,
       carbs: Math.round(currentFood.c * ratio * 10) / 10,
-      fat: Math.round(currentFood.f * ratio * 10) / 10,
-      photo: window._mealPhotoData ? window._mealPhotoData() : null
+      fat: Math.round(currentFood.f * ratio * 10) / 10
     };
     YDJK.addMeal(currentDate, meal);
     // 记录最近使用
@@ -428,29 +427,6 @@
       if (g) g.addEventListener('input', updateMealCalc);
     });
 
-    // 拍照记餐（存本地缩略图）
-    safe(function () {
-      var photoInput = document.getElementById('mealPhotoInput');
-      var photoData = null;
-      var btnPhoto = document.getElementById('btnPhoto');
-      if (btnPhoto) btnPhoto.addEventListener('click', function () { if (photoInput) photoInput.click(); });
-      if (photoInput) photoInput.addEventListener('change', function () {
-        var file = photoInput.files[0];
-        if (!file) return;
-        if (file.size > 2 * 1024 * 1024) { YDJK_UI.toast('图片需小于 2MB', 'err'); return; }
-        var reader = new FileReader();
-        reader.onload = function () {
-          photoData = reader.result;
-          var pImg = document.getElementById('mealPhotoImg'); if (pImg) pImg.src = photoData;
-          var pPrev = document.getElementById('mealPhotoPreview'); if (pPrev) pPrev.style.display = 'block';
-          YDJK_UI.toast('📷 照片已添加');
-        };
-        reader.readAsDataURL(file);
-        photoInput.value = '';
-      });
-      // 保存时附带照片
-      window._mealPhotoData = function () { return photoData; };
-    });
     window.onDataChanged = function () { renderSummary();  renderMealList(); };
     safe(function () {
       var ms = document.getElementById('mealSave');

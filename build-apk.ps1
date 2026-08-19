@@ -8,7 +8,7 @@ $ErrorActionPreference = "Continue"
 $dir = "D:\health-chn"
 
 Write-Host "== 1/4 同步 www（源 → mobile/www） ==" -ForegroundColor Cyan
-robocopy "$dir" "$dir\mobile\www" /MIR /XD mobile .git node_modules .github edge-debug2 /XF *.zip *.log *.flag *.apk *.ps1 .apk-version deploy-github.bat push-to-github.bat robots.txt rss.xml sitemap.xml /NFL /NDL /NJH /NJS /NP | Out-Null
+robocopy "$dir" "$dir\mobile\www" /MIR /XD mobile .git node_modules .github edge-debug2 /XF *.zip *.log *.flag *.apk *.ps1 *.md .apk-version deploy-github.bat push-to-github.bat robots.txt rss.xml sitemap.xml /NFL /NDL /NJH /NJS /NP | Out-Null
 Write-Host "   完成 (exit $LASTEXITCODE)"
 
 Write-Host "== 2/4 同步 Android 资源（www → assets/public） ==" -ForegroundColor Cyan
