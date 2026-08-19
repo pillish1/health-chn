@@ -610,14 +610,21 @@
   function renderHealthTip(containerId) {
     var el = document.getElementById(containerId);
     if (!el) return;
-    var tips = buildHealthTips();
-    if (!tips.length) { el.innerHTML = ''; return; }
+    // 规则引擎：优先使用 YDJK.getSmartTips(date)（小怀川实现，接口 [{icon,type,text}]），未就绪时用内置规则兜底
+    var tips = null;
+    try {
+      if (window.YDJK && typeof window.YDJK.getSmartTips === 'function') {
+        tips = window.YDJK.getSmartTips(window.YDJK.today());
+      }
+    } catch (e) { tips = null; }
+    if (!tips) tips = buildHealthTips();
+    if (!tips || !tips.length) { el.innerHTML = ''; return; }
     // 优先级：warn 在前；最多展示 4 条
     tips.sort(function (a, b) { return (a.type === 'warn' ? 0 : 1) - (b.type === 'warn' ? 0 : 1); });
     var shown = tips.slice(0, 4);
     el.innerHTML = '<div class="tip-list">' + shown.map(function (t) {
-      var cls = t.type === 'warn' ? 'warn' : t.type === 'ok' ? 'ok' : 'info';
-      var ico = (window.YDJK_ICON && t.iconName) ? window.YDJK_ICON(t.iconName) : (t.icon || '💡');
+      var cls = t.type === 'warn' ? 'warn' : (t.type === 'good' || t.type === 'ok') ? 'ok' : 'info';
+      var ico = (window.YDJK_ICON && t.iconName) ? window.YDJK_ICON(t.iconName) : ((t.icon && String(t.icon).indexOf('<') === 0) ? t.icon : (t.icon || '💡'));
       return '<div class="tip-item ' + cls + '"><span class="tip-ico">' + ico + '</span><span class="tip-txt">' + t.text + '</span></div>';
     }).join('') + '</div>';
   }
