@@ -185,16 +185,59 @@
       var label = fmtCN(d);
       return '<div class="wd"><div class="wd-dot' + (cls ? ' ' + cls : '') + '" title="' + label + (meals ? ' · 有饮食' : '') + (wks ? ' · 有运动' : '') + '"></div><span class="wd-lbl">' + label.replace('月', '/').replace('日', '') + '</span></div>';
     }).join('');
+    // 本周统计
+    var mealDays = 0, totalKcal = 0, totalProtein = 0;
+    var workDays = 0, workKcal = 0;
+    var p = YDJK.getProfile();
+    var weight = p ? p.weight : 60;
+    var goal = 2000;
+    var bmr = Math.round(YDJK.calcBMR({ gender: (p && p.gender) || 'male', age: (p && p.age) || 28, height: (p && p.height) || 170, weight: weight }));
+    var actFactor = 1.55;
+    if (p) {
+      var lv = DATA.ACTIVITY_LEVELS.filter(function (x) { return x.id === p.activity; })[0];
+      if (lv) actFactor = lv.factor;
+      goal = Math.round(YDJK.goalCalories(YDJK.calcTDEE(bmr, p.activity), p.goal));
+    }
+    week.forEach(function (d) {
+      var m = YDJK.mealSummary(d);
+      if (m.count > 0) { mealDays++; totalKcal += m.kcal; totalProtein += m.protein; }
+      var ws = YDJK.getWorkouts(d);
+      if (ws.length) {
+        workDays++;
+        ws.forEach(function (w) {
+          var met = Number(w.met) || 5;
+          var mins = (Number(w.minutes) || 0) > 0 ? Number(w.minutes) : (w.sets ? w.sets * 3 : 20);
+          workKcal += Math.round(met * 3.5 * weight / 200 * mins);
+        });
+      }
+    });
+    var hasAny = mealDays > 0 || workDays > 0;
+    var statsHtml;
+    if (hasAny) {
+      var avg = mealDays ? Math.round(totalKcal / mealDays) : 0;
+      var avgPct = goal ? Math.round(avg / goal * 100) : 0;
+      var pTarget = p ? Math.round(weight * 1.2) : 72; // 蛋白目标：约 1.2g/kg
+      var avgProtein = mealDays ? Math.round(totalProtein / mealDays) : 0;
+      var pPct = pTarget ? Math.round(avgProtein / pTarget * 100) : 0;
+      statsHtml = '<div class="wr-grid">' +
+        '<div class="wr-item"><span class="wr-ico blue"><i class="ic" data-icon="food"></i></span><div class="wr-main"><b>' + mealDays + ' 天</b> 记录饮食<div class="wr-sub">日均 ' + avg + ' kcal · 目标' + avgPct + '%</div></div></div>' +
+        '<div class="wr-item"><span class="wr-ico green"><i class="ic" data-icon="run"></i></span><div class="wr-main"><b>' + workDays + ' 天</b> 训练<div class="wr-sub">消耗约 ' + workKcal + ' kcal</div></div></div>' +
+        '<div class="wr-item"><span class="wr-ico purple"><i class="ic" data-icon="target"></i></span><div class="wr-main"><b>' + avgProtein + 'g</b> 日均蛋白<div class="wr-sub">目标约 ' + pTarget + 'g · 达标' + pPct + '%</div></div></div>' +
+        '</div>';
+    } else {
+      statsHtml = '<div class="wr-empty"><i class="ic" data-icon="tip"></i> 这周还没记录，记下第一餐或第一次训练，这里会生成你的周报</div>';
+    }
+    var dateRange = week[0].slice(5).replace('-', '/') + ' - ' + week[6].slice(5).replace('-', '/');
     el.innerHTML = '<div class="card" style="padding:16px 18px">' +
       '<div class="flex-between" style="margin-bottom:12px">' +
-      '<span class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 本周记录</span>' +
-      '<span class="small muted">连续 <b style="color:var(--accent)">' + streak + '</b> 天记录</span></div>' +
+      '<span class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 本周总结</span>' +
+      '<span class="small muted">' + dateRange + ' · 连续 <b style="color:var(--accent)">' + streak + '</b> 天</span></div>' +
       '<div class="week-dots">' + dots + '</div>' +
       '<div class="week-legend" style="margin-top:10px;display:flex;gap:14px;justify-content:center">' +
       '<span class="small muted" style="display:inline-flex;align-items:center;gap:4px"><i class="wd-dot meal" style="width:10px;height:10px;display:inline-block"></i>饮食</span>' +
       '<span class="small muted" style="display:inline-flex;align-items:center;gap:4px"><i class="wd-dot workout" style="width:10px;height:10px;display:inline-block"></i>运动</span>' +
       '<span class="small muted" style="display:inline-flex;align-items:center;gap:4px"><i class="wd-dot both" style="width:10px;height:10px;display:inline-block"></i>都有</span>' +
-      '</div></div>';
+      '</div>' + statsHtml + '</div>';
   }
 
   function fmtCN(d) {

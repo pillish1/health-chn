@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    悦动健康 · 设计系统 v2
    ============================================================ */
 :root {
@@ -1245,6 +1245,22 @@ svg.chart { filter: drop-shadow(0 6px 16px rgba(37, 99, 235, .14)); }
 /* 空状态图标更柔和 */
 .empty .e-icon { opacity: .85; }
 
+
+/* 本周总结 */
+.wr-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+.wr-item{display:flex;align-items:center;gap:10px;background:var(--surface-2);border-radius:14px;padding:12px;min-width:0}
+.wr-ico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:1rem;flex:none}
+.wr-ico.blue{background:var(--info-soft);color:var(--info)}
+.wr-ico.green{background:#e6f9f0;color:#0d9f6e}
+.wr-ico.purple{background:var(--purple-soft);color:var(--purple)}
+.wr-main{min-width:0}
+.wr-main b{font-size:1.05rem;color:var(--text)}
+.wr-sub{font-size:.68rem;color:var(--muted);margin-top:1px}
+.wr-empty{font-size:.8rem;color:var(--muted);text-align:center;padding:14px 0 4px;display:flex;align-items:center;justify-content:center;gap:6px}
+@media(max-width:600px){
+  .wr-grid{grid-template-columns:1fr}
+  .wr-item{padding:10px 12px}
+}
 /* ============ 薄荷健康式底部弹层（记餐） ============ */
 .modal-overlay.sheet { align-items: flex-end; padding: 0; }
 .modal-overlay.sheet .modal {
