@@ -7,9 +7,32 @@
   var currentKcal = 'all';
   var currentFood = null;
   var currentDate = YDJK.today(); // 当前查看/记录的日期（支持历史补记）
-  var FOOD_CATS = ['all', 'fav', '主食', '肉蛋', '蔬菜', '水果', '坚果', '饮品', '零食', '快餐'];
+  var FOOD_CATS = ['all', 'fav', '主食', '肉蛋', '蔬菜', '水果', '坚果', '饮品', '零食', '快餐', '家常菜'];
 
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  /* ---------- 搜索增强：拼音 / 别名 / 匹配评分 ---------- */
+  /* 拼音转换：优先用 py-map.js 的查表（YDJK_PY），兜底降级为字符过滤 */
+  function py(str) {
+    if (window.YDJK_PY) return window.YDJK_PY(str);
+    return String(str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+  /* 匹配评分：0=精确 1=前缀 2=包含 3=拼音精确 4=拼音前缀 5=拼音包含/别名；-1=不匹配 */
+  function foodMatchScore(f, q) {
+    var names = [f.name.toLowerCase()].concat((f.alias || []).map(function (a) { return String(a).toLowerCase(); }));
+    var i;
+    for (i = 0; i < names.length; i++) { if (names[i] === q) return 0; }
+    for (i = 0; i < names.length; i++) { if (names[i].indexOf(q) === 0) return 1; }
+    for (i = 0; i < names.length; i++) { if (names[i].indexOf(q) > -1) return 2; }
+    if (/^[a-z0-9]+$/.test(q)) {
+      var pn = py(f.name);
+      if (pn === q) return 3;
+      if (pn.indexOf(q) === 0) return 4;
+      if (pn.indexOf(q) > -1) return 5;
+      for (i = 0; i < (f.alias || []).length; i++) { if (py(f.alias[i]).indexOf(q) > -1) return 5; }
+    }
+    return -1;
+  }
 
   /* ---------- 日期导航（查看/补记任意一天） ---------- */
   function fmtCN(d) {
@@ -187,16 +210,23 @@
     if (!searchEl || !sortEl) return;
     var q = searchEl.value.trim().toLowerCase();
     var sort = sortEl.value;
-    var list = DATA.FOODS.filter(function (f) {
-      if (currentCat === 'fav') { if (!YDJK.isFav(f.name)) return false; }
-      else if (currentCat !== 'all' && f.cat !== currentCat) return false;
-      if (currentKcal === 'low' && f.kcal >= 100) return false;
-      if (currentKcal === 'mid' && (f.kcal < 100 || f.kcal > 300)) return false;
-      if (currentKcal === 'high' && f.kcal <= 300) return false;
-      if (q && f.name.toLowerCase().indexOf(q) === -1) return false;
-      return true;
+    /* 过滤 + 匹配评分：有关键词时按匹配度过滤，无关键词时全量 */
+    var scored = [];
+    DATA.FOODS.forEach(function (f) {
+      if (currentCat === 'fav') { if (!YDJK.isFav(f.name)) return; }
+      else if (currentCat !== 'all' && f.cat !== currentCat) return;
+      if (currentKcal === 'low' && f.kcal >= 100) return;
+      if (currentKcal === 'mid' && (f.kcal < 100 || f.kcal > 300)) return;
+      if (currentKcal === 'high' && f.kcal <= 300) return;
+      var s = q ? foodMatchScore(f, q) : 0;
+      if (s < 0) return;
+      f._score = s;
+      scored.push(f);
     });
-    if (sort === 'kcal-asc') list.sort(function (a, b) { return a.kcal - b.kcal; });
+    var list = scored;
+    /* 排序：有关键词 → 匹配度优先（同分按热量）；无关键词 → 按选择器 */
+    if (q) list.sort(function (a, b) { return a._score - b._score || a.name.length - b.name.length || a.kcal - b.kcal; });
+    else if (sort === 'kcal-asc') list.sort(function (a, b) { return a.kcal - b.kcal; });
     else if (sort === 'kcal-desc') list.sort(function (a, b) { return b.kcal - a.kcal; });
     else if (sort === 'protein-desc') list.sort(function (a, b) { return b.protein - a.protein; });
     var grid = document.getElementById('foodGrid');
@@ -372,7 +402,8 @@
 
     safe(function () {
       var s = document.getElementById('foodSearch');
-      if (s) s.addEventListener('input', renderFoods);
+      var searchTimer = null;
+      if (s) s.addEventListener('input', function () { clearTimeout(searchTimer); searchTimer = setTimeout(renderFoods, 180); });
     });
     safe(function () {
       var s = document.getElementById('sortSel');
