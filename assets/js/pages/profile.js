@@ -79,7 +79,6 @@
     var Y = window.YDJK;
     try {
       if (data.profile && Y && Y.saveProfile) Y.saveProfile(data.profile);
-      if (data.weights && Y && Y.addWeight) { data.weights.forEach(function (w) { Y.addWeight(w.date, w.weight); }); }
       if (data.checkins && Y && Y.setCheckin) {
         Object.keys(data.checkins).forEach(function (d) { Y.setCheckin(d, data.checkins[d]); });
       }

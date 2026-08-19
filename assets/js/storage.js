@@ -72,84 +72,13 @@
   }
   function isOnboarded() { return getJSON('onboarded', false) === true; }
 
-  /* ---------- 体重记录 ---------- */
-  function getWeights() {
-    var w = getJSON('weights', []);
-    w.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
-    return w;
-  }
-  function addWeight(date, weight) {
-    var w = getWeights();
-    var idx = w.findIndex(function (x) { return x.date === date; });
-    if (idx >= 0) w[idx] = { date: date, weight: round1(weight) };
-    else w.push({ date: date, weight: round1(weight) });
-    setJSON('weights', w);
-    cloudSave();
-    return w;
-  }
-  function removeWeight(date) {
-    var w = getWeights().filter(function (x) { return x.date !== date; });
-    setJSON('weights', w);
-    return w;
-  }
-  function latestWeight() {
-    var w = getWeights();
-    return w.length ? w[w.length - 1] : null;
-  }
-
-  /* ---------- 用户文章（健康知识可更新） ---------- */
-  function getUserArticles() { return getJSON('articles', []); }
-  function saveUserArticle(a) {
-    var list = getUserArticles();
-    if (a.id) {
-      var i = list.findIndex(function (x) { return x.id === a.id; });
-      if (i >= 0) list[i] = a; else list.push(a);
-    } else {
-      a.id = uid();
-      list.push(a);
-    }
-    setJSON('articles', list);
-    cloudSave();
-    return a;
-  }
-  function removeUserArticle(id) {
-    setJSON('articles', getUserArticles().filter(function (x) { return x.id !== id; }));
-  }
-  /* ---------- 自定义运动计划 ---------- */
-  function getMyPlans() { return getJSON('myplans', []); }
-  function saveMyPlan(p) {
-    var list = getMyPlans();
-    if (p.id) {
-      var i = list.findIndex(function (x) { return x.id === p.id; });
-      if (i >= 0) list[i] = p; else list.push(p);
-    } else {
-      p.id = 'custom-' + uid();
-      list.push(p);
-    }
-    setJSON('myplans', list);
-    cloudSave();
-    return p;
-  }
-  function removeMyPlan(id) {
-    setJSON('myplans', getMyPlans().filter(function (x) { return x.id !== id; }));
-  }
-  /* 管理密码（默认，可在管理面板修改） */
-  function getAdminPass() { return getJSON('adminpass', 'health2026'); }
-  function setAdminPass(p) { setJSON('adminpass', p); }
-
   /* ---------- 运动打卡 ---------- */
   function getCheckins() { return getJSON('checkins', {}); }
-  function getCheckin(date) { return getCheckins()[date] || null; }
   function setCheckin(date, data) {
     var c = getCheckins();
     c[date] = data;
     setJSON('checkins', c);
     cloudSave();
-  }
-  function removeCheckin(date) {
-    var c = getCheckins();
-    delete c[date];
-    setJSON('checkins', c);
   }
   /* 连续打卡天数（截至 date，往前数连续有打卡记录的天数） */
   function checkinStreak(dateStr) {
@@ -190,10 +119,6 @@
     setJSON('workouts:' + date, list);
     cloudSave();
   }
-  /* 今日是否有训练 */
-  function todayWorkoutDone(date) {
-    return getWorkouts(date || today()).length > 0;
-  }
 
   /* ---------- 我的套餐 ---------- */
   function getMealTemplates() { return getJSON('meal-templates', []); }
@@ -219,28 +144,12 @@
     cloudSave();
     return i < 0; // true=已收藏
   }
-  function removeFav(name) {
-    var f = getFavs().filter(function (x) { return x !== name; });
-    setJSON('favs', f);
-  }
 
   /* ---------- 饮食记录 ---------- */
   function getMeals(date) { return getJSON('meals:' + date, []); }
   function addMeal(date, meal) {
     var m = getMeals(date);
     m.push({ id: uid(), type: meal.type, name: meal.name, kcal: Number(meal.kcal) || 0, protein: Number(meal.protein) || 0, carbs: Number(meal.carbs) || 0, fat: Number(meal.fat) || 0, ts: Date.now() });
-    setJSON('meals:' + date, m);
-    cloudSave();
-    return m;
-  }
-  function updateMeal(date, id, patch) {
-    var m = getMeals(date).map(function (x) {
-      if (x.id !== id) return x;
-      var n = {};
-      for (var k in x) n[k] = x[k];
-      for (var k2 in patch) n[k2] = patch[k2];
-      return n;
-    });
     setJSON('meals:' + date, m);
     cloudSave();
     return m;
@@ -261,37 +170,10 @@
     return s;
   }
 
-  /* ---------- 饮水 ---------- */
-  function getWater(date) { return getJSON('water:' + date, 0); }
-  function setWater(date, ml) { setJSON('water:' + date, Math.max(0, Number(ml) || 0)); cloudSave(); }
-  function getWaterGoal() {
-    var v = Number(getJSON('watergoal', 2000));
-    return v >= 500 && v <= 6000 ? v : 2000;
-  }
-  function getWeightGoal() { return getJSON('weightgoal', 0); }
-  function setWeightGoal(kg) { setJSON('weightgoal', Math.max(30, Math.min(200, Number(kg) || 0))); }
-  function setWaterGoal(ml) {
-    var v = Math.max(500, Math.min(6000, Number(ml) || 2000));
-    setJSON('watergoal', v);
-    return v;
-  }
-
   /* ---------- 主题 ---------- */
-  function getTheme() { return getJSON('theme', 'light'); }
   function setTheme(t) { setJSON('theme', t); }
 
   /* ---------- 计算引擎 ---------- */
-  function calcBMI(height, weight) {
-    if (!height || !weight || height <= 0 || weight <= 0) return null;
-    var h = height / 100;
-    return weight / (h * h);
-  }
-  function bmiLevel(bmi) {
-    if (bmi < 18.5) return { key: 'thin', name: '偏瘦', tip: '建议增加营养摄入，配合力量训练增肌', color: 'blue' };
-    if (bmi < 24) return { key: 'normal', name: '正常', tip: '非常棒！继续保持健康的生活方式', color: 'green' };
-    if (bmi < 28) return { key: 'over', name: '超重', tip: '建议控制饮食热量，增加有氧运动', color: 'orange' };
-    return { key: 'obese', name: '肥胖', tip: '建议咨询专业营养师或医生，科学减重', color: 'red' };
-  }
   /* Mifflin-St Jeor 基础代谢 */
   function calcBMR(profile) {
     var base = 10 * profile.weight + 6.25 * profile.height - 5 * profile.age;
@@ -308,11 +190,6 @@
     if (goal === 'bulk') return tdee + 300;
     return tdee;
   }
-  /* 理想体重（Devine 公式近似） */
-  function idealWeight(height, gender) {
-    var base = 50 + 0.9 * (height - 152.4);
-    return gender === 'female' ? base - 4.5 : base;
-  }
   /* 营养素配比（克）：碳4 蛋4 脂9 */
   function macros(cal, goal) {
     var ratios;
@@ -328,13 +205,10 @@
 
   /* ---------- 数据备份（彻底本地化：无云端同步） ---------- */
   function cloudSave() { /* 本地模式：无需云端同步 */ }
-  function isCloudLogged() { return false; }
-  async function cloudPull() { return false; }
   /* 收集当前本地全部数据（用于导出备份） */
   function collectAllData() {
     return {
       profile: getProfile(),
-      weights: getWeights(),
       checkins: getCheckins(),
       workouts: getAllWorkouts(),
       favs: getFavs(),
@@ -345,32 +219,23 @@
           if (k.indexOf(NS + 'meals:') === 0) m[k.replace(NS + 'meals:', '')] = JSON.parse(LS.getItem(k) || '[]');
         }
         return m;
-      })(),
-      myPlans: getMyPlans(),
-      userArticles: getUserArticles()
+      })()
     };
   }
 
   window.YDJK = {
-    today: today, fmtDate: fmtDate, fmtDateCN: fmtDateCN, addDays: addDays,
-    weekStart: weekStart, weekDates: weekDates, monthDates: monthDates,
+    today: today, fmtDateCN: fmtDateCN, addDays: addDays,
+    weekDates: weekDates, monthDates: monthDates,
     getProfile: getProfile, saveProfile: saveProfile, isOnboarded: isOnboarded,
-    getWeights: getWeights, addWeight: addWeight, removeWeight: removeWeight, latestWeight: latestWeight,
-    getCheckins: getCheckins, getCheckin: getCheckin, setCheckin: setCheckin,
-    removeCheckin: removeCheckin, checkinStreak: checkinStreak,
-    getWorkouts: getWorkouts, getAllWorkouts: getAllWorkouts, addWorkout: addWorkout, removeWorkout: removeWorkout, updateWorkout: updateWorkout, todayWorkoutDone: todayWorkoutDone,
-    getMeals: getMeals, addMeal: addMeal, updateMeal: updateMeal, removeMeal: removeMeal, mealSummary: mealSummary,
-    getFavs: getFavs, isFav: isFav, toggleFav: toggleFav, removeFav: removeFav,
+    getCheckins: getCheckins, setCheckin: setCheckin, checkinStreak: checkinStreak,
+    getWorkouts: getWorkouts, getAllWorkouts: getAllWorkouts, addWorkout: addWorkout, removeWorkout: removeWorkout, updateWorkout: updateWorkout,
+    getMeals: getMeals, addMeal: addMeal, removeMeal: removeMeal, mealSummary: mealSummary,
+    isFav: isFav, toggleFav: toggleFav,
     getMealTemplates: getMealTemplates, saveMealTemplate: saveMealTemplate, removeMealTemplate: removeMealTemplate,
-    getUserArticles: getUserArticles, saveUserArticle: saveUserArticle, removeUserArticle: removeUserArticle,
-    getAdminPass: getAdminPass, setAdminPass: setAdminPass,
-    getMyPlans: getMyPlans, saveMyPlan: saveMyPlan, removeMyPlan: removeMyPlan,
-    cloudSave: cloudSave, cloudPull: cloudPull, isCloudLogged: isCloudLogged,
-    getWater: getWater, setWater: setWater, getWaterGoal: getWaterGoal, setWaterGoal: setWaterGoal,
-    getWeightGoal: getWeightGoal, setWeightGoal: setWeightGoal,
-  collectAllData: collectAllData,
-    getTheme: getTheme, setTheme: setTheme,
-    calcBMI: calcBMI, bmiLevel: bmiLevel, calcBMR: calcBMR, calcTDEE: calcTDEE,
-    goalCalories: goalCalories, idealWeight: idealWeight, macros: macros
+    cloudSave: cloudSave,
+    collectAllData: collectAllData,
+    setTheme: setTheme,
+    calcBMR: calcBMR, calcTDEE: calcTDEE,
+    goalCalories: goalCalories, macros: macros
   };
 })();
