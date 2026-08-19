@@ -93,6 +93,9 @@
         });
       }
       if (data.favs) { try { localStorage.setItem('ydjk:favs', JSON.stringify(data.favs)); } catch (e) {} }
+      if (data.mealTemplates && Y && Y.saveMealTemplate) {
+        (data.mealTemplates || []).forEach(function (t) { Y.saveMealTemplate(t); });
+      }
       if (typeof window.onDataChanged === 'function') {
         try { window.onDataChanged(); } catch (e) {}
       }

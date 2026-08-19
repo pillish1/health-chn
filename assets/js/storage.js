@@ -219,7 +219,8 @@
           if (k.indexOf(NS + 'meals:') === 0) m[k.replace(NS + 'meals:', '')] = JSON.parse(LS.getItem(k) || '[]');
         }
         return m;
-      })()
+      })(),
+      mealTemplates: getMealTemplates()
     };
   }
 
