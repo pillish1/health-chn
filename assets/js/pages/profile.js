@@ -82,14 +82,15 @@
       if (data.checkins && Y && Y.setCheckin) {
         Object.keys(data.checkins).forEach(function (d) { Y.setCheckin(d, data.checkins[d]); });
       }
-      if (data.workouts && Y && Y.addWorkout) {
+      // 覆盖式写入（先清后写），避免导入后记录重复
+      if (data.workouts) {
         Object.keys(data.workouts).forEach(function (d) {
-          (data.workouts[d] || []).forEach(function (w) { Y.addWorkout(d, w); });
+          try { localStorage.setItem('ydjk:workouts:' + d, JSON.stringify(data.workouts[d] || [])); } catch (e) {}
         });
       }
-      if (data.mealsAll && Y && Y.addMeal) {
+      if (data.mealsAll) {
         Object.keys(data.mealsAll).forEach(function (d) {
-          (data.mealsAll[d] || []).forEach(function (m) { Y.addMeal(d, m); });
+          try { localStorage.setItem('ydjk:meals:' + d, JSON.stringify(data.mealsAll[d] || [])); } catch (e) {}
         });
       }
       if (data.favs) { try { localStorage.setItem('ydjk:favs', JSON.stringify(data.favs)); } catch (e) {} }

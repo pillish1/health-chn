@@ -369,23 +369,30 @@
         if (!currentFood) { window.YDJK_UI.toast('请先选择食物', 'err'); return; }
         var gram = Number(document.getElementById('mealGram').value) || 100;
         var ratio = gram / 100;
-        var name = window.prompt ? null : null;
-        var tplName = currentFood.name;
-        // 直接以食物名作为套餐名（同名覆盖）；允许用自定义名
-        var finalName = String(window.prompt('套餐名称（可直接套用）', tplName) || tplName).trim() || tplName;
-        var tpl = {
-          id: 'tpl-' + Date.now(),
-          name: finalName,
-          items: [{
-            name: currentFood.name, kcal: Math.round(currentFood.kcal * ratio),
-            protein: Math.round(currentFood.p * ratio * 10) / 10,
-            carbs: Math.round(currentFood.c * ratio * 10) / 10,
-            fat: Math.round(currentFood.f * ratio * 10) / 10
-          }]
-        };
-        YDJK.saveMealTemplate(tpl);
-        renderMealTpls();
-        window.YDJK_UI.toast('✅ 已存为套餐「' + finalName + '」');
+        // 自定义命名弹窗（与设计语言统一）
+        if (window.YDJK_UI && window.YDJK_UI.promptDialog) {
+          window.YDJK_UI.promptDialog({ title: '存为套餐', message: '给这个套餐起个名字，之后一键套用', placeholder: currentFood.name, okText: '保存' }).then(function (name) {
+            var finalName = String(name || '').trim() || currentFood.name;
+            var tpl = {
+              id: 'tpl-' + Date.now(),
+              name: finalName,
+              items: [{
+                name: currentFood.name, kcal: Math.round(currentFood.kcal * ratio),
+                protein: Math.round(currentFood.p * ratio * 10) / 10,
+                carbs: Math.round(currentFood.c * ratio * 10) / 10,
+                fat: Math.round(currentFood.f * ratio * 10) / 10
+              }]
+            };
+            YDJK.saveMealTemplate(tpl);
+            renderMealTpls();
+            window.YDJK_UI.toast('✅ 已存为套餐「' + finalName + '」');
+          });
+        } else {
+          var tpl2 = { id: 'tpl-' + Date.now(), name: currentFood.name, items: [{ name: currentFood.name, kcal: Math.round(currentFood.kcal * ratio), protein: Math.round(currentFood.p * ratio * 10) / 10, carbs: Math.round(currentFood.c * ratio * 10) / 10, fat: Math.round(currentFood.f * ratio * 10) / 10 }] };
+          YDJK.saveMealTemplate(tpl2);
+          renderMealTpls();
+          window.YDJK_UI.toast('✅ 已存为套餐「' + currentFood.name + '」');
+        }
       });
     });
     safe(renderCats);
