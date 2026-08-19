@@ -12,6 +12,7 @@
 - 工作副本：D:\deepseek new\sport-health-website（每次改动后 Copy-Item 同步）
 - 当前版本：v1.12-20260819（APK 命名：悦动健康-vX.Y-YYYYMMDD.apk，保留历史；.apk-version 记计数）
 - 打包：D:\health-chn\build-apk.ps1 一键打包（同步 www → gradle → 版本化命名），调用：pwsh 里 & build-apk.ps1
+- 历史 APK 归档：D:\health-chn\archives\（根目录只留最新 3 版）；项目根目录保持干净（已清理构建日志/edge调试数据/过时seo文件）
 
 ## 页面结构（8 页）
 - index.html：能量卡（摄入环+建议摄入+今日消耗[基础代谢+日常活动+运动]+净摄入状态标签+营养条+记一餐/记运动按钮）→ 今日待办（饮食/运动状态）→ 今日简览 → 一周圆点 → 今日建议
