@@ -72,7 +72,7 @@
 5. **不主动抢活**：对方登记在案的任务，另一方不碰；有不同意见写进「当前状态」区留给用户决定。
 
 ### 当前状态
-- 当前操作者：**DeepSeek Harness（全权）**——UX 三问题修复完成，打包 v1.23 中
+- 当前操作者：**DeepSeek Harness（全权）**——v1.23 打包完成，已推送 origin（清空 36 提交积压）
 - 最近操作记录：
   - Harness 完成 UX 三问题（commit 7df8d6e）：①记一餐筛选/排序改胶囊按钮组+弹出菜单(原两个 select 丑且逻辑割裂) ②训练时长自动推导=组数×3并显示在汇总(去手动输入, 修逻辑脱节), 收藏加 toast 提示去向 ③storage 防崩溃: setJSON 捕获 QuotaExceeded + storage-error 事件提示, getAllWorkouts/collectAllData 解析保护
   - Harness 完成P0 #1（commit 0388368）：拼音搜索修复——py-foods.js 全拼索引(624条)+foodMatchScore 全拼/首字母双匹配；jsdom 验证 luosifen/jxr/mifan/jirou 全通过
@@ -81,7 +81,7 @@
   - 小怀川搜索升级：拼音首字母查表 py-map.js（568 字，pinyin 库离线生成）+ 别名 + 匹配度评分排序 + 防抖 + 家常菜 tab
   - 小怀川修复：建档完成跳转首页、welcome 文案、弹窗横向滑动、顶部精简（去 m-header/breadcrumb）
   - Harness 复核 v1.18 通过；建档表单 v2（commit 3104735）；智能建议（f0459cb/c13a7c9 + 小怀川 9498c24）
-- 进行中任务：打包 v1.23（UX 修复）
+- 进行中任务：（无，待用户指派）
 - 最近完成：
   - 2026-08-20 v1.20 数据扩充（食物 480 / 动作 156 / 搜索拼音）
   - 2026-08-20 v1.22 拼音搜索修复（全拼+首字母双匹配，commit 0388368）
