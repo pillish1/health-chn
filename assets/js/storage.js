@@ -224,6 +224,79 @@
     };
   }
 
+  /* ---------- 智能建议（规则版，纯本地） ---------- */
+  /* 接口：getSmartTips(dateStr) → [{type, icon, iconName, text}]，warn 优先，最多 3 条
+     type: warn(提醒) / info(提示) / good(鼓励)；iconName 走 icons.js SVG，icon 为 emoji 兕底 */
+  function getSmartTips(dateStr) {
+    var date = dateStr || today();
+    var tips = [];
+    var p = getProfile();
+    if (!p) {
+      tips.push({ type: 'info', iconName: 'clipboard', icon: '📋', text: '建立健康档案后，这里会给你个性化的每日建议' });
+      return tips;
+    }
+    var goalCal = Math.round(goalCalories(calcTDEE(calcBMR(p), p.activity), p.goal));
+    var meal = mealSummary(date);
+    var wk = getWorkouts(date);
+    var streak = checkinStreak(date);
+    var mm = macros(goalCal, p.goal);
+
+    /* 饮食 */
+    if (meal.count === 0) {
+      tips.push({ type: 'warn', iconName: 'food', icon: '🍽️', text: '今天还没记录饮食，从记一餐开始吧' });
+    } else {
+      if (meal.kcal < goalCal * 0.5) {
+        tips.push({ type: 'warn', iconName: 'food', icon: '🍽️', text: '今日摄入偏低（' + meal.kcal + '/' + goalCal + ' kcal），记得补充优质蛋白' });
+      } else if (meal.kcal > goalCal * 1.2) {
+        tips.push({ type: 'warn', iconName: 'flame', icon: '🔥', text: '今日摄入略高（' + meal.kcal + '/' + goalCal + ' kcal），可增加运动消耗' });
+      }
+      if (meal.protein >= mm.protein) {
+        tips.push({ type: 'good', iconName: 'check', icon: '✅', text: '蛋白质已达标（' + Math.round(meal.protein) + '/' + mm.protein + 'g），营养很到位' });
+      }
+    }
+
+    /* 运动 */
+    if (!wk.length) {
+      tips.push({ type: 'info', iconName: 'run', icon: '🏃', text: '今天还没运动，来 30 分钟快走或一组训练吧' });
+      /* 连续未运动：仅对历史上有过运动记录的用户提示，避免新用户第一天被吓到 */
+      var allWk = getAllWorkouts();
+      var hasHistory = Object.keys(allWk).some(function (d) { return allWk[d].length > 0; });
+      if (hasHistory) {
+        var idle = 0;
+        for (var i = 1; i <= 4; i++) {
+          if (getWorkouts(addDays(date, -i)).length > 0) break;
+          idle++;
+        }
+        if (idle >= 3) {
+          tips.push({ type: 'warn', iconName: 'run', icon: '🏃', text: '你已经连续 ' + (idle + 1) + ' 天没有运动记录了，动一动找回状态' });
+        }
+      }
+    }
+
+    /* 连续打卡鼓励 */
+    if (streak >= 30) tips.push({ type: 'good', iconName: 'flame', icon: '🔥', text: '连续坚持 ' + streak + ' 天，太强了！' });
+    else if (streak >= 7) tips.push({ type: 'good', iconName: 'flame', icon: '🔥', text: '已连续坚持 ' + streak + ' 天，习惯正在养成' });
+    else if (streak >= 3) tips.push({ type: 'good', iconName: 'flame', icon: '🔥', text: '连续 ' + streak + ' 天打卡，继续保持' });
+
+    /* 深夜进食提醒（ts 为记录时间） */
+    if (meal.count > 0 && getMeals(date).some(function (m) { var h = m.ts ? new Date(m.ts).getHours() : -1; return h >= 22 || h <= 4; })) {
+      tips.push({ type: 'info', iconName: 'moon', icon: '🌙', text: '有深夜进食记录，尽量早点吃更健康' });
+    }
+
+    /* 记录完整 */
+    if (meal.count > 0 && wk.length > 0) {
+      tips.push({ type: 'good', iconName: 'check', icon: '✅', text: '饮食和运动都记录了，今天很完整！' });
+    }
+
+    /* 兜底 */
+    if (!tips.length) {
+      tips.push({ type: 'good', iconName: 'check', icon: '✅', text: '今日各项指标都不错，继续保持！' });
+    }
+
+    tips.sort(function (a, b) { return (a.type === 'warn' ? 0 : 1) - (b.type === 'warn' ? 0 : 1); });
+    return tips.slice(0, 3);
+  }
+
   window.YDJK = {
     today: today, fmtDateCN: fmtDateCN, addDays: addDays,
     weekDates: weekDates, monthDates: monthDates,
@@ -234,6 +307,7 @@
     isFav: isFav, toggleFav: toggleFav,
     getMealTemplates: getMealTemplates, saveMealTemplate: saveMealTemplate, removeMealTemplate: removeMealTemplate,
     cloudSave: cloudSave,
+    getSmartTips: getSmartTips,
     collectAllData: collectAllData,
     setTheme: setTheme,
     calcBMR: calcBMR, calcTDEE: calcTDEE,
