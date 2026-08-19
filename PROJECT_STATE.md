@@ -1,4 +1,4 @@
-﻿# 悦动健康 · 项目状态锚点（会话压缩后据此恢复）
+# 悦动健康 · 项目状态锚点（会话压缩后据此恢复）
 
 > 本文件是唯一可靠的持久记忆。对话上下文被压缩后，先读本文件再继续工作。
 
@@ -10,7 +10,7 @@
 ## 目录与版本
 - 部署/源：D:\health-chn（git 仓库，git push 目标 pillish1/health-chn → GitHub Pages https://pillish1.github.io/health-chn/）
 - 工作副本：D:\deepseek new\sport-health-website（每次改动后 Copy-Item 同步）
-- 当前版本：v1.15-20260819（小怀川清理 storage 死代码后打包）（APK 命名：悦动健康-vX.Y-YYYYMMDD.apk，保留历史；.apk-version 记计数）
+- 当前版本：v1.22-20260820（拼音搜索修复）（APK 命名：悦动健康-vX.Y-YYYYMMDD.apk，保留历史；.apk-version 记计数）
 - 打包：D:\health-chn\build-apk.ps1 一键打包（同步 www → gradle → 版本化命名），调用：pwsh 里 & build-apk.ps1
 - 备份含套餐数据（collectAllData/导入均含 mealTemplates，commit 2149f3c）
 - 历史 APK 归档：D:\health-chn\archives\（根目录只留最新 3 版）；项目根目录保持干净（已清理构建日志/edge调试数据/过时seo文件）
@@ -59,10 +59,10 @@
   - ✅ **智能建议（规则版）**（2026-08-19 完成：小怀川实现规则引擎 YDJK.getSmartTips(date)，10 条规则/纯本地/0 成本/warn 优先/最多 3 条；Harness 实现 UI 渲染层 c13a7c9 + 兕底规则 f0459cb）
 - 测试时注意：手机上的按钮位置/间距、深色模式效果
 
-## 多 Agent 协作协议（2026-08-19 起）
+## 协作模式（2026-08-20 更新）
 
-> 参与者：DeepSeek Harness（原搭建者）+ 小怀川（OpenClaw，2026-08-19 加入）
-> 本协议防止两个 agent 互相覆盖代码。**同一时间只允许一个 agent 改文件。**
+> 参与者：**仅 DeepSeek Harness（全权负责）**。小怀川（OpenClaw）已退出，不再参与。
+> 原多 Agent 协议保留备查（下方「多 Agent 协作协议（历史）」）。当前无需登记交接，改动即测即提交即可。
 
 ### 规矩
 1. **唯一真源**：`D:\health-chn`（git 仓库）。旧工作副本 `D:\deepseek new\sport-health-website` 不再作为开发真源，勿参考其中已删除的旧页面（achievements/admin/bmi/report/tracker 等均为已砍功能）。
@@ -72,8 +72,7 @@
 5. **不主动抢活**：对方登记在案的任务，另一方不碰；有不同意见写进「当前状态」区留给用户决定。
 
 ### 当前状态
-### 当前状态
-- 当前操作者：**DeepSeek Harness**——P0 #1 拼音搜索修复完成，打包 v1.21 中
+- 当前操作者：**DeepSeek Harness（全权）**——P0 #1 已修复并打包 v1.22
 - 最近操作记录：
   - Harness 完成P0 #1（commit 0388368）：拼音搜索修复——py-foods.js 全拼索引(624条)+foodMatchScore 全拼/首字母双匹配；jsdom 验证 luosifen/jxr/mifan/jirou 全通过
   - Harness 完成P0 #4/#9（commit 570699b）：导入覆盖式防重复(验证1旧→2新无重复)、套餐命名换promptDialog
@@ -81,18 +80,13 @@
   - 小怀川搜索升级：拼音首字母查表 py-map.js（568 字，pinyin 库离线生成）+ 别名 + 匹配度评分排序 + 防抖 + 家常菜 tab
   - 小怀川修复：建档完成跳转首页、welcome 文案、弹窗横向滑动、顶部精简（去 m-header/breadcrumb）
   - Harness 复核 v1.18 通过；建档表单 v2（commit 3104735）；智能建议（f0459cb/c13a7c9 + 小怀川 9498c24）
-- 进行中任务：打包 v1.21（拼音搜索修复）
+- 进行中任务：无（等用户指派成就徽章）
 - 最近完成：
   - 2026-08-20 v1.20 数据扩充（食物 480 / 动作 156 / 搜索拼音）
-  - 2026-08-20 v1.21 拼音搜索修复（全拼+首字母双匹配）
+  - 2026-08-20 v1.22 拼音搜索修复（全拼+首字母双匹配，commit 0388368）
   - 2026-08-19 v1.18 建档表单 v2 / v1.17 智能建议 / v1.15 死代码清理
 - 下一步（待用户指派）：
   - ⬜ 成就徽章（用户未确认）
 - 注意：工作副本 `D:\deepseek new\sport-health-website` 残留已砍功能旧页面，如需使用请先与 health-chn 对齐
-- 下一步（待用户指派）：
-  - ⬜ 成就徽章（用户未确认，需克制版方案）
-- 注意：工作副本 `D:\deepseek new\sport-health-website` 残留已砍功能旧页面，如需使用请先与 health-chn 对齐
 
-### 分工建议（用户可调整）
-- **DeepSeek Harness**：UI 视觉细节、页面交互（它一直在调这些）
-- **小怀川（OpenClaw）**：代码优化、死代码清理、打包测试、token 成本控制
+
