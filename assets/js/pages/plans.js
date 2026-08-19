@@ -319,12 +319,12 @@
     var body = document.getElementById('suggestBody');
     if (!body) return;
     var week = YDJK.weekDates(YDJK.today());
-    var days = 0, minutes = 0;
+    var days = 0;
     var muscleSet = {};
     week.forEach(function (d) {
-      YDJK.getWorkouts(d).forEach(function (w) {
-        days++;
-        minutes += Number(w.minutes) || 0;
+      var wks = YDJK.getWorkouts(d);
+      if (wks.length) days++;
+      wks.forEach(function (w) {
         if (w.muscle) muscleSet[w.muscle] = (muscleSet[w.muscle] || 0) + 1;
       });
     });

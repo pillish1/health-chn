@@ -1,10 +1,11 @@
-﻿(function () {
+(function () {
   'use strict';
   var YDJK = window.YDJK;
   var DATA = window.YDJK_DATA;
 
   var currentCat = 'all';
   var currentKcal = 'all';
+  var currentSort = 'default';
   var currentFood = null;
   var currentDate = YDJK.today(); // 当前查看/记录的日期（支持历史补记）
   var FOOD_CATS = ['all', 'fav', '主食', '肉蛋', '蔬菜', '水果', '坚果', '饮品', '零食', '快餐', '家常菜'];
@@ -215,9 +216,7 @@
     var searchEl = document.getElementById('foodSearch');
     if (!searchEl) return;
     var q = searchEl.value.trim().toLowerCase();
-    var sort = 'default';
-    var sortEl = document.getElementById('sortSel');
-    if (sortEl) sort = sortEl.value;
+    var sort = currentSort;
     /* 过滤 + 匹配评分：有关键词时按匹配度过滤，无关键词时全量 */
     var scored = [];
     DATA.FOODS.forEach(function (f) {
@@ -436,20 +435,17 @@
       var btn = document.getElementById('sortBtn');
       var menu = document.getElementById('sortMenu');
       if (!btn || !menu) return;
-      var cur = 'default';
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
         menu.classList.toggle('open');
       });
       menu.querySelectorAll('.sort-opt').forEach(function (o) {
         o.addEventListener('click', function () {
-          cur = o.dataset.sort;
+          currentSort = o.dataset.sort;
           menu.querySelectorAll('.sort-opt').forEach(function (x) { x.classList.remove('active'); });
           o.classList.add('active');
-          btn.innerHTML = '<i class="ic" data-icon="sort"></i>' + o.textContent.trim() + '<span class="sort-arrow">▾</span>';
+          btn.innerHTML = (window.YDJK_ICON ? window.YDJK_ICON('sort') : '') + o.textContent.trim() + '<span class="sort-arrow">▾</span>';
           menu.classList.remove('open');
-          var sel = document.getElementById('sortSel');
-          if (sel) sel.value = cur;
           renderFoods();
         });
       });
