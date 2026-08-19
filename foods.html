@@ -94,8 +94,9 @@
       <div class="flex-between" style="margin-bottom:12px">
         <div class="card-title" style="margin:0"><i class="ic" data-icon="food"></i> 今日饮食</div>
         <div class="flex gap-sm" style="gap:8px">
+          <button class="btn btn-outline btn-sm" id="btnCopyYesterday" type="button" style="display:none"><i class="ic" data-icon="refresh"></i> 复制昨天</button>
           <button class="btn btn-outline btn-sm" id="btnManualMeal" type="button"><i class="ic" data-icon="edit"></i> 手动</button>
-          <button class="btn btn-primary btn-sm" id="btnPickFood" type="button" onclick="if(window.YDJK_UI)window.YDJK_UI.openModal('foodPickerModal');setTimeout(function(){var i=document.getElementById('foodSearch');if(i)i.focus();},100)">＋ 记一餐</button>
+          <button class="btn btn-primary btn-sm" id="btnPickFood" type="button" onclick="if(window.YDJK_UI){window.YDJK_UI.openModal('foodPickerModal');if(window._renderMealTpls)window._renderMealTpls();setTimeout(function(){var i=document.getElementById('foodSearch');if(i)i.focus();},100)}">＋ 记一餐</button>
         </div>
       </div>
       <div id="mealList"></div>
@@ -139,6 +140,7 @@
     <div class="flex gap-sm flex-wrap" style="margin-bottom:10px">
       <div class="tabs" id="catTabs" style="margin:0;flex:1"></div>
     </div>
+    <div id="mealTpls" class="meal-tpls" style="margin-bottom:10px"></div>
     <div class="flex gap-sm flex-wrap" style="margin-bottom:12px">
       <div id="recentFoods" class="recent-foods"></div>
     </div>
@@ -176,6 +178,7 @@
         <span class="range-val" id="mealGramVal">100 g</span>
       </div>
       <div class="flex gap-sm mt-1 flex-wrap" id="quickGramBtns"></div>
+    <button class="btn btn-ghost btn-sm mt-2" id="btnSaveTpl" type="button" style="width:100%"><i class="ic" data-icon="save"></i> 把这道食物存为套餐</button>
     </div>
     <div class="alert success" id="mealCalc"></div>
     <div class="flex gap-sm" style="gap:10px">

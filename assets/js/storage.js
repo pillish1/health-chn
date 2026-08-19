@@ -195,6 +195,19 @@
     return getWorkouts(date || today()).length > 0;
   }
 
+  /* ---------- 我的套餐 ---------- */
+  function getMealTemplates() { return getJSON('meal-templates', []); }
+  function saveMealTemplate(tpl) {
+    var list = getMealTemplates().filter(function (t) { return t.id !== tpl.id; });
+    list.push(tpl);
+    setJSON('meal-templates', list);
+    cloudSave();
+  }
+  function removeMealTemplate(id) {
+    setJSON('meal-templates', getMealTemplates().filter(function (t) { return t.id !== id; }));
+    cloudSave();
+  }
+
   /* ---------- 食物收藏 ---------- */
   function getFavs() { return getJSON('favs', []); }
   function isFav(name) { return getFavs().indexOf(name) !== -1; }
@@ -348,6 +361,7 @@
     getWorkouts: getWorkouts, getAllWorkouts: getAllWorkouts, addWorkout: addWorkout, removeWorkout: removeWorkout, updateWorkout: updateWorkout, todayWorkoutDone: todayWorkoutDone,
     getMeals: getMeals, addMeal: addMeal, updateMeal: updateMeal, removeMeal: removeMeal, mealSummary: mealSummary,
     getFavs: getFavs, isFav: isFav, toggleFav: toggleFav, removeFav: removeFav,
+    getMealTemplates: getMealTemplates, saveMealTemplate: saveMealTemplate, removeMealTemplate: removeMealTemplate,
     getUserArticles: getUserArticles, saveUserArticle: saveUserArticle, removeUserArticle: removeUserArticle,
     getAdminPass: getAdminPass, setAdminPass: setAdminPass,
     getMyPlans: getMyPlans, saveMyPlan: saveMyPlan, removeMyPlan: removeMyPlan,

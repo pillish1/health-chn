@@ -43,6 +43,69 @@
     
   }
 
+  /* ---------- 我的套餐 ---------- */
+  function renderMealTpls() {
+    var wrap = document.getElementById('mealTpls');
+    if (!wrap) return;
+    var tpls = YDJK.getMealTemplates();
+    if (!tpls.length) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = '<div class="small muted mb-1" style="font-weight:700">📦 我的套餐（一键记一餐）</div>' +
+      '<div class="recent-list">' + tpls.map(function (t) {
+        var kcal = t.items.reduce(function (s, it) { return s + it.kcal; }, 0);
+        return '<span class="tpl-chip" style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;background:var(--primary-soft);color:var(--primary);font-size:.8rem;font-weight:700;cursor:pointer;margin:0 6px 6px 0">' + esc(t.name) + ' · ' + kcal + ' kcal' +
+          '<button class="js-del-tpl" data-id="' + t.id + '" style="border:none;background:none;color:var(--muted);font-size:.85rem;cursor:pointer;padding:0 2px" title="删除">✕</button></span>';
+      }).join('') + '</div>';
+    wrap.querySelectorAll('.tpl-chip').forEach(function (chip, i) {
+      chip.addEventListener('click', function (ev) {
+        if (ev.target.classList.contains('js-del-tpl')) return;
+        applyTemplate(tpls[i]);
+      });
+    });
+    wrap.querySelectorAll('.js-del-tpl').forEach(function (btn) {
+      btn.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        YDJK.removeMealTemplate(btn.dataset.id);
+        renderMealTpls();
+        window.YDJK_UI.toast('套餐已删除');
+      });
+    });
+  }
+  window._renderMealTpls = function () { renderMealTpls(); };
+  function applyTemplate(tpl) {
+    // 选餐次（默认当前预设或早餐）
+    var type = presetMealType || 'breakfast';
+    window.YDJK_UI.confirmDialog({
+      title: '套用套餐「' + tpl.name + '」',
+      message: '将 ' + tpl.items.length + ' 道食物记入' + (currentDate === YDJK.today() ? '今天' : fmtCN(currentDate)) + '的' + (type === 'breakfast' ? '早餐' : type === 'lunch' ? '午餐' : type === 'dinner' ? '晚餐' : '加餐') + '？',
+      okText: '确认套用', cancelText: '取消'
+    }).then(function (ok) {
+      if (!ok) return;
+      tpl.items.forEach(function (it) {
+        YDJK.addMeal(currentDate, {
+          type: type, name: it.name, kcal: it.kcal,
+          protein: it.protein, carbs: it.carbs, fat: it.fat
+        });
+      });
+      window.YDJK_UI.toast('✅ 已套用套餐：' + tpl.name);
+      renderMealList();
+      renderSummary();
+      window.YDJK_UI.closeModal('foodPickerModal');
+    });
+  }
+
+  /* 复制昨天的饮食到今天 */
+  function copyYesterday() {
+    var yesterday = YDJK.addDays(currentDate, -1);
+    var meals = YDJK.getMeals(yesterday);
+    if (!meals.length) { window.YDJK_UI.toast('昨天没有饮食记录', 'err'); return; }
+    meals.forEach(function (m) {
+      YDJK.addMeal(currentDate, { type: m.type, name: m.name, kcal: m.kcal, protein: m.protein, carbs: m.carbs, fat: m.fat });
+    });
+    window.YDJK_UI.toast('✅ 已复制昨天的 ' + meals.length + ' 条记录');
+    renderMealList();
+    renderSummary();
+  }
+
   /* ---------- 今日摄入摘要 ---------- */
   function renderSummary() {
     var today = currentDate;
@@ -255,6 +318,46 @@
     safe(renderSummary);
     
     safe(renderRecent);
+    safe(renderMealTpls);
+    // 复制昨天按钮（今天且昨天有记录时显示）
+    safe(function () {
+      var copyBtn = document.getElementById('btnCopyYesterday');
+      if (!copyBtn) return;
+      function refreshCopy() {
+        var yesterday = YDJK.addDays(currentDate, -1);
+        var show = currentDate === YDJK.today() && YDJK.getMeals(currentDate).length === 0 && YDJK.getMeals(yesterday).length > 0;
+        copyBtn.style.display = show ? '' : 'none';
+      }
+      copyBtn.addEventListener('click', copyYesterday);
+      window._refreshCopyYesterday = refreshCopy;
+      refreshCopy();
+    });
+    // 存为套餐（记餐弹窗里）
+    safe(function () {
+      var btn = document.getElementById('btnSaveTpl');
+      if (btn) btn.addEventListener('click', function () {
+        if (!currentFood) { window.YDJK_UI.toast('请先选择食物', 'err'); return; }
+        var gram = Number(document.getElementById('mealGram').value) || 100;
+        var ratio = gram / 100;
+        var name = window.prompt ? null : null;
+        var tplName = currentFood.name;
+        // 直接以食物名作为套餐名（同名覆盖）；允许用自定义名
+        var finalName = String(window.prompt('套餐名称（可直接套用）', tplName) || tplName).trim() || tplName;
+        var tpl = {
+          id: 'tpl-' + Date.now(),
+          name: finalName,
+          items: [{
+            name: currentFood.name, kcal: Math.round(currentFood.kcal * ratio),
+            protein: Math.round(currentFood.p * ratio * 10) / 10,
+            carbs: Math.round(currentFood.c * ratio * 10) / 10,
+            fat: Math.round(currentFood.f * ratio * 10) / 10
+          }]
+        };
+        YDJK.saveMealTemplate(tpl);
+        renderMealTpls();
+        window.YDJK_UI.toast('✅ 已存为套餐「' + finalName + '」');
+      });
+    });
     safe(renderCats);
     safe(renderFoods);
 
@@ -410,6 +513,7 @@
         itemsHtml + '</div>';
     }).join('');
     list.innerHTML = html;
+    if (window._refreshCopyYesterday) { try { window._refreshCopyYesterday(); } catch (e) {} }
     // 补记 → 打开搜索弹窗（预设餐次）
     list.querySelectorAll('.js-add-meal').forEach(function (btn) {
       btn.addEventListener('click', function () {
