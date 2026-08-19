@@ -281,8 +281,9 @@
     closeModal('onboardModal');
     toast(isEdit ? '✅ 健康档案已更新' : '✅ 健康档案已建立');
     if (typeof window.onProfileSaved === 'function') window.onProfileSaved(profile);
-    if (!isEdit && window.location.pathname.split('/').pop() === 'index.html') {
-      setTimeout(function () { location.href = 'plans.html'; }, 800);
+    if (!isEdit) {
+      // 新用户建档完成 → 统一回首页（能量卡/建议立即按新档案渲染）
+      setTimeout(function () { location.href = 'index.html'; }, 600);
     }
   }
 
