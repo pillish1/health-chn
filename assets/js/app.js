@@ -220,23 +220,31 @@
   /* ---------- 档案引导（未建档时弹窗） ---------- */
   function buildProfileForm(profile) {
     var p = profile || {};
+    var ico = function (n) { return window.YDJK_ICON ? window.YDJK_ICON(n) : ''; };
     var goals = DATA.GOALS.map(function (g) {
       var checked = (p.goal || 'keep') === g.id ? ' checked' : '';
-      return '<div class="radio-pill"><input type="radio" name="goal" id="goal-' + g.id + '" value="' + g.id + '"' + checked + '><label for="goal-' + g.id + '"><span class="emoji">' + g.emoji + '</span>' + g.label + '</label></div>';
+      return '<div class="radio-pill card-pill"><input type="radio" name="goal" id="goal-' + g.id + '" value="' + g.id + '"' + checked + '><label for="goal-' + g.id + '"><span class="emoji">' + g.emoji + '</span><b>' + g.label + '</b><small>' + g.desc + '</small></label></div>';
     }).join('');
     var levels = DATA.ACTIVITY_LEVELS.map(function (l) {
-      var sel = (p.activity || 'moderate') === l.id ? ' selected' : '';
-      return '<option value="' + l.id + '"' + sel + '>' + l.label + '（' + l.factor + '）</option>';
+      var checked = (p.activity || 'moderate') === l.id ? ' checked' : '';
+      return '<div class="radio-pill card-pill"><input type="radio" name="activity" id="act-' + l.id + '" value="' + l.id + '"' + checked + '><label for="act-' + l.id + '"><b>' + l.label + '</b><small>' + l.desc + '</small></label></div>';
     }).join('');
     var male = p.gender !== 'female';
-    return '<div class="form-section">' + (window.YDJK_ICON ? window.YDJK_ICON('user') : '👤') + ' 基本信息</div><div class="field"><label>性别</label><div class="radio-group">' +
+    var a = p.age ? ' value="' + p.age + '"' : '';
+    var h = p.height ? ' value="' + p.height + '"' : '';
+    var w = p.weight ? ' value="' + p.weight + '"' : '';
+    return '' +
+      '<div class="form-section">' + ico('user') + ' 基本信息</div>' +
+      '<div class="field"><label>性别 <span class="req"></span></label><div class="radio-group">' +
       '<div class="radio-pill"><input type="radio" name="gender" id="g-male" value="male"' + (male ? ' checked' : '') + '><label for="g-male"><span class="emoji">👨</span>男</label></div>' +
       '<div class="radio-pill"><input type="radio" name="gender" id="g-female" value="female"' + (!male ? ' checked' : '') + '><label for="g-female"><span class="emoji">👩</span>女</label></div></div></div>' +
-      '<div class="grid grid-2" style="gap:14px"><div class="field"><label>年龄</label><input class="input" type="number" id="pf-age" min="10" max="100" value="' + (p.age || 25) + '"></div>' +
-      '<div class="field"><label>身高 (cm)</label><input class="input" type="number" id="pf-height" min="80" max="250" value="' + (p.height || 170) + '"></div></div>' +
-      '<div class="field"><label>当前体重 (kg)</label><input class="input" type="number" id="pf-weight" min="20" max="300" step="0.1" value="' + (p.weight || 60) + '"></div>' +
-      '<div class="form-section">' + (window.YDJK_ICON ? window.YDJK_ICON('target') : '🎯') + ' 健康目标</div><div class="field"><label>你的目标</label><div class="radio-group">' + goals + '</div></div>' +
-      '<div class="field"><label>日常活动水平</label><select class="input" id="pf-activity">' + levels + '</select></div>';
+      '<div class="field"><label>年龄 <span class="req"></span></label><div class="input-group"><input class="input" type="number" id="pf-age" min="10" max="100" placeholder="如 25"' + a + '><span class="suffix">岁</span></div><div class="hint">用于计算基础代谢</div></div>' +
+      '<div class="field"><label>身高 <span class="req"></span></label><div class="input-group"><input class="input" type="number" id="pf-height" min="80" max="250" placeholder="如 170"' + h + '><span class="suffix">cm</span></div><div class="hint">与体重一起计算每日热量目标</div></div>' +
+      '<div class="field"><label>体重 <span class="req"></span></label><div class="input-group"><input class="input" type="number" id="pf-weight" min="20" max="300" step="0.1" placeholder="如 60"' + w + '><span class="suffix">kg</span></div><div class="hint">每周在同一时间称最准</div></div>' +
+      '<div class="form-section">' + ico('target') + ' 健康目标</div>' +
+      '<div class="field"><div class="radio-group vertical">' + goals + '</div></div>' +
+      '<div class="form-section">' + ico('activity') + ' 日常活动水平</div>' +
+      '<div class="field"><div class="radio-group vertical">' + levels + '</div><div class="hint">选最接近你日常状态的一项，之后可随时改</div></div>';
   }
 
   /* 打开档案编辑器（新建/编辑共用，根据是否已有档案自适应） */
@@ -263,13 +271,21 @@
     var age = Number(document.getElementById('pf-age').value);
     var height = Number(document.getElementById('pf-height').value);
     var weight = Number(document.getElementById('pf-weight').value);
-    if (!age || !height || !weight || height < 80 || weight < 20) {
-      toast('请填写有效的身高体重', 'err');
-      return;
-    }
-    var gender = form.querySelector('input[name=gender]:checked').value;
-    var goal = form.querySelector('input[name=goal]:checked').value;
-    var activity = document.getElementById('pf-activity').value;
+    // 逐项校验：哪项错提示哪项
+    if (!document.getElementById('pf-age').value.trim()) { toast('请填写年龄', 'err'); document.getElementById('pf-age').focus(); return; }
+    if (isNaN(age) || age < 10 || age > 100) { toast('年龄需在 10-100 之间', 'err'); document.getElementById('pf-age').focus(); return; }
+    if (!document.getElementById('pf-height').value.trim()) { toast('请填写身高', 'err'); document.getElementById('pf-height').focus(); return; }
+    if (isNaN(height) || height < 80 || height > 250) { toast('身高需在 80-250 cm 之间', 'err'); document.getElementById('pf-height').focus(); return; }
+    if (!document.getElementById('pf-weight').value.trim()) { toast('请填写体重', 'err'); document.getElementById('pf-weight').focus(); return; }
+    if (isNaN(weight) || weight < 20 || weight > 300) { toast('体重需在 20-300 kg 之间', 'err'); document.getElementById('pf-weight').focus(); return; }
+    var gEl = form.querySelector('input[name=gender]:checked');
+    if (!gEl) { toast('请选择性别', 'err'); return; }
+    var goEl = form.querySelector('input[name=goal]:checked');
+    if (!goEl) { toast('请选择健康目标', 'err'); return; }
+    var gender = gEl.value;
+    var goal = goEl.value;
+    var actEl = form.querySelector('input[name=activity]:checked');
+    var activity = actEl ? actEl.value : 'moderate';
     var existing = YDJK.getProfile();
     var isEdit = !!existing;
     var profile = {
