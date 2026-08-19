@@ -106,7 +106,7 @@
     var p = YDJK.getProfile();
     var goalCal = 2000;
     if (p) {
-      var bmr = YDJK.calcBMR({ gender: p.gender, age: p.age, height: p.height, weight: p.weight });
+      var bmr = YDJK.calcBMR({ gender: p.gender || 'male', age: p.age || 28, height: p.height || 170, weight: p.weight || 60 });
       goalCal = Math.round(YDJK.goalCalories(YDJK.calcTDEE(bmr, p.activity), p.goal));
     }
     var mealSub = mealDone ? '已记录 ' + meal.count + ' 条 · ' + Math.round(meal.kcal) + ' / ' + goalCal + ' kcal' : '今天还没记录饮食';

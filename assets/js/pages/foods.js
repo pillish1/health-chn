@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   'use strict';
   var YDJK = window.YDJK;
   var DATA = window.YDJK_DATA;
@@ -14,6 +14,8 @@
   /* ---------- 搜索增强：拼音 / 别名 / 匹配评分 ---------- */
   /* 拼音转换：优先用 py-map.js 的查表（YDJK_PY），兜底降级为字符过滤 */
   function py(str) {
+    // 优先完整拼音（py-foods.js 全拼索引），其次首字母（py-map.js），最后字符过滤
+    if (window.YDJK_FOOD_PY && window.YDJK_FOOD_PY[str]) return window.YDJK_FOOD_PY[str];
     if (window.YDJK_PY) return window.YDJK_PY(str);
     return String(str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
   }
@@ -26,10 +28,15 @@
     for (i = 0; i < names.length; i++) { if (names[i].indexOf(q) > -1) return 2; }
     if (/^[a-z0-9]+$/.test(q)) {
       var pn = py(f.name);
-      if (pn === q) return 3;
-      if (pn.indexOf(q) === 0) return 4;
-      if (pn.indexOf(q) > -1) return 5;
-      for (i = 0; i < (f.alias || []).length; i++) { if (py(f.alias[i]).indexOf(q) > -1) return 5; }
+      var pi = (window.YDJK_PY ? window.YDJK_PY(f.name) : pn).toLowerCase();
+      if (pn === q || (pi && pi === q)) return 3;
+      if (pn.indexOf(q) === 0 || (pi && pi.indexOf(q) === 0)) return 4;
+      if (pn.indexOf(q) > -1 || (pi && pi.indexOf(q) > -1)) return 5;
+      for (i = 0; i < (f.alias || []).length; i++) {
+        var an = py(f.alias[i]);
+        var ai = (window.YDJK_PY ? window.YDJK_PY(f.alias[i]) : an).toLowerCase();
+        if (an.indexOf(q) > -1 || (ai && ai.indexOf(q) > -1)) return 5;
+      }
     }
     return -1;
   }

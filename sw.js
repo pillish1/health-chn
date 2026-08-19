@@ -1,7 +1,7 @@
-/* ============================================================
+﻿/* ============================================================
    悦动健康 · Service Worker（离线缓存 + 自动更新）
    ============================================================ */
-var CACHE = 'yuedong-health-v76';
+var CACHE = 'yuedong-health-v77';
 var ASSETS = [
   './',
   './index.html',
@@ -16,6 +16,7 @@ var ASSETS = [
   './assets/js/storage.js?v=90',
   './assets/js/data.js?v=90',
   './assets/js/py-map.js?v=91',
+  './assets/js/py-foods.js?v=91',
   './assets/js/charts.js?v=90',
   './assets/js/app.js?v=90',
   './assets/js/icons.js?v=90',
