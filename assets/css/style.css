@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    悦动健康 · 设计系统 v2
    ============================================================ */
 :root {
@@ -52,6 +52,12 @@ html[data-theme="dark"] {
   --info-soft: #123049;
   --purple-soft: #0c2e47;
 }
+
+/* 深色模式下 --primary-dark 作文字色时偏暗(#1d4ed8)，改为浅蓝保证可读 */
+html[data-theme="dark"] .food-card .f-kcal,
+html[data-theme="dark"] .range-val,
+html[data-theme="dark"] .radio-pill input:checked + label,
+html[data-theme="dark"] a:hover { color: #60a5fa; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; overflow-x: clip; }

@@ -418,6 +418,11 @@
       var searchTimer = null;
       if (s) s.addEventListener('input', function () { clearTimeout(searchTimer); searchTimer = setTimeout(renderFoods, 180); });
     });
+    /* 主「记一餐」按钮：清空补记预设（避免上次取消补记后残留餐次，误把下次记餐预设成别的餐次） */
+    safe(function () {
+      var pick = document.getElementById('btnPickFood');
+      if (pick) pick.addEventListener('click', function () { presetMealType = null; });
+    });
     /* 热量筛选胶囊组 */
     safe(function () {
       var pills = document.querySelectorAll('#kcalPills .kcal-pill');

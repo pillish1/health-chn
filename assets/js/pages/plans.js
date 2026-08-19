@@ -297,7 +297,7 @@
       var a = DATA.ACTIONS.find(function (x) { return x.id === id; });
       var s = selectedActions[id];
       YDJK.addWorkout(date, {
-        muscle: wkCurrentMuscle,
+        muscle: a ? a.muscle : wkCurrentMuscle,
         action: a ? a.name : '训练',
         sets: s.sets || 3,
         reps: s.reps || 10,

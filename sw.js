@@ -12,7 +12,7 @@ var ASSETS = [
   './about.html',
   './404.html',
   './manifest.json',
-  './assets/css/style.css?v=90',
+  './assets/css/style.css?v=91',
   './assets/js/storage.js?v=90',
   './assets/js/data.js?v=90',
   './assets/js/py-map.js?v=91',
