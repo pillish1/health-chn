@@ -10,8 +10,9 @@
 ## 目录与版本
 - 部署/源：D:\health-chn（git 仓库，git push 目标 pillish1/health-chn → GitHub Pages https://pillish1.github.io/health-chn/）
 - 工作副本：D:\deepseek new\sport-health-website（每次改动后 Copy-Item 同步）
-- 当前版本：v1.12-20260819（APK 命名：悦动健康-vX.Y-YYYYMMDD.apk，保留历史；.apk-version 记计数）
+- 当前版本：v1.15-20260819（小怀川清理 storage 死代码后打包）（APK 命名：悦动健康-vX.Y-YYYYMMDD.apk，保留历史；.apk-version 记计数）
 - 打包：D:\health-chn\build-apk.ps1 一键打包（同步 www → gradle → 版本化命名），调用：pwsh 里 & build-apk.ps1
+- 备份含套餐数据（collectAllData/导入均含 mealTemplates，commit 2149f3c）
 - 历史 APK 归档：D:\health-chn\archives\（根目录只留最新 3 版）；项目根目录保持干净（已清理构建日志/edge调试数据/过时seo文件）
 
 ## 页面结构（8 页）
@@ -71,7 +72,11 @@
 5. **不主动抢活**：对方登记在案的任务，另一方不碰；有不同意见写进「当前状态」区留给用户决定。
 
 ### 当前状态
-- 当前操作者：**小怀川（OpenClaw）**
+- 当前操作者：**DeepSeek Harness（原搭建者）**——验证小怀川清理（storage 死代码删除不影响套餐/周报/备份），并补备份含套餐缺口（commit 2149f3c）
+- 最近操作记录：
+  - Harness 19:05-19:10 套餐+周报（commit d211285/1f69261，已核实保留）
+  - 小怀川 storage 死代码清理（commit b72c5e6，已核实无损）
+  - Harness 备份补全套餐（commit 2149f3c）
 - 进行中任务：storage.js 死代码清理（已完成代码层，正在打包验证）
 - 最近完成：
   - 2026-08-19 storage.js 死代码清理：删除体重/饮水/文章/计划/管理密码/BMI/updateMeal/todayWorkoutDone 等已砍功能残留（约 30 个函数 + 导出），同步修正 collectAllData 与 profile.js 导入备份；jsdom 冒烟+完整测试全绿
