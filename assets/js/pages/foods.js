@@ -213,10 +213,11 @@
   /* ---------- 食物网格 ---------- */
   function renderFoods() {
     var searchEl = document.getElementById('foodSearch');
-    var sortEl = document.getElementById('sortSel');
-    if (!searchEl || !sortEl) return;
+    if (!searchEl) return;
     var q = searchEl.value.trim().toLowerCase();
-    var sort = sortEl.value;
+    var sort = 'default';
+    var sortEl = document.getElementById('sortSel');
+    if (sortEl) sort = sortEl.value;
     /* 过滤 + 匹配评分：有关键词时按匹配度过滤，无关键词时全量 */
     var scored = [];
     DATA.FOODS.forEach(function (f) {
@@ -418,16 +419,41 @@
       var searchTimer = null;
       if (s) s.addEventListener('input', function () { clearTimeout(searchTimer); searchTimer = setTimeout(renderFoods, 180); });
     });
+    /* 热量筛选胶囊组 */
     safe(function () {
-      var s = document.getElementById('sortSel');
-      if (s) s.addEventListener('change', renderFoods);
-    });
-    safe(function () {
-      var k = document.getElementById('kcalRange');
-      if (k) k.addEventListener('change', function () {
-        currentKcal = k.value;
-        renderFoods();
+      var pills = document.querySelectorAll('#kcalPills .kcal-pill');
+      pills.forEach(function (p) {
+        p.addEventListener('click', function () {
+          pills.forEach(function (x) { x.classList.remove('active'); });
+          p.classList.add('active');
+          currentKcal = p.dataset.kcal;
+          renderFoods();
+        });
       });
+    });
+    /* 排序按钮 + 弹出菜单 */
+    safe(function () {
+      var btn = document.getElementById('sortBtn');
+      var menu = document.getElementById('sortMenu');
+      if (!btn || !menu) return;
+      var cur = 'default';
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        menu.classList.toggle('open');
+      });
+      menu.querySelectorAll('.sort-opt').forEach(function (o) {
+        o.addEventListener('click', function () {
+          cur = o.dataset.sort;
+          menu.querySelectorAll('.sort-opt').forEach(function (x) { x.classList.remove('active'); });
+          o.classList.add('active');
+          btn.innerHTML = '<i class="ic" data-icon="sort"></i>' + o.textContent.trim() + '<span class="sort-arrow">▾</span>';
+          menu.classList.remove('open');
+          var sel = document.getElementById('sortSel');
+          if (sel) sel.value = cur;
+          renderFoods();
+        });
+      });
+      document.addEventListener('click', function () { menu.classList.remove('open'); });
     });
     safe(function () {
       var g = document.getElementById('mealGram');

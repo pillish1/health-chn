@@ -91,7 +91,7 @@
         <div class="modal-title"><i class="ic" data-icon="dumbbell"></i> 添加训练</div>
         <div class="modal-sub">点选今天练了哪些动作</div>
         <div class="field" id="wkFavField">
-          <label>⭐ 我的收藏（点击快速添加）</label>
+          <label>⭐ 我的收藏 <span class="muted" style="font-weight:400;font-size:.72rem">点动作卡片上的 ☆ 收藏，会自动出现在这里</span></label>
           <div class="wk-fav-list" id="wkFavList"></div>
         </div>
         <div class="field">
@@ -110,11 +110,7 @@
           <label>③ 已选动作 · 组数×次数</label>
           <div id="wkSelected"></div>
         </div>
-        <div class="field">
-          <label>训练时长（分钟，可选）</label>
-          <input class="input" type="number" id="wkMinutes" min="0" max="600" placeholder="如：60" inputmode="numeric">
-        </div>
-        <div class="flex gap-sm mt-2">
+                <div class="flex gap-sm mt-2">
           <button class="btn btn-ghost" style="flex:1" onclick="window.YDJK_UI.closeModal('addWorkoutModal')">取消</button>
           <button class="btn btn-primary" id="btnSaveWorkout" style="flex:1">保存训练</button>
         </div>
@@ -129,8 +125,7 @@
         <div class="field"><label>组数</label><input class="input" type="number" id="ewSets" min="1" max="20" value="3"></div>
         <div class="field"><label>次数</label><input class="input" type="number" id="ewReps" min="1" max="200" value="10"></div>
         <div class="field"><label>重量 (kg，可选)</label><input class="input" type="number" id="ewWeight" min="0" max="500" step="0.5" placeholder="0"></div>
-        <div class="field"><label>时长（分钟，可选）</label><input class="input" type="number" id="ewMinutes" min="0" max="600" placeholder="如：60" inputmode="numeric"></div>
-        <div class="flex gap-sm mt-2">
+                <div class="flex gap-sm mt-2">
           <button class="btn btn-ghost" style="flex:1" onclick="window.YDJK_UI.closeModal('editWorkoutModal')">取消</button>
           <button class="btn btn-primary" id="btnSaveEditWk" style="flex:1">保存修改</button>
         </div>

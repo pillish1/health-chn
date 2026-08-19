@@ -1601,3 +1601,36 @@ svg.chart { filter: drop-shadow(0 6px 16px rgba(37, 99, 235, .14)); }
 .meal-item:last-child { border-bottom: none; }
 .meal-item-main b { font-size: .88rem; display: block; }
 .meal-item-main span { font-size: .72rem; }
+
+/* ---------- 记一餐工具条：热量胶囊 + 排序菜单 ---------- */
+.food-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.kcal-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.kcal-pill {
+  padding: 7px 16px; border: 1px solid var(--border); background: var(--surface);
+  border-radius: var(--radius-full); font-size: .82rem; font-weight: 700;
+  color: var(--text-2); cursor: pointer; transition: all .2s; line-height: 1;
+}
+.kcal-pill:hover { color: var(--text); border-color: var(--primary); }
+.kcal-pill.active { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
+.sort-wrap { position: relative; }
+.sort-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 14px; border: 1px solid var(--border); background: var(--surface);
+  border-radius: var(--radius-full); font-size: .82rem; font-weight: 700;
+  color: var(--text-2); cursor: pointer; transition: all .2s; line-height: 1;
+}
+.sort-btn:hover { color: var(--text); border-color: var(--primary); }
+.sort-arrow { font-size: .7rem; opacity: .7; margin-left: 2px; }
+.sort-menu {
+  display: none; position: absolute; right: 0; top: calc(100% + 6px); z-index: 60;
+  min-width: 148px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; box-shadow: var(--shadow-md, 0 8px 24px rgba(0,0,0,.12));
+  padding: 4px; flex-direction: column;
+}
+.sort-menu.open { display: flex; }
+.sort-opt {
+  display: block; width: 100%; text-align: left; padding: 9px 12px; border: none; background: none;
+  border-radius: 8px; font-size: .85rem; font-weight: 600; color: var(--text-2); cursor: pointer; transition: all .15s;
+}
+.sort-opt:hover { background: var(--primary-soft); color: var(--primary); }
+.sort-opt.active { background: var(--primary-soft); color: var(--primary); }

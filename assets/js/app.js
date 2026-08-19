@@ -727,6 +727,13 @@
     initOnboarding(false);
   });
 
+  /* 全局存储错误兜底：localStorage 满/禁用时不崩溃，提示用户 */
+  if (window.addEventListener) {
+    window.addEventListener('ydjk:storage-error', function () {
+      try { toast('存储空间不足，记录可能未保存，请到「我的」导出备份', 'err'); } catch (e) {}
+    });
+  }
+
   window.YDJK_UI = {
     toast: toast, openModal: openModal, closeModal: closeModal, confirmDialog: confirmDialog, promptDialog: promptDialog,
     buildHealthTips: buildHealthTips, renderHealthTip: renderHealthTip,

@@ -57,7 +57,16 @@
     } catch (e) { return fallback; }
   }
   function setJSON(key, val) {
-    LS.setItem(NS + key, JSON.stringify(val));
+    try {
+      LS.setItem(NS + key, JSON.stringify(val));
+      return true;
+    } catch (e) {
+      // 存储失败（常见：容量满 QuotaExceededError / 隐私模式禁用）
+      if (window.dispatchEvent) {
+        try { window.dispatchEvent(new CustomEvent('ydjk:storage-error', { detail: { key: key, err: String((e && e.name) || e) } })); } catch (e2) {}
+      }
+      return false;
+    }
   }
   function round1(n) { return Math.round(n * 10) / 10; }
 
@@ -96,7 +105,7 @@
     var w = {};
     for (var i = 0; i < LS.length; i++) {
       var k = LS.key(i);
-      if (k.indexOf(NS + 'workouts:') === 0) w[k.replace(NS + 'workouts:', '')] = JSON.parse(LS.getItem(k) || '[]');
+      if (k.indexOf(NS + 'workouts:') === 0) { try { w[k.replace(NS + 'workouts:', '')] = JSON.parse(LS.getItem(k) || '[]'); } catch (e) { w[k.replace(NS + 'workouts:', '')] = []; } }
     }
     return w;
   }
@@ -216,7 +225,7 @@
         var m = {};
         for (var i = 0; i < LS.length; i++) {
           var k = LS.key(i);
-          if (k.indexOf(NS + 'meals:') === 0) m[k.replace(NS + 'meals:', '')] = JSON.parse(LS.getItem(k) || '[]');
+          if (k.indexOf(NS + 'meals:') === 0) { try { m[k.replace(NS + 'meals:', '')] = JSON.parse(LS.getItem(k) || '[]'); } catch (e) { m[k.replace(NS + 'meals:', '')] = []; } }
         }
         return m;
       })(),

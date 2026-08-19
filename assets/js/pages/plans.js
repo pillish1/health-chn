@@ -114,7 +114,6 @@
         document.getElementById('ewSets').value = w.sets || 3;
         document.getElementById('ewReps').value = w.reps || 10;
         document.getElementById('ewWeight').value = w.weight || '';
-        document.getElementById('ewMinutes').value = w.minutes || '';
         window.YDJK_UI.openModal('editWorkoutModal');
       });
     });
@@ -188,8 +187,11 @@
     grid.querySelectorAll('.wk-fav').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
-        toggleFavAction(btn.dataset.id);
+        var faved = toggleFavAction(btn.dataset.id);
         renderActionGrid();
+        renderFavList();
+        var a = DATA.ACTIONS.find(function (x) { return x.id === btn.dataset.id; });
+        window.YDJK_UI.toast(faved ? ('⭐ 已收藏「' + (a ? a.name : '') + '」，可在上方「我的收藏」快速添加') : '已取消收藏', faved ? 'ok' : 'err');
       });
     });
     // 点选/取消
@@ -281,11 +283,14 @@
         '<span><b>' + esc(name) + '</b> <small>' + sets + '×' + (s.reps || 10) + (s.weight ? ' · ' + s.weight + 'kg' : '') + '</small></span>' +
         '<span class="wk-sel-kcal">约 ' + kcal + ' kcal</span></div>';
     }).join('');
-    wrap.innerHTML = html + '<div class="wk-sel-total">共 ' + ids.length + ' 项 · 预计消耗 <b>约 ' + total + ' kcal</b></div>';
+    var estMin = ids.reduce(function (s, id) {
+      var s2 = selectedActions[id];
+      return s + ((s2 && s2.sets) ? Number(s2.sets) * 3 : 9);
+    }, 0);
+    wrap.innerHTML = html + '<div class="wk-sel-total">共 ' + ids.length + ' 项 · 约 <b>' + estMin + ' 分钟</b> · 预计消耗 <b>约 ' + total + ' kcal</b></div>';
   }
   function saveWorkout() {
     var date = document.getElementById('wkDate').value || currentDate;
-    var minutes = Number(document.getElementById('wkMinutes').value) || 0;
     var ids = Object.keys(selectedActions);
     if (!ids.length) { window.YDJK_UI.toast('请至少点选一个动作', 'err'); return; }
     ids.forEach(function (id) {
@@ -297,14 +302,13 @@
         sets: s.sets || 3,
         reps: s.reps || 10,
         weight: s.weight ? Number(s.weight) : null,
-        minutes: minutes > 0 ? minutes : null,
+        minutes: null, /* 时长由组数自动推导（每组约3分钟） */
         met: a ? metFor({ muscle: a.muscle, action: a.name }) : null
       });
     });
     window.YDJK_UI.closeModal('addWorkoutModal');
     window.YDJK_UI.toast('✅ 已记录 ' + ids.length + ' 个动作');
     selectedActions = {};
-    document.getElementById('wkMinutes').value = '';
     currentDate = date;
     renderWorkoutList();
     renderSuggest();
@@ -379,7 +383,6 @@
     var addBtn = document.getElementById('btnAddWorkout');
     if (addBtn) addBtn.addEventListener('click', function () {
       document.getElementById('wkDate').value = currentDate;
-      document.getElementById('wkMinutes').value = '';
       selectedActions = {};
       wkCurrentMuscle = 'chest';
       renderMuscleOptions();
@@ -398,7 +401,6 @@
       w.sets = Number(document.getElementById('ewSets').value) || 3;
       w.reps = Number(document.getElementById('ewReps').value) || 10;
       w.weight = Number(document.getElementById('ewWeight').value) || null;
-      w.minutes = Number(document.getElementById('ewMinutes').value) || null;
       YDJK.updateWorkout(currentEditWk.date, w);
       currentEditWk = null;
       window.YDJK_UI.closeModal('editWorkoutModal');

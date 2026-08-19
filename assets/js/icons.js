@@ -16,6 +16,7 @@
 
     /* 通用 UI */
     search: '<svg viewBox="0 0 24 24" ' + A + '><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',
+    sort: '<svg viewBox="0 0 24 24" ' + A + '><path d="M4 6.5h9M4 12h6M4 17.5h3"/><path d="m15 8.5 4-4 4 4M19 4.5v12"/></svg>',
     moon: '<svg viewBox="0 0 24 24" ' + A + '><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
     menu: '<svg viewBox="0 0 24 24" ' + A + '><path d="M4 6.5h16M4 12h16M4 17.5h16"/></svg>',
     plus: '<svg viewBox="0 0 24 24" ' + A + '><path d="M12 5v14M5 12h14"/></svg>',

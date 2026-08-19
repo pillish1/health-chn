@@ -144,19 +144,22 @@
     <div class="flex gap-sm flex-wrap" style="margin-bottom:12px">
       <div id="recentFoods" class="recent-foods"></div>
     </div>
-    <div class="flex gap-sm flex-wrap" style="margin-bottom:12px">
-      <select class="input" id="kcalRange" style="width:auto;padding:8px 34px 8px 14px;border-radius:var(--radius-full)">
-        <option value="all">全部热量</option>
-        <option value="low">低卡 (&lt;100)</option>
-        <option value="mid">中卡 (100-300)</option>
-        <option value="high">高卡 (&gt;300)</option>
-      </select>
-      <select class="input" id="sortSel" style="width:auto;padding:8px 34px 8px 14px;border-radius:var(--radius-full)">
-        <option value="default">默认排序</option>
-        <option value="kcal-asc">热量从低到高</option>
-        <option value="kcal-desc">热量从高到低</option>
-        <option value="protein-desc">蛋白质从高到低</option>
-      </select>
+    <div class="food-toolbar">
+      <div class="kcal-pills" id="kcalPills">
+        <button type="button" class="kcal-pill active" data-kcal="all">全部</button>
+        <button type="button" class="kcal-pill" data-kcal="low">低卡</button>
+        <button type="button" class="kcal-pill" data-kcal="mid">中卡</button>
+        <button type="button" class="kcal-pill" data-kcal="high">高卡</button>
+      </div>
+      <div class="sort-wrap">
+        <button type="button" class="sort-btn" id="sortBtn"><i class="ic" data-icon="sort"></i>排序<span class="sort-arrow">▾</span></button>
+        <div class="sort-menu" id="sortMenu">
+          <button type="button" class="sort-opt active" data-sort="default">默认排序</button>
+          <button type="button" class="sort-opt" data-sort="kcal-asc">热量从低到高</button>
+          <button type="button" class="sort-opt" data-sort="kcal-desc">热量从高到低</button>
+          <button type="button" class="sort-opt" data-sort="protein-desc">蛋白质从高到低</button>
+        </div>
+      </div>
     </div>
     <div class="grid grid-2" id="foodGrid" style="max-height:40vh;overflow-y:auto"></div>
   </div>
