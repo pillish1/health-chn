@@ -77,11 +77,12 @@
   - Harness 19:05-19:10 套餐+周报（commit d211285/1f69261，已核实保留）
   - 小怀川 storage 死代码清理（commit b72c5e6，已核实无损）
   - Harness 备份补全套餐（commit 2149f3c）
-- 进行中任务：storage.js 死代码清理（已完成代码层，正在打包验证）
+- 进行中任务：**Harness 智能建议（规则版）**——首页今日建议升级为多条建议列表；只改 app.js/home.js/index.html/style.css，不碰 storage.js/data.js
 - 最近完成：
   - 2026-08-19 storage.js 死代码清理：删除体重/饮水/文章/计划/管理密码/BMI/updateMeal/todayWorkoutDone 等已砍功能残留（约 30 个函数 + 导出），同步修正 collectAllData 与 profile.js 导入备份；jsdom 冒烟+完整测试全绿
   - 2026-08-19 清理项目（归档 APK/删构建日志/新增 PROJECT_STATE.md，v1.12）
 - 下一步（待用户指派）：
+  - ⬜ 成就徽章（用户未确认，需克制版方案）
   - 小怀川建议：② 常用食物一键记（待定）
   - Harness 可继续：UI 视觉细节
 - 注意：工作副本 `D:\deepseek new\sport-health-website` 残留已砍功能旧页面，如需使用请先与 health-chn 对齐
