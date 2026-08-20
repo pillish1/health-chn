@@ -15,6 +15,21 @@ Thumbs.db
 
 # 构建日志与脚本（本地工具）
 mobile/*.log
-mobile/build-apk.bat# APK ????
-*.apk
+mobile/build-apk.bat
 push-retry.log
+
+# APK 安装包（保留在磁盘，不入库）
+*.apk
+
+# SPA 开发迭代（已被 app3 版取代，留在磁盘但不入库）
+app.html
+app2.html
+app-shell.js
+app-shell2.js
+app.css
+app2.css
+views/
+views2/
+manifest-app.json
+manifest-app2.json
+fix_plans.py

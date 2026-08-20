@@ -2,6 +2,8 @@
    悦动健康 · Service Worker（离线缓存 + 自动更新）
    ============================================================ */
 var CACHE = 'yuedong-health-v78';
+var CACHE = 'yuedong-health-v92';
+
 var ASSETS = [
   './',
   './index.html',
@@ -11,6 +13,46 @@ var ASSETS = [
   './welcome.html',
   './about.html',
   './404.html',
+    './manifest-app2.json',
+    './app3.html',
+    './manifest-app3.json',
+    './assets/css/app3.css?v=120',
+      './assets/js/ydb.js?v=130',
+
+    './assets/js/app-shell3.js?v=120',
+    './assets/js/views3/home3.js?v=120',
+    './assets/js/views3/foods3.js?v=120',
+      './assets/js/views3/foods3v2.js?v=130',
+
+    './assets/js/views3/plans3.js?v=120',
+    './assets/js/views3/stats3.js?v=120',
+    './assets/js/views3/profile3.js?v=120',
+    './assets/js/views3/about3.js?v=120',
+
+
+    './app.html',
+    './app2.html',
+    './assets/css/app2.css?v=100',
+    './assets/js/app-shell2.js?v=100',
+    './assets/js/views2/home2.js?v=100',
+    './assets/js/views2/foods2.js?v=100',
+    './assets/js/views2/plans2.js?v=100',
+    './assets/js/views2/stats2.js?v=100',
+    './assets/js/views2/profile2.js?v=100',
+    './assets/js/views2/about2.js?v=100',
+
+    './manifest-app.json',
+    './assets/css/app.css?v=95',
+    './assets/js/app-shell.js?v=95',
+    './assets/js/views/home-view.js?v=95',
+    './assets/js/views/foods-view.js?v=95',
+    './assets/js/views/plans-view.js?v=95',
+    './assets/js/views/stats-view.js?v=95',
+    './assets/js/views/profile-view.js?v=95',
+    './assets/js/views/about-view.js?v=95',
+
+    './stats.html',
+
   './manifest.json',
   './assets/css/style.css?v=91',
   './assets/js/storage.js?v=90',
@@ -24,6 +66,8 @@ var ASSETS = [
   './assets/js/pages/foods.js?v=91',
   './assets/js/pages/plans.js?v=91',
   './assets/js/pages/profile.js?v=90',
+    './assets/js/pages/stats.js?v=91',
+
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/favicon-32.png'

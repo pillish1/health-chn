@@ -7,12 +7,26 @@
 $ErrorActionPreference = "Continue"
 $dir = "D:\health-chn"
 
+Write-Host "== 0/4 准备 App 入口（app3.html → index.html） ==" -ForegroundColor Cyan
+Copy-Item -Force "$dir\app3.html" "$dir\mobile\www\index.html"
+Write-Host "   完成"
+
 Write-Host "== 1/4 同步 www（源 → mobile/www） ==" -ForegroundColor Cyan
-robocopy "$dir" "$dir\mobile\www" /MIR /XD mobile .git node_modules .github edge-debug2 /XF *.zip *.log *.flag *.apk *.ps1 *.md .apk-version deploy-github.bat push-to-github.bat robots.txt rss.xml sitemap.xml /NFL /NDL /NJH /NJS /NP | Out-Null
+# 先清空 mobile/www：robocopy /MIR 的 /XF 排除项不会删除目标里已存在的被排除文件，不清空会残留旧版
+Remove-Item -Recurse -Force "$dir\mobile\www" -ErrorAction SilentlyContinue
+robocopy "$dir" "$dir\mobile\www" /MIR /XD mobile .git node_modules .github edge-debug2 views views2 pages /XF *.zip *.log *.flag *.apk *.ps1 *.md .apk-version deploy-github.bat push-to-github.bat robots.txt rss.xml sitemap.xml index.html foods.html plans.html profile.html welcome.html about.html 404.html stats.html app.html app2.html manifest.json manifest-app.json manifest-app2.json style.css app.css app2.css py-map.js py-foods.js app-shell.js app-shell2.js fix_plans.py /NFL /NDL /NJH /NJS /NP | Out-Null
+# 确保 app3.html 覆盖 index.html（即使被 robocopy 覆盖也重新复制）
+Copy-Item -Force "$dir\app3.html" "$dir\mobile\www\index.html"
 Write-Host "   完成 (exit $LASTEXITCODE)"
 
 Write-Host "== 2/4 同步 Android 资源（www → assets/public） ==" -ForegroundColor Cyan
 robocopy "$dir\mobile\www" "$dir\mobile\android\app\src\main\assets\public" /MIR /XD .git /NFL /NDL /NJH /NJS /NP | Out-Null
+# 让 App 启动时打开 app3.html（覆盖 index.html）
+Copy-Item -Force "$dir\app3.html" "$dir\mobile\www\index.html"
+Copy-Item -Force "$dir\app3.html" "$dir\mobile\android\app\src\main\assets\public\index.html"
+
+# 修改下一行为 .md 也排除
+
 Write-Host "   完成 (exit $LASTEXITCODE)"
 
 Write-Host "== 3/4 Gradle 构建 ==" -ForegroundColor Cyan

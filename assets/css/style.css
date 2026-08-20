@@ -59,6 +59,19 @@ html[data-theme="dark"] .range-val,
 html[data-theme="dark"] .radio-pill input:checked + label,
 html[data-theme="dark"] a:hover { color: #60a5fa; }
 
+/* 暗色模式对比度增强：次要文字/边框提高可见性 */
+html[data-theme="dark"] {
+  --text-2: #a3b3c9;
+  --muted: #a3b3c9;
+  --border: #334155;
+}
+html[data-theme="dark"] .f-desc,
+html[data-theme="dark"] .small.muted,
+html[data-theme="dark"] .modal-sub,
+html[data-theme="dark"] .hint,
+html[data-theme="dark"] .stat-label { color: #a3b3c9; }
+
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; overflow-x: clip; }
 body {
@@ -1640,3 +1653,422 @@ svg.chart { filter: drop-shadow(0 6px 16px rgba(37, 99, 235, .14)); }
 }
 .sort-opt:hover { background: var(--primary-soft); color: var(--primary); }
 .sort-opt.active { background: var(--primary-soft); color: var(--primary); }
+
+
+/* ============================================================
+   统计分析页 · stats
+   ============================================================ */
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.stat-box {
+  background: var(--surface-2); border-radius: 14px; padding: 14px; text-align: center;
+}
+.stat-num { font-size: 1.5rem; font-weight: 900; color: var(--text); line-height: 1.2; }
+.stat-label { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+
+/* 体重/图表卡片 */
+#weightChart, #intakeChart, #burnChart, #proteinChart {
+  min-height: 180px; display: flex; align-items: center; justify-content: center;
+}
+
+/* 成就徽章 */
+.badge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.badge-item {
+  border: 1px solid var(--border); border-radius: 14px; padding: 12px;
+  text-align: center; transition: all .2s;
+}
+.badge-item.unlocked { background: var(--primary-soft); border-color: var(--primary-light); }
+.badge-item.locked { opacity: .5; }
+.badge-icon { font-size: 1.8rem; margin-bottom: 4px; }
+.badge-name { font-weight: 800; font-size: .9rem; }
+.badge-desc { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+.badge-check { font-size: .72rem; color: var(--primary); margin-top: 4px; }
+.badge-check.locked { color: var(--muted); }
+
+/* 训练部位分布 */
+.muscle-dist { display: flex; flex-direction: column; gap: 8px; }
+.muscle-bar-row { display: flex; align-items: center; gap: 8px; }
+.muscle-name { width: 48px; font-size: .85rem; font-weight: 700; flex: none; }
+.muscle-bar-bg { flex: 1; height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.muscle-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #3b82f6, #06b6d4); transition: width .5s ease; }
+.muscle-pct { width: 40px; text-align: right; font-size: .8rem; color: var(--muted); font-weight: 700; }
+
+/* 训练计划 */
+.plan-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px;
+  background: var(--surface);
+}
+.plan-info { flex: 1; min-width: 0; }
+.plan-info b { display: block; font-size: .95rem; }
+.plan-info .small { display: block; margin-top: 2px; }
+
+/* 范围切换按钮 */
+.range-btn.active { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
+
+/* 体重弹窗 */
+#weightModal .modal { max-width: 400px; }
+
+/* 统计页 tab 高亮 */
+.tab-item[data-tab="stats"].active { color: var(--primary); }
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .badge-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
+
+
+/* ============================================================
+   移动端 App 化升级 v4（全面优化移动体验）
+   ============================================================ */
+
+/* ---- 移动端隐藏桌面导航 ---- */
+@media (max-width: 900px) {
+  .navbar { display: none !important; }
+  .m-header { display: flex !important; }
+  .footer { display: none !important; }
+  body { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+}
+
+/* 桌面端时隐藏 m-header */
+.m-header { display: none; }
+
+/* 移动端 m-header 样式 */
+@media (max-width: 900px) {
+  .m-header {
+    position: sticky; top: 0; z-index: 120;
+    height: 54px; padding: 0 16px;
+    display: flex; align-items: center;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    -webkit-backdrop-filter: blur(18px) saturate(1.5);
+    backdrop-filter: blur(18px) saturate(1.5);
+    border-bottom: 1px solid var(--border);
+  }
+  .m-header .m-logo {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 1.05rem; font-weight: 800; color: var(--text);
+    text-decoration: none;
+  }
+  .m-header .m-logo img {
+    width: 30px; height: 30px; border-radius: 9px;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, .25);
+  }
+}
+
+/* ---- 移动端页面间距优化 ---- */
+@media (max-width: 900px) {
+  .container { padding: 0 14px; }
+  .page-hero { padding: 28px 0 20px; }
+  .page-hero h1 { font-size: 1.5rem; }
+  .page-hero p { font-size: .85rem; margin-top: 6px; }
+  .page-hero .breadcrumb { margin-bottom: 8px; }
+  .section-sm { padding: 20px 0; }
+  .card { padding: 16px 14px; border-radius: 18px; }
+  .card-title { font-size: .95rem; }
+}
+
+/* ---- 底部 Tab 更 App 化的样式 ---- */
+@media (max-width: 900px) {
+  .tab-bar {
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    backdrop-filter: blur(20px) saturate(1.8);
+    border-top: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+    box-shadow: 0 -8px 30px rgba(15, 23, 42, .08);
+  }
+  .tab-item { max-width: none; padding: 4px 6px; }
+  .tab-item .tab-ico {
+    width: 48px; height: 28px; font-size: 1.35rem;
+    border-radius: 16px;
+  }
+  .tab-item .tab-lbl { font-size: .65rem; }
+}
+
+/* ---- 首页整体 App 化 ---- */
+@media (max-width: 900px) {
+  /* 能量卡更紧凑 */
+  .energy-card {
+    padding: 18px 16px;
+    border-radius: 22px;
+    box-shadow: 0 10px 36px rgba(37, 99, 235, .1);
+  }
+  .energy-body { gap: 14px; }
+  .energy-info { gap: 8px; }
+  .ei-row { font-size: .85rem; }
+  .ei-row b { font-size: 1.15rem; }
+  .energy-macros { margin-top: 12px; gap: 6px; }
+  .energy-actions { margin-top: 14px; }
+  .energy-actions .btn { padding: 12px 8px; font-size: .88rem; }
+
+  /* 今日待办更紧凑 */
+
+  /* ===== 开始注释掉嵌套 @media ===== */
+  /*
+
+/* ---- 移动端 m-header 操作按钮 ---- */
+@media (max-width: 900px) {
+  .m-header {
+    justify-content: space-between;
+  }
+  .m-header .m-actions {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .m-header .m-actions .icon-btn {
+    width: 36px; height: 36px;
+  }
+  .m-header .m-back {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 50%;
+    color: var(--text-2); text-decoration: none;
+    transition: background .2s;
+  }
+  .m-header .m-back:active { background: var(--surface-2); }
+}
+  /* 以下嵌套 @media 不可用，注释掉 */
+  /* 移动端 m-header 操作按钮（已移至正确位置） */
+
+  */
+
+
+  .todo-row { padding: 9px 10px; }
+  .todo-check { width: 22px; height: 22px; font-size: .75rem; }
+
+  /* 卡片间距 */
+  .mb-3 { margin-bottom: 14px; }
+  #todayTasks, #todayBrief, #weekCard, #dashTip { margin-top: 14px !important; }
+}
+
+/* ---- 饮食页移动端优化 ---- */
+@media (max-width: 900px) {
+  #foodSummary .grid-2 { grid-template-columns: 1fr; }
+  #calRing { display: flex; justify-content: center; }
+  #macroBar { margin-top: 8px; }
+  .food-card { padding: 12px; border-radius: 16px; }
+  .food-card .f-kcal { font-size: 1.1rem; }
+  .food-toolbar { margin-bottom: 10px; }
+  .meal-group-head { padding-bottom: 6px; }
+  .meal-item { padding: 8px 2px; }
+  #mealList .btn-xs { font-size: .7rem; padding: 3px 8px; }
+}
+
+/* ---- 运动页移动端优化 ---- */
+@media (max-width: 900px) {
+  .wk-action-card { padding: 10px; }
+  .wk-muscle-chips { gap: 6px; }
+  .wk-chip { padding: 8px 14px; font-size: .82rem; }
+  .plan-card { padding: 12px 12px; }
+}
+
+/* ---- 弹窗全屏化（移动端） ---- */
+@media (max-width: 900px) {
+  .modal-overlay .modal {
+    width: 94vw !important;
+    max-width: 94vw !important;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-radius: 20px;
+    margin: 0 auto;
+  }
+  #foodPickerModal .modal {
+    height: auto;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+  }
+  #foodPickerModal .grid-2 { grid-template-columns: 1fr; }
+  #foodPickerModal #foodGrid { max-height: 38vh !important; }
+}
+
+/* ---- 统计页移动端优化 ---- */
+@media (max-width: 900px) {
+  .stats-grid { gap: 8px; }
+  .stat-box { padding: 10px; border-radius: 12px; }
+  .stat-num { font-size: 1.2rem; }
+  .badge-grid { gap: 8px; }
+  .badge-item { padding: 10px 8px; }
+  .badge-icon { font-size: 1.5rem; }
+}
+
+/* ---- 首页能量卡数字更突出 ---- */
+.energy-info b {
+  background: linear-gradient(120deg, #2563eb, #14b8a6);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+html[data-theme="dark"] .energy-info b {
+  background: linear-gradient(120deg, #60a5fa, #34d399);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ---- 全局玻璃拟态提升 ---- */
+@media (min-width: 901px) {
+  .card {
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    box-shadow: 0 8px 32px rgba(15, 23, 42, .07), 0 1px 4px rgba(15, 23, 42, .03);
+  }
+}
+
+/* ---- 空状态更精致 ---- */
+.empty {
+  padding: 32px 16px;
+  text-align: center;
+}
+.empty .e-icon {
+  font-size: 2.2rem;
+  opacity: .6;
+  margin-bottom: 10px;
+}
+.empty .e-title { font-size: .95rem; font-weight: 800; color: var(--text-2); }
+.empty .e-desc { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+
+/* ---- 操作按钮更圆润 ---- */
+.btn { border-radius: 14px; }
+.btn-sm { border-radius: 12px; }
+.btn-xs { border-radius: 10px; }
+
+/* ---- 列表行分隔线更柔和 ---- */
+.meal-item { border-bottom-color: color-mix(in srgb, var(--border) 70%, transparent); }
+.wk-item { border-bottom: 1px dashed color-mix(in srgb, var(--border) 60%, transparent); padding-bottom: 8px; margin-bottom: 8px; }
+
+/* ---- 输入框/选择器提升 ---- */
+.input {
+  font-size: 16px !important;
+  border-radius: 12px;
+  transition: border-color .2s, box-shadow .2s, transform .1s;
+}
+.input:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 4px rgba(6, 182, 212, .12), 0 4px 12px rgba(37, 99, 235, .08);
+}
+
+/* ---- 搜索框更精致 ---- */
+.search-box {
+  background: var(--surface-2);
+  border-radius: 14px;
+  border: 1px solid transparent;
+  transition: all .2s;
+}
+.search-box:focus-within {
+  background: var(--surface);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .1);
+}
+.search-box .input {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.search-box .input:focus { box-shadow: none; transform: none; }
+
+/* ---- 提示文字更柔和 ---- */
+.toast {
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .14);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+/* ---- 时间段分组头更清晰 ---- */
+.meal-group-head {
+  background: color-mix(in srgb, var(--surface-2) 60%, transparent);
+  border-radius: 10px;
+  padding: 7px 12px;
+  margin-bottom: 5px;
+}
+.meal-group-head b { font-size: .85rem; }
+
+/* ---- 首页统计数字卡片更突出 ---- */
+.stat-box {
+  background: linear-gradient(165deg, var(--surface) 0%, var(--surface-2) 100%);
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, .04);
+}
+.stat-box .stat-num {
+  font-size: 1.35rem;
+  background: var(--brand-grad-text);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ---- 成就徽章更精致 ---- */
+.badge-item {
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, .04);
+  transition: transform .2s, box-shadow .2s;
+}
+.badge-item.unlocked {
+  background: linear-gradient(165deg, rgba(59, 130, 246, .08), rgba(6, 182, 212, .05));
+  border-color: rgba(59, 130, 246, .25);
+}
+.badge-item.unlocked:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, .12); }
+
+/* ---- 训练计划更精致 ---- */
+.plan-card {
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, .03);
+  transition: border-color .2s, box-shadow .2s, transform .15s;
+}
+.plan-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, .12);
+  transform: translateY(-1px);
+}
+
+/* ---- 首页周圆点更精致 ---- */
+.wd-dot {
+  width: 28px; height: 28px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, .1);
+}
+.wd-dot.meal { box-shadow: 0 2px 8px rgba(56, 189, 248, .3); }
+.wd-dot.workout { box-shadow: 0 2px 8px rgba(16, 185, 129, .3); }
+.wd-dot.both { box-shadow: 0 2px 8px rgba(37, 99, 235, .3); }
+
+/* ---- 移动端底部安全区适配 ---- */
+@supports (padding: env(safe-area-inset-bottom)) {
+  @media (max-width: 900px) {
+    body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+  }
+}
+
+
+/* ---- 移动端 m-header 操作按钮（修正版，独立于其他 @media） ---- */
+@media (max-width: 900px) {
+  .m-header {
+    justify-content: space-between;
+  }
+  .m-header .m-actions {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .m-header .m-actions .icon-btn {
+    width: 36px; height: 36px;
+  }
+  .m-header .m-back {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 50%;
+    color: var(--text-2); text-decoration: none;
+    transition: background .2s;
+  }
+  .m-header .m-back:active { background: var(--surface-2); }
+}
+
+
+/* ---- 修复：m-actions 在 m-header 外部的情况 ---- */
+@media (max-width: 900px) {
+  body > .m-actions {
+    position: fixed;
+    top: 10px;
+    right: 12px;
+    z-index: 130;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  body > .m-actions .icon-btn {
+    width: 36px; height: 36px;
+    background: color-mix(in srgb, var(--surface) 85%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+  }
+}

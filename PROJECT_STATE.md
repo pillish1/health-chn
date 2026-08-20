@@ -10,7 +10,7 @@
 ## 目录与版本
 - 部署/源：D:\health-chn（git 仓库，git push 目标 pillish1/health-chn → GitHub Pages https://pillish1.github.io/health-chn/）
 - 工作副本：D:\deepseek new\sport-health-website（每次改动后 Copy-Item 同步）
-- 当前版本：v1.24-20260820（记录体验打磨两轮：排序/肌肉归属/补记预设/深色模式）（APK 命名：悦动健康-vX.Y-YYYYMMDD.apk，保留历史；.apk-version 记计数）
+- 当前版本：v1.28-20260820（app3 SPA 单页版，5 Tab：首页/饮食/运动/统计/我的；APK 入口已是 SPA；GitHub Pages Web 端仍为多页面版）（APK 命名：悦动健康-vX.Y-YYYYMMDD.apk，保留历史；.apk-version 记计数）
 - 打包：D:\health-chn\build-apk.ps1 一键打包（同步 www → gradle → 版本化命名），调用：pwsh 里 & build-apk.ps1
 - 备份含套餐数据（collectAllData/导入均含 mealTemplates，commit 2149f3c）
 - 历史 APK 归档：D:\health-chn\archives\（根目录只留最新 3 版）；项目根目录保持干净（已清理构建日志/edge调试数据/过时seo文件）
@@ -72,8 +72,9 @@
 5. **不主动抢活**：对方登记在案的任务，另一方不碰；有不同意见写进「当前状态」区留给用户决定。
 
 ### 当前状态
-- 当前操作者：**DeepSeek Harness（全权）**——v1.24 打包完成并推送（记录体验打磨两轮）
+- 当前操作者：**DeepSeek Harness（全权）**——v1.28 SPA 打包完成（profile3.js 修复 + build-apk.ps1 瘦身/BOM），待手机验证
 - 最近操作记录：
+  - Harness 完成 v1.28 SPA 打包（本提交）：①views3/profile3.js 字符串拼接断行语法错误（「我的」页会崩）已修复 ②build-apk.ps1 丢 BOM 导致 PowerShell 解析中文崩溃，重存 UTF-8 BOM ③build-apk.ps1 瘦身：排除旧多页面+app/app2 开发迭代+fix_plans.py，且先清空 mobile/www 再同步（robocopy /MIR+/XF 不会删目标残留的排除文件）；APK 从 60+ 冗余文件瘦到 22 个 SPA 必需文件（3.72MB）④jsdom 冒烟 app3 SPA：6 视图注册+5 Tab 全渲染✓（唯一报错为 jsdom 不支持 IndexedDB，真机无碍）⑤.gitignore 隔离 app/app2/views/views2 等开发迭代 ⑥APK 清理：删 v1.25/26/27 过渡版，v1.23 归档
   - Harness 完成记录体验打磨第二轮（commit a22cd2b）：①运动收藏的跨部位动作保存时 muscle 误用当前部位 tab（wkCurrentMuscle），改回动作本身的 a.muscle（收藏了「慢跑」在胸 tab 里点选，之前会存成胸部）②记一餐「补记」取消后 presetMealType 残留，导致下次主「记一餐」误预设成别的餐次，主按钮点击时清空 ③深色模式 --primary-dark(#1d4ed8) 作文字色偏暗，food-card kcal/克数/选中 radio 低对比，暗色下改 #60a5fa。jsdom test-muscle/test-preset 通过，style.css?v=91
   - Harness 完成记录体验打磨（commit d97b679）：①记一餐排序失效——v1.23 换胶囊菜单后 renderFoods 仍读已删除的 sortSel，升/降序点了不生效，改为模块级 currentSort ②排序按钮点击后图标丢失——动态 innerHTML 的 <i data-icon> 未被 icons.js 注入，改用 YDJK_ICON('sort') ③运动建议「训练次数」原来按动作数累加、同一天多动作会误判为多次，改为按天计数。jsdom test-sort/test-suggest 通过，缓存版本 v77→v78
   - Harness 完成 UX 三问题（commit 7df8d6e）：①记一餐筛选/排序改胶囊按钮组+弹出菜单(原两个 select 丑且逻辑割裂) ②训练时长自动推导=组数×3并显示在汇总(去手动输入, 修逻辑脱节), 收藏加 toast 提示去向 ③storage 防崩溃: setJSON 捕获 QuotaExceeded + storage-error 事件提示, getAllWorkouts/collectAllData 解析保护
@@ -83,14 +84,26 @@
   - 小怀川搜索升级：拼音首字母查表 py-map.js（568 字，pinyin 库离线生成）+ 别名 + 匹配度评分排序 + 防抖 + 家常菜 tab
   - 小怀川修复：建档完成跳转首页、welcome 文案、弹窗横向滑动、顶部精简（去 m-header/breadcrumb）
   - Harness 复核 v1.18 通过；建档表单 v2（commit 3104735）；智能建议（f0459cb/c13a7c9 + 小怀川 9498c24）
-- 进行中任务：（无，待用户指派）
+- 进行中任务：v1.28 SPA 已打包，待用户手机安装验证（5 Tab/建档/记录/统计/数据保护）
+    - Harness 全面整改 v1.25（未打包）：①新增 stats.html 统计分析页（周/月/全部范围切换、体重趋势、摄入趋势、训练消耗、蛋白质趋势、成就徽章、训练部位分布）②storage.js 新增体重记录/成就系统/训练计划模板/自动备份提醒 ③plans.js 新增距离/配速字段、记住上次部位（localStorage）、训练计划一键套用 ④foods.js 新增"存为套餐"支持多食物组合 ⑤profile.js 新增备份提醒 ⑥app.js 新增成就自动解锁 ⑦sw.js v78→v92 ⑧style.css 深色模式对比度优化 + 新组件样式
+
+    - Harness v1.25+ App 化改造：新增 app.html（SPA 入口）+ app.css（App 专属样式）+ app-shell.js（路由系统）+ 6 个视图文件（home/foods/plans/stats/profile/about）。从多页面 MPA 升级为单页面 App，页面切换无刷新带过渡动画，全局固定 m-header + 底部 Tab，加载动画优化。
+
 - 最近完成：
+    - 2026-08-20 v1.28 SPA 版打包（app3 单页 App，5 Tab，含统计分析/成就/体重；profile3 修复 + 打包瘦身）
+    - 2026-08-20 v1.25 全面整改（统计分析/体重追踪/成就徽章/训练计划/距离配速/备份提醒/多食物套餐）
+
   - 2026-08-20 v1.24 记录体验打磨（排序失效修复/排序图标/运动建议天数/肌肉归属/补记预设/深色模式对比度）
   - 2026-08-20 v1.20 数据扩充（食物 480 / 动作 156 / 搜索拼音）
   - 2026-08-20 v1.22 拼音搜索修复（全拼+首字母双匹配，commit 0388368）
   - 2026-08-20 v1.23 UX 修复（记一餐工具条/训练时长自动推导/storage 防崩溃）
   - 2026-08-19 v1.18 建档表单 v2 / v1.17 智能建议 / v1.15 死代码清理
 - 下一步（待用户指派）：
+    - ✅ 成就徽章（已实现：10 个徽章，自动解锁+展示在统计页）
+    - ⬜ 云同步（待评估方案）
+    - ⬜ IndexedDB 迁移（待评估）
+    - ⬜ Vite + TypeScript 工程化（待评估）
+
   - ⬜ 成就徽章（用户未确认）
 - 注意：工作副本 `D:\deepseek new\sport-health-website` 残留已砍功能旧页面，如需使用请先与 health-chn 对齐
 

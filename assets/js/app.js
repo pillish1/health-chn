@@ -499,6 +499,8 @@
   function initTabBar() {
     var path = location.pathname.split('/').pop() || 'index.html';
     var map = { 'index.html': 'home', 'foods.html': 'foods', 'plans.html': 'plans', 'profile.html': 'profile' };
+      var map = { 'index.html': 'home', 'foods.html': 'foods', 'plans.html': 'plans', 'stats.html': 'stats', 'profile.html': 'profile' };
+
     var active = map[path];
     document.querySelectorAll('.tab-item').forEach(function (t) {
       var isActive = t.dataset.tab === active;
@@ -707,10 +709,28 @@
     }
   }
 
+    /* ---------- 成就检查（每次页面加载时自动解锁） ---------- */
+    function initAchievements() {
+      if (!window.YDJK || typeof window.YDJK.checkAchievements !== 'function') return;
+      try {
+        var newly = window.YDJK.checkAchievements();
+        if (newly && newly.length > 0) {
+          var defs = window.YDJK.getAchievementDefs();
+          var names = defs.filter(function (d) { return newly.indexOf(d.id) >= 0; }).map(function (d) { return d.icon + ' ' + d.name; });
+          if (names.length > 0) {
+            setTimeout(function () { toast('🏆 获得成就：' + names.join('、')); }, 1800);
+          }
+        }
+      } catch (e) {}
+    }
+
+
   document.addEventListener('DOMContentLoaded', function () {
     initPageLoader();
     initSWUpdate();
     initCrossTab();
+      initAchievements();
+
     initInstallPrompt();
     initTabBar();
 

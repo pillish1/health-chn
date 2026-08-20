@@ -19,6 +19,16 @@
   var selectedMuscle = 'chest';
   var currentEditWk = null; // 正在编辑的训练 {date, id}
   var currentDate = YDJK.today(); // 当前选中日期（日历点击驱动）
+    /* 记住上次选择的肌肉部位（localStorage 持久化） */
+    function getLastMuscle() {
+      try { return localStorage.getItem('ydjk:last-muscle') || 'chest'; } catch (e) { return 'chest'; }
+    }
+    function setLastMuscle(m) {
+      try { localStorage.setItem('ydjk:last-muscle', m); } catch (e) {}
+    }
+    // 初始化时使用上次部位
+    var wkCurrentMuscle = getLastMuscle();
+
 
   function fmtCN(d) {
     var today = YDJK.today();
@@ -139,8 +149,12 @@
       b.addEventListener('click', function () {
         wkCurrentMuscle = b.dataset.m;
         renderMuscleOptions();
+          setLastMuscle(b.dataset.m);
+
         renderActionGrid();
       });
+          setLastMuscle(b.dataset.m);
+
     });
   }
   /* 动作收藏（本地存储） */
@@ -293,6 +307,12 @@
     var date = document.getElementById('wkDate').value || currentDate;
     var ids = Object.keys(selectedActions);
     if (!ids.length) { window.YDJK_UI.toast('请至少点选一个动作', 'err'); return; }
+      // 有氧详情
+      var distInput = document.getElementById('wkDistance');
+      var paceInput = document.getElementById('wkPace');
+      var distVal = distInput && distInput.value ? Number(distInput.value) : null;
+      var paceVal = paceInput && paceInput.value ? Number(paceInput.value) : null;
+
     ids.forEach(function (id) {
       var a = DATA.ACTIONS.find(function (x) { return x.id === id; });
       var s = selectedActions[id];
@@ -304,7 +324,20 @@
         weight: s.weight ? Number(s.weight) : null,
         minutes: null, /* 时长由组数自动推导（每组约3分钟） */
         met: a ? metFor({ muscle: a.muscle, action: a.name }) : null
+          , /* 以下为误插入行，注释掉 */
+
+          distance: distVal, pace: paceVal,
+        // 删除此行（错误插入）
+
+
       });
+      /* 修复：注释掉错误插入的代码段 */
+      /*
+
+          distance: distVal, pace: paceVal,
+      */
+
+
     });
     window.YDJK_UI.closeModal('addWorkoutModal');
     window.YDJK_UI.toast('✅ 已记录 ' + ids.length + ' 个动作');
@@ -314,6 +347,39 @@
     renderSuggest();
     renderCalendar();
   }
+    /* 修复版 saveWorkout（覆盖上面被破坏的版本） */
+    function saveWorkout() {
+      var date = document.getElementById('wkDate').value || currentDate;
+      var ids = Object.keys(selectedActions);
+      if (!ids.length) { window.YDJK_UI.toast('请至少点选一个动作', 'err'); return; }
+      // 有氧详情
+      var distInput = document.getElementById('wkDistance');
+      var paceInput = document.getElementById('wkPace');
+      var distVal = distInput && distInput.value ? Number(distInput.value) : null;
+      var paceVal = paceInput && paceInput.value ? Number(paceInput.value) : null;
+      ids.forEach(function (id) {
+        var a = DATA.ACTIONS.find(function (x) { return x.id === id; });
+        var s = selectedActions[id];
+        YDJK.addWorkout(date, {
+          muscle: a ? a.muscle : wkCurrentMuscle,
+          action: a ? a.name : '训练',
+          sets: s.sets || 3,
+          reps: s.reps || 10,
+          weight: s.weight ? Number(s.weight) : null,
+          minutes: null,
+          met: a ? metFor({ muscle: a.muscle, action: a.name }) : null,
+          distance: distVal, pace: paceVal
+        });
+      });
+      window.YDJK_UI.closeModal('addWorkoutModal');
+      window.YDJK_UI.toast('✅ 已记录 ' + ids.length + ' 个动作');
+      selectedActions = {};
+      currentDate = date;
+      renderWorkoutList();
+      renderSuggest();
+      renderCalendar();
+    }
+
   /* ---------- 本周运动概览 ---------- */
   function renderSuggest() {
     var body = document.getElementById('suggestBody');
@@ -375,6 +441,46 @@
       });
     }
   }
+    /* ---------- 训练计划模板 ---------- */
+    function renderPlans() {
+      var wrap = document.getElementById('planList');
+      if (!wrap) return;
+      var plans = YDJK.getWorkoutPlans();
+      wrap.innerHTML = plans.map(function (p) {
+        return '<div class="plan-card">' +
+          '<div class="plan-info"><b>' + esc(p.name) + '</b>' +
+          '<div class="small muted">' + esc(p.desc) + ' · ' + p.days.join('/') + '</div>' +
+          '<div class="small muted">' + p.actions.length + ' 个动作 · ' + p.actions.map(function (a) { return esc(a.action); }).join('、') + '</div></div>' +
+          '<button class="btn btn-outline btn-sm js-apply-plan" data-id="' + p.id + '">套用</button>' +
+          '</div>';
+      }).join('');
+      wrap.querySelectorAll('.js-apply-plan').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var pid = btn.dataset.id;
+          var plans = YDJK.getWorkoutPlans();
+          var p = plans.filter(function (x) { return x.id === pid; })[0];
+          if (!p) return;
+          // 预设动作到添加训练弹窗
+          selectedActions = {};
+          p.actions.forEach(function (a) {
+            // 查找动作 ID
+            var found = DATA.ACTIONS.filter(function (x) { return x.name === a.action; })[0];
+            if (found) {
+              selectedActions[found.id] = { sets: a.sets || 3, reps: a.reps || 10, weight: '' };
+            }
+          });
+          // 打开添加训练弹窗并预填
+          document.getElementById('wkDate').value = currentDate;
+          renderMuscleOptions();
+          renderActionGrid();
+          renderFavList();
+          renderSelected();
+          window.YDJK_UI.openModal('addWorkoutModal');
+          window.YDJK_UI.toast('已套用「' + p.name + '」，确认后保存');
+        });
+      });
+    }
+
 
   /* ---------- 初始化 ---------- */
   document.addEventListener('DOMContentLoaded', function () {
@@ -384,7 +490,11 @@
     if (addBtn) addBtn.addEventListener('click', function () {
       document.getElementById('wkDate').value = currentDate;
       selectedActions = {};
+        wkCurrentMuscle = getLastMuscle();
+
       wkCurrentMuscle = 'chest';
+        wkCurrentMuscle = getLastMuscle(); // 覆盖上面的 'chest'，使用上次选择的部位
+
       renderMuscleOptions();
       renderActionGrid();
       renderFavList();
@@ -418,6 +528,9 @@
     if (calP) calP.addEventListener('click', function () { calMonth--; if (calMonth < 1) { calMonth = 12; calYear--; } renderCalendar(); });
     if (calN) calN.addEventListener('click', function () { calMonth++; if (calMonth > 12) { calMonth = 1; calYear++; } renderCalendar(); });
     // 动作库
+      // 训练计划模板
+      renderPlans();
+
 
   });
 })();

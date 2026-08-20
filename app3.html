@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>悦动健康</title>
+<meta name="description" content="悦动健康：科学运动记录、食物热量查询、饮食打卡，一站式健康生活管理。">
+<meta name="theme-color" content="#2E7CF6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="悦动健康">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest-app3.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="assets/css/app3.css?v=120">
+</head>
+<body>
+<div id="app-root">
+
+  <!-- ===== 顶部 ===== -->
+  <header class="yk-header">
+    <div class="yk-header-inner">
+      <div class="yk-brand">
+        <img src="icons/icon-192.png" alt="悦动健康" class="yk-brand-icon">
+        <span class="yk-brand-text">悦动健康</span>
+      </div>
+      <div class="yk-header-right">
+        <button class="yk-icon-btn" onclick="YK.toast('❤️ 感谢使用悦动健康')" aria-label="爱心">
+          <span style="font-size:1.15rem">❤️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== 主内容 ===== -->
+  <main class="yk-main">
+    <div id="yk-viewport"></div>
+  </main>
+
+  <!-- ===== 底部导航 ===== -->
+  <nav class="yk-tabbar">
+    <a class="yk-tab" data-route="home" href="#/home">
+      <span class="yk-tab-icon"><i class="ic" data-icon="home"></i></span>
+      <span class="yk-tab-label">首页</span>
+    </a>
+    <a class="yk-tab" data-route="foods" href="#/foods">
+      <span class="yk-tab-icon"><i class="ic" data-icon="food"></i></span>
+      <span class="yk-tab-label">饮食</span>
+    </a>
+    <a class="yk-tab" data-route="plans" href="#/plans">
+      <span class="yk-tab-icon"><i class="ic" data-icon="workout"></i></span>
+      <span class="yk-tab-label">运动</span>
+    </a>
+    <a class="yk-tab" data-route="stats" href="#/stats">
+      <span class="yk-tab-icon"><i class="ic" data-icon="stats"></i></span>
+      <span class="yk-tab-label">统计</span>
+    </a>
+    <a class="yk-tab" data-route="profile" href="#/profile">
+      <span class="yk-tab-icon"><i class="ic" data-icon="user"></i></span>
+      <span class="yk-tab-label">我的</span>
+    </a>
+  </nav>
+
+  <!-- ===== 加载层 ===== -->
+  <div id="yk-loader" class="yk-loader">
+    <div class="yk-loader-box">
+      <img src="icons/icon-192.png" alt="悦动健康" class="yk-loader-logo">
+      <div class="yk-loader-bar"><span></span></div>
+      <p class="yk-loader-text">悦动健康</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="assets/js/storage.js?v=92"></script>
+<script src="assets/js/ydb.js?v=130"></script>
+<script src="assets/js/data.js?v=92"></script>
+<script src="assets/js/charts.js?v=92"></script>
+<script src="assets/js/icons.js?v=92"></script>
+<script src="assets/js/app.js?v=92"></script>
+<script src="assets/js/app-shell3.js?v=120"></script>
+<script src="assets/js/views3/home3.js?v=120"></script>
+<script src="assets/js/views3/foods3v2.js?v=130"></script>
+<script src="assets/js/views3/plans3.js?v=120"></script>
+<script src="assets/js/views3/stats3.js?v=120"></script>
+<script src="assets/js/views3/profile3.js?v=120"></script>
+<script src="assets/js/views3/about3.js?v=120"></script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>

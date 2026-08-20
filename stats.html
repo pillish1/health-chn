@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>统计分析 · 悦动健康</title>
+<meta name="description" content="查看你的摄入趋势、训练趋势、体重变化和成就徽章。">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="悦动健康">
+<link rel="stylesheet" href="assets/css/style.css?v=92">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="悦动健康">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="统计分析 · 悦动健康">
+<meta property="og:description" content="查看你的摄入趋势、训练趋势、体重变化和成就徽章。">
+<meta property="og:image" content="icons/icon-512.png">
+<meta name="twitter:card" content="summary">
+</head>
+<body>
+
+<!-- 移动端 App 头 -->
+<div class="m-header">
+  <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
+    <div class="m-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+    </div>
+
+</div>
+
+<div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="text-align:center">
+    <img src="icons/icon-192.png" alt="悦动健康" style="width:56px;height:56px;border-radius:16px;box-shadow:0 8px 24px rgba(139,92,246,.3);animation:pulse 1.2s ease-in-out infinite">
+    <div style="margin-top:12px;color:var(--muted);font-size:.85rem">加载中…</div>
+  </div>
+</div>
+<style>@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }</style>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="foods.html">饮食记录</a>
+      <a href="plans.html">运动记录</a>
+      <a href="stats.html">统计</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单"><i class="ic" data-icon="menu"></i></button>
+    </div>
+  </div>
+</nav>
+<header class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>统计分析</span></div>
+    <h1><i class="ic" data-icon="stats"></i> 统计分析</h1>
+    <p>回顾你的饮食、训练和体重变化</p>
+  </div>
+</header>
+
+<section class="section-sm">
+  <div class="container" style="max-width:820px">
+    <!-- 统计范围切换 -->
+    <div class="card mb-3" style="padding:12px 16px">
+      <div class="flex-between">
+        <span class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 统计范围</span>
+        <div class="flex gap-sm" style="gap:4px" id="rangeTabs">
+          <button class="btn btn-ghost btn-sm range-btn active" data-range="week">本周</button>
+          <button class="btn btn-ghost btn-sm range-btn" data-range="month">近30天</button>
+          <button class="btn btn-ghost btn-sm range-btn" data-range="all">全部</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 周报/月报概览 -->
+    <div class="card mb-3" id="summaryCard">
+      <div class="card-title"><i class="ic" data-icon="stats"></i> 数据概览</div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-box"><div class="stat-num" id="statMealDays">0</div><div class="stat-label">记录饮食天数</div></div>
+        <div class="stat-box"><div class="stat-num" id="statMealCount">0</div><div class="stat-label">记录餐数</div></div>
+        <div class="stat-box"><div class="stat-num" id="statTrainDays">0</div><div class="stat-label">训练天数</div></div>
+        <div class="stat-box"><div class="stat-num" id="statTrainCount">0</div><div class="stat-label">训练次数</div></div>
+        <div class="stat-box"><div class="stat-num" id="statTotalKcal">0</div><div class="stat-label">总摄入(kcal)</div></div>
+        <div class="stat-box"><div class="stat-num" id="statTotalBurn">0</div><div class="stat-label">总消耗(kcal)</div></div>
+        <div class="stat-box"><div class="stat-num" id="statWeightStart">--</div><div class="stat-label">起始体重</div></div>
+        <div class="stat-box"><div class="stat-num" id="statWeightNow">--</div><div class="stat-label">当前体重</div></div>
+      </div>
+    </div>
+
+    <!-- 体重趋势 -->
+    <div class="card mb-3" id="weightCard">
+      <div class="flex-between" style="margin-bottom:12px">
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="target"></i> 体重变化</div>
+        <button class="btn btn-outline btn-sm" id="btnAddWeight">＋ 记录体重</button>
+      </div>
+      <div id="weightChart"></div>
+      <div class="small muted mt-2" id="weightInfo"></div>
+    </div>
+
+    <!-- 摄入趋势图 -->
+    <div class="card mb-3">
+      <div class="card-title"><i class="ic" data-icon="food"></i> 摄入趋势</div>
+      <div id="intakeChart"></div>
+      <div class="small muted mt-2">绿色目标线 = 每日建议摄入</div>
+    </div>
+
+    <!-- 训练趋势 -->
+    <div class="card mb-3">
+      <div class="card-title"><i class="ic" data-icon="workout"></i> 训练消耗趋势</div>
+      <div id="burnChart"></div>
+    </div>
+
+    <!-- 蛋白质趋势 -->
+    <div class="card mb-3">
+      <div class="card-title"><i class="ic" data-icon="meal"></i> 蛋白质摄入趋势</div>
+      <div id="proteinChart"></div>
+      <div class="small muted mt-2">蛋白质(g) / 目标线 = 按体重×1.2g估算</div>
+    </div>
+
+    <!-- 成就徽章 -->
+    <div class="card mb-3">
+      <div class="card-title"><i class="ic" data-icon="star"></i> 成就徽章</div>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </div>
+
+    <!-- 训练部位分布 -->
+    <div class="card mb-3" id="muscleDistCard">
+      <div class="card-title"><i class="ic" data-icon="dumbbell"></i> 训练部位分布</div>
+      <div class="muscle-dist" id="muscleDist"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:var(--text)"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+        <p class="f-desc">科学饮食 + 运动记录，所有数据仅保存在本机。</p>
+      </div>
+      <div><h4>核心功能</h4><a href="foods.html">饮食记录</a><a href="plans.html">运动记录</a><a href="stats.html">统计分析</a></div>
+      <div><h4>关于</h4><a href="about.html">关于本站</a><a href="about.html#privacy">隐私说明</a><a href="about.html#disclaimer">免责声明</a></div>
+    </div>
+    <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
+  </div>
+</footer>
+
+<!-- 添加体重弹窗 -->
+<div class="modal-overlay" id="weightModal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-title"><i class="ic" data-icon="target"></i> 记录体重</div>
+    <div class="modal-sub">记录今天的体重，方便追踪变化</div>
+    <div class="field"><label>日期</label><input type="date" id="weightDate" class="input"></div>
+    <div class="field"><label>体重 (kg)</label><input type="number" id="weightInput" class="input" min="20" max="300" step="0.1" placeholder="如 60.5"></div>
+    <div class="field"><label>备注（可选）</label><input type="text" id="weightNote" class="input" placeholder="如：早晨空腹"></div>
+    <div class="flex gap-sm mt-2">
+      <button class="btn btn-ghost" style="flex:1" onclick="window.YDJK_UI.closeModal('weightModal')">取消</button>
+      <button class="btn btn-primary" id="btnSaveWeight" style="flex:1">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 底部 Tab 导航（移动端 App 式） -->
+<nav class="tab-bar">
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico"><i class="ic" data-icon="home"></i></span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico"><i class="ic" data-icon="food"></i></span><span class="tab-lbl">饮食</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico"><i class="ic" data-icon="workout"></i></span><span class="tab-lbl">运动</span></a>
+  <a class="tab-item" data-tab="stats" href="stats.html"><span class="tab-ico"><i class="ic" data-icon="stats"></i></span><span class="tab-lbl">统计</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico"><i class="ic" data-icon="user"></i></span><span class="tab-lbl">我的</span></a>
+</nav>
+
+<script src="assets/js/storage.js?v=91"></script>
+<script src="assets/js/data.js?v=91"></script>
+<script src="assets/js/charts.js?v=91"></script>
+<script src="assets/js/app.js?v=91"></script>
+<script src="assets/js/pages/stats.js?v=91"></script>
+<script src="assets/js/icons.js?v=91"></script>
+</body>
+</html>

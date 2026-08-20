@@ -35,6 +35,12 @@
     });
     refreshThemeState();
 
+      /* 自动备份提醒 */
+      if (window.YDJK && window.YDJK.shouldRemindBackup && window.YDJK.shouldRemindBackup()) {
+        window.YDJK_UI.toast('💾 距离上次备份已超过 14 天，建议导出备份保护数据', 'warn');
+      }
+
+
     /* 导出备份（JSON 文件） */
     var exportBtn = document.getElementById('btnExportData');
     if (exportBtn) exportBtn.addEventListener('click', function () {
@@ -44,6 +50,8 @@
       a.href = URL.createObjectURL(blob);
       a.download = '悦动健康备份-' + new Date().toISOString().slice(0, 10) + '.json';
       document.body.appendChild(a);
+        if (window.YDJK && window.YDJK.markBackupDone) window.YDJK.markBackupDone();
+
       a.click();
       setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 300);
       window.YDJK_UI.toast('📤 备份文件已导出');
@@ -90,6 +98,9 @@
       }
       if (data.mealsAll) {
         Object.keys(data.mealsAll).forEach(function (d) {
+        if (data.weights) { try { localStorage.setItem('ydjk:weights', JSON.stringify(data.weights)); } catch (e) {} }
+        if (data.achievements) { try { localStorage.setItem('ydjk:achievements', JSON.stringify(data.achievements)); } catch (e) {} }
+
           try { localStorage.setItem('ydjk:meals:' + d, JSON.stringify(data.mealsAll[d] || [])); } catch (e) {}
         });
       }

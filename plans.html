@@ -23,6 +23,10 @@
 <!-- 移动端 App 头 -->
 <div class="m-header">
   <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
+    <div class="m-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+    </div>
+
 </div>
 
 <div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
@@ -39,6 +43,8 @@
       <a href="index.html">首页</a>
       <a href="foods.html">饮食记录</a>
       <a href="plans.html">运动记录</a>
+        <a href="stats.html">统计</a>
+
     </div>
     <div class="nav-actions">
       <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
@@ -83,6 +89,16 @@
       <div id="workoutList"></div>
       <div id="workoutEmpty" class="empty hidden"><div class="e-icon"><i class="ic" data-icon="dumbbell"></i></div><div class="e-title" id="wkEmptyTitle">还没有训练记录</div><div class="e-desc">点「添加训练」或在日历上选日期，记下当天的运动</div></div>
       <div class="alert success mt-2" id="wkTotal" style="display:none"></div>
+
+      <!-- 训练计划模板 -->
+      <div class="card mb-3" id="planCard">
+        <div class="flex-between" style="margin-bottom:10px">
+          <div class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 训练计划</div>
+        </div>
+        <p class="small muted" style="margin:0 0 10px">选择一个计划，一键套用今日训练</p>
+        <div id="planList"></div>
+      </div>
+
     </div>
 
     <!-- 添加训练弹窗（点选动作模式） -->
@@ -112,6 +128,14 @@
         </div>
                 <div class="flex gap-sm mt-2">
           <button class="btn btn-ghost" style="flex:1" onclick="window.YDJK_UI.closeModal('addWorkoutModal')">取消</button>
+          <div class="field" id="cardioDetailField" style="display:none">
+            <label>有氧详情（可选）</label>
+            <div class="flex gap-sm" style="gap:8px">
+              <input class="input" type="number" id="wkDistance" placeholder="距离(km)" min="0" step="0.1" style="flex:1">
+              <input class="input" type="number" id="wkPace" placeholder="配速(min/km)" min="0" step="0.1" style="flex:1">
+            </div>
+          </div>
+
           <button class="btn btn-primary" id="btnSaveWorkout" style="flex:1">保存训练</button>
         </div>
       </div>
@@ -155,6 +179,8 @@
   <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico"><i class="ic" data-icon="food"></i></span><span class="tab-lbl">饮食</span></a>
   <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico"><i class="ic" data-icon="workout"></i></span><span class="tab-lbl">运动</span></a>
   <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico"><i class="ic" data-icon="user"></i></span><span class="tab-lbl">我的</span></a>
+    <a class="tab-item" data-tab="stats" href="stats.html"><span class="tab-ico"><i class="ic" data-icon="stats"></i></span><span class="tab-lbl">统计</span></a>
+
 </nav>
 
 

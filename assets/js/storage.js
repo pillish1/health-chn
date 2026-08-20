@@ -182,6 +182,123 @@
   /* ---------- 主题 ---------- */
   function setTheme(t) { setJSON('theme', t); }
 
+    /* ---------- 体重记录 ---------- */
+    function getWeights() { return getJSON('weights', {}); }
+    function getWeightOn(date) {
+      var w = getWeights();
+      if (w[date]) return w[date];
+      var d = date;
+      for (var i = 0; i < 90; i++) {
+        d = addDays(d, -1);
+        if (w[d]) return w[d];
+      }
+      var p = getProfile();
+      return p ? p.weight : null;
+    }
+    function addWeight(date, weight, note) {
+      var w = getWeights();
+      w[date] = { w: Number(weight), ts: Date.now(), note: note || '' };
+      setJSON('weights', w);
+      cloudSave();
+      return w[date];
+    }
+    function removeWeight(date) {
+      var w = getWeights();
+      if (w[date]) delete w[date];
+      setJSON('weights', w);
+      cloudSave();
+    }
+
+    /* ---------- 成就徽章 ---------- */
+    function getAchievements() { return getJSON('achievements', {}); }
+    function unlockAchievement(id) {
+      var a = getAchievements();
+      if (!a[id]) {
+        a[id] = { id: id, unlockedAt: Date.now() };
+        setJSON('achievements', a);
+        cloudSave();
+        return true;
+      }
+      return false;
+    }
+    function checkAchievements() {
+      var p = getProfile();
+      var allW = getAllWorkouts();
+      var trainDays = Object.keys(allW).filter(function (d) { return allW[d].length > 0; }).length;
+      var mealsTotal = 0;
+      for (var i = 0; i < LS.length; i++) {
+        var k = LS.key(i);
+        if (k.indexOf(NS + 'meals:') === 0) {
+          try { mealsTotal += JSON.parse(LS.getItem(k) || '[]').length; } catch (e) {}
+        }
+      }
+      var streak = checkinStreak(today());
+      var newly = [];
+      function tryUnlock(id) { if (unlockAchievement(id)) newly.push(id); }
+      if (streak >= 3) tryUnlock('streak-3');
+      if (streak >= 7) tryUnlock('streak-7');
+      if (streak >= 30) tryUnlock('streak-30');
+      if (mealsTotal >= 10) tryUnlock('meals-10');
+      if (mealsTotal >= 50) tryUnlock('meals-50');
+      if (mealsTotal >= 200) tryUnlock('meals-200');
+      if (trainDays >= 3) tryUnlock('train-3');
+      if (trainDays >= 10) tryUnlock('train-10');
+      if (trainDays >= 30) tryUnlock('train-30');
+      if (p) tryUnlock('profile-complete');
+      return newly;
+    }
+    function getAchievementDefs() {
+      return [
+        { id: 'profile-complete', icon: '📋', name: '建立档案', desc: '完成健康档案设置' },
+        { id: 'streak-3', icon: '🔥', name: '三天坚持', desc: '连续打卡 3 天' },
+        { id: 'streak-7', icon: '⭐', name: '一周坚持', desc: '连续打卡 7 天' },
+        { id: 'streak-30', icon: '🏆', name: '月坚持', desc: '连续打卡 30 天' },
+        { id: 'meals-10', icon: '🍽️', name: '十餐之旅', desc: '累计记录 10 餐' },
+        { id: 'meals-50', icon: '🍱', name: '五十餐', desc: '累计记录 50 餐' },
+        { id: 'meals-200', icon: '🎖️', name: '两百餐', desc: '累计记录 200 餐' },
+        { id: 'train-3', icon: '💪', name: '初练者', desc: '累计 3 天训练' },
+        { id: 'train-10', icon: '🏋️', name: '训练者', desc: '累计 10 天训练' },
+        { id: 'train-30', icon: '🏅', name: '训练达人', desc: '累计 30 天训练' }
+      ];
+    }
+
+    /* ---------- 训练计划模板 ---------- */
+    function getWorkoutPlans() {
+      return [
+        { id: 'fullbody', name: '全身训练（初级）', desc: '适合新手，每周 2-3 次', days: ['周一', '周三', '周五'], actions: [
+          { action: '标准俯卧撑', sets: 3, reps: 10, muscle: 'chest' },
+          { action: '徒手深蹲', sets: 3, reps: 15, muscle: 'legs' },
+          { action: '哑铃划船', sets: 3, reps: 10, muscle: 'back' },
+          { action: '平板支撑', sets: 3, reps: 45, muscle: 'core' }
+        ] },
+        { id: 'pushpull', name: '推拉腿计划（中级）', desc: '每周 4 天，适合有一定基础', days: ['周一', '周二', '周四', '周五'], actions: [
+          { action: '杠铃卧推', sets: 4, reps: 8, muscle: 'chest' },
+          { action: '杠铃深蹲', sets: 4, reps: 8, muscle: 'legs' },
+          { action: '引体向上', sets: 4, reps: 6, muscle: 'back' },
+          { action: '硬拉', sets: 4, reps: 6, muscle: 'back' }
+        ] },
+        { id: 'cardio', name: '有氧燃脂计划', desc: '每周 4-5 次有氧', days: ['周一', '周三', '周五', '周日'], actions: [
+          { action: '快走', sets: 1, reps: 40, muscle: 'cardio' },
+          { action: '慢跑', sets: 1, reps: 30, muscle: 'cardio' },
+          { action: '跳绳', sets: 1, reps: 15, muscle: 'cardio' }
+        ] }
+      ];
+    }
+
+    /* ---------- 自动备份提醒 ---------- */
+    function getLastBackup() { return getJSON('last-backup', null); }
+    function markBackupDone() { setJSON('last-backup', { ts: Date.now() }); }
+    function shouldRemindBackup() {
+      var last = getLastBackup();
+      if (!last) {
+        var hasData = !!getProfile() || Object.keys(getMeals(today())).length > 0 || getWorkouts(today()).length > 0;
+        return hasData;
+      }
+      var days = Math.floor((Date.now() - (last.ts || 0)) / (24 * 3600 * 1000));
+      return days >= 14;
+    }
+
+
   /* ---------- 计算引擎 ---------- */
   /* Mifflin-St Jeor 基础代谢 */
   function calcBMR(profile) {
@@ -230,6 +347,10 @@
         return m;
       })(),
       mealTemplates: getMealTemplates()
+        ,
+
+        weights: getWeights(),
+        achievements: getAchievements(),
     };
   }
 
@@ -320,6 +441,10 @@
     collectAllData: collectAllData,
     setTheme: setTheme,
     calcBMR: calcBMR, calcTDEE: calcTDEE,
+      getWeights: getWeights, getWeightOn: getWeightOn, addWeight: addWeight, removeWeight: removeWeight,
+      getAchievements: getAchievements, unlockAchievement: unlockAchievement, checkAchievements: checkAchievements, getAchievementDefs: getAchievementDefs,
+      getWorkoutPlans: getWorkoutPlans,
+      getLastBackup: getLastBackup, markBackupDone: markBackupDone, shouldRemindBackup: shouldRemindBackup,
     goalCalories: goalCalories, macros: macros
   };
 })();

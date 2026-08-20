@@ -401,6 +401,41 @@
         }
       });
     });
+      // 保存今日饮食为套餐（多食物组合）
+      safe(function () {
+        var btn = document.getElementById('btnSaveTodayTpl');
+        if (btn) btn.addEventListener('click', function () {
+          var meals = YDJK.getMeals(currentDate);
+          if (!meals.length) { window.YDJK_UI.toast('今天还没有饮食记录，先记一餐再保存', 'err'); return; }
+          var items = meals.map(function (m) {
+            return { name: m.name, kcal: m.kcal, protein: m.protein, carbs: m.carbs, fat: m.fat };
+          });
+          if (window.YDJK_UI && window.YDJK_UI.promptDialog) {
+            window.YDJK_UI.promptDialog({
+              title: '保存今日饮食为套餐',
+              message: '将 ' + meals.length + ' 条记录保存为一个套餐，之后可一键套用',
+              placeholder: '今日套餐',
+              okText: '保存'
+            }).then(function (name) {
+              var finalName = String(name || '').trim() || ('今日套餐 ' + currentDate);
+              var tpl = {
+                id: 'tpl-' + Date.now(),
+                name: finalName,
+                items: items
+              };
+              YDJK.saveMealTemplate(tpl);
+              renderMealTpls();
+              window.YDJK_UI.toast('✅ 已存为套餐「' + finalName + '」(' + items.length + ' 项)');
+            });
+          } else {
+            var tpl3 = { id: 'tpl-' + Date.now(), name: '今日套餐', items: items };
+            YDJK.saveMealTemplate(tpl3);
+            renderMealTpls();
+            window.YDJK_UI.toast('✅ 已存为套餐');
+          }
+        });
+      });
+
     safe(renderCats);
     safe(renderFoods);
 
