@@ -20,7 +20,7 @@
         '<div class="yk-stat-box"><b id="sBurn">0</b><small>消耗</small></div>'+
         '<div class="yk-stat-box"><b id="sW">--</b><small>体重变化</small></div>'+
       '</div></div>'+
-      '<div class="yk-card"><div class="yk-card-title">⚖️ 体重</div><div id="wChart"></div></div>'+
+      '<div class="yk-card"><div class="yk-flex-between yk-mb-1"><span class="yk-card-title" style="margin:0">⚖️ 体重</span><button class="yk-btn yk-btn-outline yk-btn-sm" id="ykAddW">＋ 记录</button></div><div id="wChart"></div></div>'+
       '<div class="yk-card"><div class="yk-card-title">🍽️ 摄入</div><div id="iChart"></div></div>'+
       '<div class="yk-card"><div class="yk-card-title">🏃 消耗</div><div id="bChart"></div></div>'+
       '<div class="yk-card"><div class="yk-card-title">🏆 成就</div><div id="badges" class="yk-grid-2"></div></div>';
@@ -63,12 +63,13 @@
 
   function render(){
     var n=days(),today=Y.today(),start=Y.addDays(today,-(n-1));
+    var kg=(Y.getProfile()&&Y.getProfile().weight)||60;
     var mealD=0,meals=0,trainD=0,kcal=0,burn=0;
     var d=start;
     for(var i=0;i<n;i++){
       var ms=Y.getMeals(d),wks=Y.getWorkouts(d),m=Y.mealSummary(d);
       if(ms.length){mealD++;meals+=ms.length;kcal+=m.kcal;}
-      var db=0;wks.forEach(function(w){var met=Number(w.met)||5,mins=w.sets?w.sets*3:20;db+=Math.round(met*3.5*60/200*mins);});
+      var db=0;wks.forEach(function(w){var met=Number(w.met)||5,mins=w.minutes?Number(w.minutes):(w.sets?w.sets*3:20);db+=Math.round(met*3.5*kg/200*mins);});
       if(wks.length){trainD++;burn+=db;}
       d=Y.addDays(d,1);
     }
@@ -90,11 +91,12 @@
 
   function renderCharts(start,today,n){
     var W=window.YDJK_CHARTS;if(!W)return;
+    var kg=(Y.getProfile()&&Y.getProfile().weight)||60;
     var labels=[],intake=[],burn=[],protein=[],d=start;
     for(var i=0;i<n;i++){
       labels.push(d.slice(5));
       var m=Y.mealSummary(d);intake.push(Math.round(m.kcal));protein.push(Math.round(m.protein*10)/10);
-      var wks=Y.getWorkouts(d),db=0;wks.forEach(function(w){var met=Number(w.met)||5,mins=w.sets?w.sets*3:20;db+=Math.round(met*3.5*60/200*mins);});
+      var wks=Y.getWorkouts(d),db=0;wks.forEach(function(w){var met=Number(w.met)||5,mins=w.minutes?Number(w.minutes):(w.sets?w.sets*3:20);db+=Math.round(met*3.5*kg/200*mins);});
       burn.push(db);d=Y.addDays(d,1);
     }
     var wc=document.getElementById('wChart');var w=Y.getWeights(),wds=Object.keys(w).sort().filter(function(x){return x>=start&&x<=today;});

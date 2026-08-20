@@ -7,6 +7,8 @@
   var ROUTES = ['home','foods','plans','stats','profile','about'];
   var currentRoute = null;
 
+  window.YK_APP_VERSION = 'v1.30';
+
   function getHashRoute() {
     var h = location.hash.replace(/^#\//,'').split('?')[0];
     return ROUTES.indexOf(h) >= 0 ? h : null;
@@ -124,12 +126,12 @@
             }
           }, 1500);
         }
-    // 存储错误监听
+      }
+    } catch(e) {}
+    // 存储错误监听（无条件注册）
     window.addEventListener('ydjk:storage-error', function () {
       showToast('⚠️ 存储空间不足，可能未保存', 'err');
     });
-      }
-    } catch(e) {}
   }
 
   // 延迟初始化，确保所有视图脚本已加载
@@ -144,9 +146,10 @@
   function openProfileEditor() {
     var Y = window.YDJK;
     if (!Y) return;
+    var hasProfile = !!Y.getProfile();
     var p = Y.getProfile() || {};
     var html =
-      '<div class="yk-modal-title">' + (p ? '编辑健康档案' : '建立健康档案') + '</div>' +
+      '<div class="yk-modal-title">' + (hasProfile ? '编辑健康档案' : '建立健康档案') + '</div>' +
       '<div class="yk-modal-subtitle">设置后将个性化你的每日热量目标</div>' +
       '<div class="yk-field"><label>性别</label><div class="yk-flex yk-gap" id="pfGender">' +
         '<button class="yk-type-btn' + (p.gender !== 'female' ? ' active' : '') + '" data-g="male">👨 男</button>' +

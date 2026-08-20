@@ -86,12 +86,13 @@
     var wks = Y.getWorkouts(today);
     var burn = 0;
     wks.forEach(function(w){ var met=Number(w.met)||5; var mins=w.sets?w.sets*3:20; burn+=Math.round(met*3.5*weight/200*mins); });
-    var totalBurn = bmr + Math.round(bmr*1.2) + burn;
+    var actFactor = 1.55;
+    try { if (p && window.YDJK_DATA) { var lv = window.YDJK_DATA.ACTIVITY_LEVELS.filter(function(x){return x.id===p.activity;})[0]; if (lv) actFactor = lv.factor; } } catch(e){}
+    var totalBurn = Math.round(bmr * actFactor) + burn;
     var net = intake - totalBurn;
     var streak = Y.checkinStreak();
 
-    var iEl = document.getElementById('ykIntake'); if (iEl) iEl.textContent = intake;
-      if (iEl && intake === 0) iEl.style.opacity = 0.35;
+    var iEl = document.getElementById('ykIntake'); if (iEl) { iEl.textContent = intake; iEl.style.opacity = intake === 0 ? 0.35 : 1; }
 
     var gEl = document.getElementById('ykGoal'); if (gEl) gEl.textContent = Math.round(goal);
     var bEl = document.getElementById('ykBurn'); if (bEl) bEl.textContent = totalBurn;
@@ -162,6 +163,7 @@
     if (h < 14) return '中午好';
     if (h < 18) return '下午好';
     return '晚上好';
+  }
 
   // 快速记一餐：跳转到饮食页并自动打开食物选择
   window.goFoodsQuick = function () {
@@ -172,8 +174,6 @@
       else if (v && v.mounted) v.mounted();
     }, 200);
   };
-
-  }
 
   function refresh() { render(); }
 

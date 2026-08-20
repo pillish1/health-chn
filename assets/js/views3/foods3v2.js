@@ -5,6 +5,8 @@
   var cur = null, preset = null, DATA = null;
 
   function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  // 拼音：优先全拼索引(py-foods.js)，其次首字母查表(py-map.js)
+  function pinyinOf(s){ if(window.YDJK_FOOD_PY&&window.YDJK_FOOD_PY[s]) return window.YDJK_FOOD_PY[s]; if(window.YDJK_PY) return window.YDJK_PY(s); return ''; }
 
   // 根据当前时间返回默认餐次
   function getDefaultMealType() {
@@ -190,7 +192,7 @@
     var showCount=50;
     function draw(){
       var q=(sw.value||'').trim().toLowerCase();
-      var all=DATA.FOODS.filter(function(f){if(cc!=='全部'&&f.cat!==cc)return false;if(!q)return true;return f.name.toLowerCase().indexOf(q)>=0;});
+      var all=DATA.FOODS.filter(function(f){if(cc!=='全部'&&f.cat!==cc)return false;if(!q)return true;var n=f.name.toLowerCase();return n.indexOf(q)>=0||pinyinOf(f.name).indexOf(q)>=0||(window.YDJK_PY?window.YDJK_PY(f.name):'').indexOf(q)>=0;});
       var items=all.slice(0,showCount);
       fw.innerHTML=items.map(function(f){return '<div class="yk-food" data-d="'+esc(f.name)+'|'+f.kcal+'|'+f.protein+'|'+f.carbs+'|'+f.fat+'"><div><b style="font-size:.85rem">'+esc(f.name)+'</b><div class="yk-text-xs yk-text-muted">P'+f.protein+' · C'+f.carbs+' · F'+f.fat+'g</div></div><span style="font-weight:800;color:var(--blue);font-size:.78rem">'+f.kcal+'</span></div>';}).join('')||'<div class="yk-text-center yk-text-muted" style="padding:20px">未找到</div>';
       if(all.length>showCount){fw.innerHTML+='<button class="yk-cat-btn" id="more" style="display:block;margin:10px auto">显示更多 ('+(all.length-showCount)+')</button>';var more=fw.querySelector('#more');if(more)more.onclick=function(){showCount+=50;draw();};}

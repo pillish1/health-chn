@@ -216,6 +216,7 @@
   /* ---------- 静默自动导出（每 7 天一次） ---------- */
   var autoExportKey = 'ydjk:last-auto-export';
   function maybeAutoExport() {
+    if (window.Capacitor) return; // App(WebView) 里无法可靠触发下载，IndexedDB 快照已承担备份
     var last = null;
     try { last = Number(localStorage.getItem(autoExportKey)); } catch(e) {}
     var now = Date.now();
