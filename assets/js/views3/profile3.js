@@ -55,7 +55,7 @@
     if (!window.YDB || !YDB.getSnapshots) { YK.toast('备份服务不可用','err'); return; }
     YDB.getSnapshots().then(function(list){
       if (!list || list.length === 0) { YK.toast('暂无历史备份','err'); return; }
-      YK.openModal(
+      var mask = YK.openModal(
         '<div class="yk-modal-title">🛡️ 恢复备份</div>' +
         '<div class="yk-modal-subtitle">从以下历史快照恢复数据（将覆盖当前数据）</div>' +
         '<div id="snapList">' + list.slice(0,5).map(function(s,i){
@@ -65,7 +65,6 @@
         }).join('') +
         '<div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="snapNo">取消</button></div></div>'
       );
-      var mask = document.querySelector('.yk-modal-mask.show');
       if (!mask) return;
       mask.querySelector('#snapNo').onclick = function(){ YK.closeModal(mask); };
       mask.querySelectorAll('[data-ts]').forEach(function(btn){

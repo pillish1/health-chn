@@ -36,7 +36,7 @@
   }
 
   function openWeightModal(){
-    YK.openModal(
+    var mask = YK.openModal(
       '<div class="yk-modal-title">⚖️ 记录体重</div>' +
       '<div class="yk-field"><label>日期</label><input class="yk-input" type="date" id="wDate" value="'+Y.today()+'"></div>' +
       '<div class="yk-field"><label>体重 (kg)</label><input class="yk-input" type="number" id="wVal" placeholder="如 60.5" step="0.1"></div>' +
@@ -45,7 +45,6 @@
         '<button class="yk-btn yk-btn-primary" id="wYes">保存</button>' +
       '</div>'
     );
-    var mask = document.querySelector('.yk-modal-mask.show');
     if (!mask) return;
     mask.querySelector('#wNo').onclick = function(){ YK.closeModal(mask); };
     mask.querySelector('#wYes').onclick = function(){

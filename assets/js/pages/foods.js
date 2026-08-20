@@ -308,7 +308,14 @@
 
   function updateMealCalc() {
     if (!currentFood) return;
-    var gram = Number(document.getElementById('mealGram').value);
+    var gi = document.getElementById('mealGramInput');
+    var gram = Number(gi ? gi.value : 0) || Number(document.getElementById('mealGram').value) || 100;
+    if (gram < 1) gram = 1;
+    if (gram > 3000) gram = 3000;
+    // 滑块同步（滑块范围 10-500，超出夹到边界）
+    var g = document.getElementById('mealGram');
+    if (g) { var sv = Math.min(500, Math.max(10, gram)); if (Math.abs(Number(g.value) - sv) > 0.01) g.value = sv; }
+    if (gi && Math.abs(Number(gi.value) - gram) > 0.01) gi.value = gram;
     document.getElementById('mealGramVal').textContent = gram + ' g';
     var ratio = gram / 100;
     var kcal = Math.round(currentFood.kcal * ratio);
@@ -320,7 +327,9 @@
 
   function saveMeal() {
     if (!currentFood) return;
-    var gram = Number(document.getElementById('mealGram').value);
+    var gi = document.getElementById('mealGramInput');
+    var gram = Number(gi ? gi.value : 0) || Number(document.getElementById('mealGram').value) || 100;
+    if (gram < 1 || gram > 3000) { window.YDJK_UI.toast('请输入有效克重（1-3000g）', 'err'); return; }
     var type = document.querySelector('input[name=mealType]:checked').value;
     var ratio = gram / 100;
     var meal = {
@@ -494,6 +503,8 @@
     safe(function () {
       var g = document.getElementById('mealGram');
       if (g) g.addEventListener('input', updateMealCalc);
+      var gi = document.getElementById('mealGramInput');
+      if (gi) gi.addEventListener('input', updateMealCalc);
     });
 
     window.onDataChanged = function () { renderSummary();  renderMealList(); };

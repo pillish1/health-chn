@@ -154,8 +154,8 @@
   function saveTpl(){
     var meals=Y.getMeals(cur);
     if(!meals.length){YK.toast('今天还没有记录','err');return;}
-    YK.openModal('<div class="yk-modal-title">💾 存为套餐</div><div class="yk-modal-subtitle">将今天 '+meals.length+' 条保存为套餐</div><div class="yk-field"><input class="yk-input" id="tplName" placeholder="套餐名"></div><div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="tplNo">取消</button><button class="yk-btn yk-btn-primary" id="tplYes">保存</button></div>');
-    var mask=document.querySelector('.yk-modal-mask.show'); if(!mask) return;
+    var mask=YK.openModal('<div class="yk-modal-title">💾 存为套餐</div><div class="yk-modal-subtitle">将今天 '+meals.length+' 条保存为套餐</div><div class="yk-field"><input class="yk-input" id="tplName" placeholder="套餐名"></div><div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="tplNo">取消</button><button class="yk-btn yk-btn-primary" id="tplYes">保存</button></div>');
+    if(!mask) return;
     var inp=mask.querySelector('#tplName'); setTimeout(function(){inp.focus();},100);
     mask.querySelector('#tplNo').onclick=function(){YK.closeModal(mask);};
     mask.querySelector('#tplYes').onclick=function(){
@@ -168,12 +168,12 @@
   function openManual(){
     var types={breakfast:'早餐',lunch:'午餐',dinner:'晚餐',snack:'加餐'};
     var manualType=getDefaultMealType();
-    YK.openModal('<div class="yk-modal-title">✏️ 手动添加</div>'+
+    var mask=YK.openModal('<div class="yk-modal-title">✏️ 手动添加</div>'+
       '<div class="yk-field"><div class="yk-flex yk-gap-sm" id="mTypes">'+['breakfast','lunch','dinner','snack'].map(function(t){var active=t===manualType?' active':'';return '<button class="yk-type-btn'+active+'" data-t="'+t+'">'+types[t]+'</button>';}).join('')+'</div></div>'+
       '<div class="yk-field"><label>食物</label><input class="yk-input" id="mName" placeholder="如：一碗面条"></div>'+
       '<div class="yk-field"><label>热量 (kcal)</label><input class="yk-input" type="number" id="mKcal" placeholder="0"></div>'+
       '<div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="mManualNo">取消</button><button class="yk-btn yk-btn-primary" id="mManualYes">保存</button></div>');
-    var mask=document.querySelector('.yk-modal-mask.show'); if(!mask) return;
+    if(!mask) return;
     mask.querySelectorAll('#mTypes .yk-type-btn').forEach(function(b){b.onclick=function(){manualType=b.dataset.t;mask.querySelectorAll('#mTypes .yk-type-btn').forEach(function(x){x.classList.remove('active');});b.classList.add('active');};});
     mask.querySelector('#mManualNo').onclick=function(){YK.closeModal(mask);};
     mask.querySelector('#mManualYes').onclick=function(){
@@ -188,8 +188,8 @@
 
   function openPicker(){
     if(!DATA||!DATA.FOODS){YK.toast('食物库错误','err');return;}
-    YK.openModal('<div class="yk-modal-title">🍽️ 记一餐</div><div class="yk-field" style="margin-bottom:8px"><input class="yk-input" id="search" placeholder="搜索食物…"></div><div id="cats" class="yk-flex" style="flex-wrap:wrap;gap:6px;margin-bottom:8px"></div><div id="foods" style="max-height:50vh;overflow-y:auto"></div><div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="closeF">取消</button></div>');
-    var mask=document.querySelector('.yk-modal-mask.show'); if(!mask) return;
+    var mask=YK.openModal('<div class="yk-modal-title">🍽️ 记一餐</div><div class="yk-field" style="margin-bottom:8px"><input class="yk-input" id="search" placeholder="搜索食物…"></div><div id="cats" class="yk-flex" style="flex-wrap:wrap;gap:6px;margin-bottom:8px"></div><div id="foods" style="max-height:50vh;overflow-y:auto"></div><div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="closeF">取消</button></div>');
+    if(!mask) return;
     var cats=['全部','主食','肉蛋','蔬菜','水果','饮品','零食']; var cc='全部';
     var cw=mask.querySelector('#cats'), fw=mask.querySelector('#foods'), sw=mask.querySelector('#search');
     var showCount=50;
@@ -211,18 +211,31 @@
   function openMeal(f){
     var types={breakfast:'早餐',lunch:'午餐',dinner:'晚餐',snack:'加餐'};
     var defType=preset||getDefaultMealType();
-    YK.openModal('<div class="yk-modal-title">🍽️ '+esc(f.name)+'</div><div class="yk-field"><div class="yk-flex yk-gap-sm" id="types">'+['breakfast','lunch','dinner','snack'].map(function(t){var active=t===defType?' active':'';return '<button class="yk-type-btn'+active+'" data-t="'+t+'">'+types[t]+'</button>';}).join('')+'</div></div><div class="yk-field"><div class="yk-flex yk-gap"><input type="range" id="gram" min="10" max="500" value="100" step="10" style="flex:1"><span id="gramVal" style="min-width:48px;text-align:center;font-weight:800;font-size:.8rem;background:var(--bg-blue-soft);color:var(--blue);padding:5px 8px;border-radius:8px">100g</span></div></div><div id="calc" class="yk-text-sm yk-text-2" style="margin-bottom:6px"></div><div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="mMealNo">取消</button><button class="yk-btn yk-btn-primary" id="mMealYes">保存</button></div>');
-    var mask=document.querySelector('.yk-modal-mask.show'); if(!mask) return;
+    var mask=YK.openModal('<div class="yk-modal-title">🍽️ '+esc(f.name)+'</div><div class="yk-field"><div class="yk-flex yk-gap-sm" id="types">'+['breakfast','lunch','dinner','snack'].map(function(t){var active=t===defType?' active':'';return '<button class="yk-type-btn'+active+'" data-t="'+t+'">'+types[t]+'</button>';}).join('')+'</div></div><div class="yk-field"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><label style="margin:0;font-size:.75rem;font-weight:700;color:var(--text-2)">份量</label><div style="display:flex;gap:4px;align-items:center"><input type="number" id="gramInput" value="100" min="1" max="3000" step="1" inputmode="decimal" style="width:64px;padding:5px 6px;text-align:center;font-weight:800;font-size:.8rem;background:var(--bg-blue-soft);color:var(--blue);border:none;border-radius:8px"><span style="font-size:.72rem;color:var(--text-3)">g</span></div></div><input type="range" id="gram" min="10" max="500" value="100" step="10" style="width:100%"></div><div id="calc" class="yk-text-sm yk-text-2" style="margin-bottom:6px"></div><div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="mMealNo">取消</button><button class="yk-btn yk-btn-primary" id="mMealYes">保存</button></div>');
+    if(!mask) return;
     var type=defType;
-    var g=mask.querySelector('#gram'), gv=mask.querySelector('#gramVal'), calc=mask.querySelector('#calc');
-    function upd(){var val=Number(g.value);gv.textContent=val+'g';var r=val/100;calc.innerHTML='本次：<b style="color:var(--blue)">'+Math.round(f.kcal*r)+' kcal</b> · 蛋白 '+(f.p*r).toFixed(1)+'g · 碳水 '+(f.c*r).toFixed(1)+'g · 脂肪 '+(f.f*r).toFixed(1)+'g';}
-    g.addEventListener('input',upd);
+    var g=mask.querySelector('#gram'), gi=mask.querySelector('#gramInput'), calc=mask.querySelector('#calc');
+    function upd(){
+      var val=Number(gi.value);
+      if(!val||val<1) val=1;
+      if(val>3000) val=3000;
+      // 滑块同步（滑块范围 10-500，超出就夹到边界）
+      var sv=Math.min(500,Math.max(10,val));
+      if(Math.abs(Number(g.value)-sv)>0.01) g.value=sv;
+      var r=val/100;
+      calc.innerHTML='本次：<b style="color:var(--blue)">'+Math.round(f.kcal*r)+' kcal</b> · 蛋白 '+(f.p*r).toFixed(1)+'g · 碳水 '+(f.c*r).toFixed(1)+'g · 脂肪 '+(f.f*r).toFixed(1)+'g';
+    }
+    g.addEventListener('input',function(){ gi.value=g.value; upd(); });
+    gi.addEventListener('input',upd);
     mask.querySelectorAll('#types .yk-type-btn').forEach(function(b){b.onclick=function(){type=b.dataset.t;mask.querySelectorAll('#types .yk-type-btn').forEach(function(x){x.classList.remove('active');});b.classList.add('active');};});
     mask.querySelector('#mMealNo').onclick=function(){YK.closeModal(mask);};
     mask.querySelector('#mMealYes').onclick=function(){
-      var val=Number(g.value),r=val/100;
+      var val=Number(gi.value);
+      if(!val||val<1){YK.toast('请输入有效克重','err');return;}
+      if(val>3000){YK.toast('克重过大（上限3000g）','err');return;}
+      var r=val/100;
       Y.addMeal(cur,{type:type,name:f.name,kcal:Math.round(f.kcal*r),protein:Math.round(f.p*r*10)/10,carbs:Math.round(f.c*r*10)/10,fat:Math.round(f.f*r*10)/10});
-      YK.closeModal(mask);YK.toast('✅ 已记录：'+f.name);preset=null;render();
+      YK.closeModal(mask);YK.toast('✅ 已记录：'+f.name+'（'+val+'g）');preset=null;render();
     };
     upd();
   }

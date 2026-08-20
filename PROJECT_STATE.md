@@ -72,8 +72,9 @@
 5. **不主动抢活**：对方登记在案的任务，另一方不碰；有不同意见写进「当前状态」区留给用户决定。
 
 ### 当前状态
-- 当前操作者：**DeepSeek Harness（全权）**——v1.32 修复图表渐变/导入完整性/记餐计算/日期选择，待手机验证
+- 当前操作者：**DeepSeek Harness（全权）**——v1.33 修复记一餐选食物无法记录(嵌套弹窗mask拿错)+克重自由输入，待手机验证
 - 最近操作记录：
+  - Harness 修复记一餐无法记录（v1.33，本提交）：用户反馈「记一餐→选食物→无法记录」。根因=所有弹窗打开后用 document.querySelector('.yk-modal-mask.show') 取弹窗，但嵌套弹窗(选食物弹窗→记餐弹窗)时 querySelector 拿到旧的选食物弹窗，记餐弹窗的克重滑块#gram为null→TypeError崩溃→保存按钮没绑上→点了没记录。修复=改用 YK.openModal 的返回值(它本来就返回新建弹窗)，共修 7 处(foods3v2 openMeal/openPicker/openManual/saveTpl + plans3 + stats3 + profile3)。同时按需求加「克重自由输入」：记餐弹窗从仅滑块(10-500g步长10)改为 滑块+数字输入框(1-3000g 任意值双向同步)，MPA 网页版同样加上。jsdom 验证：米饭800g→928kcal 计算正确、保存成功、全流程回归绿
   - Harness SPA 细节修复（v1.32，本提交）：①charts.js 折线图面积渐变 ID 固定为 areaGrad，同页多图(统计页体重/摄入/消耗)ID 冲突导致填充色全取第一张图的颜色，改为 areaGradSeq 唯一 ID ②导入备份补全——profile3(SPA) 缺 checkins/achievements、profile(MPA) 缺 weights/achievements，导出有导入丢=数据丢失，两处都补齐 ③foods3v2 记餐弹窗克数计算只显示蛋白，补碳水/脂肪 ④foods3v2 日期标签点了没反应，补隐藏 date input + showPicker(MPA 有的功能 SPA 漏了)。jsdom 全流程回归通过
   - Harness 修复运动部位切换失灵（v1.31，本提交）：用户反馈「选了一个部位就卡住，切不走」。根因=添加训练弹窗的部位按钮逐按钮绑 onclick，但点击后 drawM() 重渲染按钮组导致新按钮无事件；改为容器事件委托（ms.addEventListener + closest），重渲染后依然有效；顺带修套用有氧计划时把 plan 的 reps 预填为分钟数。jsdom test-app3-muscle 验证部位切换+保存正常
   - Harness SPA 全面修 bug（v1.30，本提交，16 处）：①home3 首页「记一餐」goFoodsQuick 写在 hourGreeting return 后不可达→ReferenceError，移到模块级 ②home3 消耗 totalBurn=bmr+bmr*1.2+burn 高估2倍，改 bmr×活动系数 ③home3 摄入数字变灰后不恢复 ④app-shell3 建档标题新用户恒显「编辑」（p||{} 永远真值），改先判 hasProfile ⑤storage-error 监听从 if 里挪出 ⑥plans3 套用计划立即记录+再弹窗确认=双重记录/ReferenceError(openAddPlan 嵌套在 openAdd 内不可达)，整体重构为单一 openAddModal(prefill)，套用只预填、确认才记一次 ⑦plans3/stats3 消耗用固定60kg→档案体重 ⑧stats3 体重记录无 UI 入口(#ykAddW 不存在)，补按钮 ⑨about3 版本号写死 v1.25→常量 ⑩foods3v2 恢复拼音搜索(全拼+首字母)，py-map/py-foods 重新入包 ⑪ydb WebView 里跳过自动下载导出。jsdom test-app3-flows 全绿（消耗2571/记一餐/拼音/套用计划只记一次/体重按钮/版本）
@@ -88,7 +89,7 @@
   - 小怀川搜索升级：拼音首字母查表 py-map.js（568 字，pinyin 库离线生成）+ 别名 + 匹配度评分排序 + 防抖 + 家常菜 tab
   - 小怀川修复：建档完成跳转首页、welcome 文案、弹窗横向滑动、顶部精简（去 m-header/breadcrumb）
   - Harness 复核 v1.18 通过；建档表单 v2（commit 3104735）；智能建议（f0459cb/c13a7c9 + 小怀川 9498c24）
-- 进行中任务：v1.32 已打包（图表/导入/记餐细节修复），待用户手机安装验证
+- 进行中任务：v1.33 已打包（记一餐记录修复+自由克重），待用户手机安装验证
     - Harness 全面整改 v1.25（未打包）：①新增 stats.html 统计分析页（周/月/全部范围切换、体重趋势、摄入趋势、训练消耗、蛋白质趋势、成就徽章、训练部位分布）②storage.js 新增体重记录/成就系统/训练计划模板/自动备份提醒 ③plans.js 新增距离/配速字段、记住上次部位（localStorage）、训练计划一键套用 ④foods.js 新增"存为套餐"支持多食物组合 ⑤profile.js 新增备份提醒 ⑥app.js 新增成就自动解锁 ⑦sw.js v78→v92 ⑧style.css 深色模式对比度优化 + 新组件样式
 
     - Harness v1.25+ App 化改造：新增 app.html（SPA 入口）+ app.css（App 专属样式）+ app-shell.js（路由系统）+ 6 个视图文件（home/foods/plans/stats/profile/about）。从多页面 MPA 升级为单页面 App，页面切换无刷新带过渡动画，全局固定 m-header + 底部 Tab，加载动画优化。

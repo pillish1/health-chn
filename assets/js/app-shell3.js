@@ -7,7 +7,7 @@
   var ROUTES = ['home','foods','plans','stats','profile','about'];
   var currentRoute = null;
 
-  window.YK_APP_VERSION = 'v1.32';
+  window.YK_APP_VERSION = 'v1.33';
 
   function getHashRoute() {
     var h = location.hash.replace(/^#\//,'').split('?')[0];
