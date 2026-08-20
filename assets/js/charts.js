@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    悦动健康 · 图表库 charts.js（纯 SVG，零依赖）
    折线图 / 环形进度图 / 日历热力图
    ============================================================ */
@@ -7,6 +7,7 @@
 
   var SVG_NS = 'http://www.w3.org/2000/svg';
   var donutGradSeq = 0;
+  var areaGradSeq = 0;
 
   function el(name, attrs) {
     var n = document.createElementNS(SVG_NS, name);
@@ -43,9 +44,11 @@
       t.textContent = Math.round(val);
       svg.appendChild(t);
     }
-    // 面积渐变
+    // 面积渐变（ID 唯一，避免同页多图共用同名渐变导致填充色错乱）
     var defs = el('defs', {});
-    var grad = el('linearGradient', { id: 'areaGrad', x1: '0', y1: '0', x2: '0', y2: '1' });
+    areaGradSeq++;
+    var gradId = 'areaGrad' + areaGradSeq;
+    var grad = el('linearGradient', { id: gradId, x1: '0', y1: '0', x2: '0', y2: '1' });
     grad.appendChild(el('stop', { offset: '0%', 'stop-color': opts.color || '#2563eb', 'stop-opacity': '0.28' }));
     grad.appendChild(el('stop', { offset: '100%', 'stop-color': opts.color || '#2563eb', 'stop-opacity': '0.02' }));
     defs.appendChild(grad);
@@ -64,7 +67,7 @@
       var area = 'M' + x(0) + ' ' + y(values[0]);
       for (var i = 1; i < values.length; i++) area += ' L' + x(i) + ' ' + y(values[i]);
       area += ' L' + x(values.length - 1) + ' ' + (padT + plotH) + ' L' + x(0) + ' ' + (padT + plotH) + ' Z';
-      svg.appendChild(el('path', { d: area, fill: 'url(#areaGrad)', stroke: 'none' }));
+      svg.appendChild(el('path', { d: area, fill: 'url(#' + gradId + ')', stroke: 'none' }));
     }
     // 折线
     var line = 'M' + x(0) + ' ' + y(values[0]);

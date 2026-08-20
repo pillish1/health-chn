@@ -24,6 +24,7 @@
       '<div class="yk-card" style="padding:10px;display:flex;align-items:center;gap:6px">'+
         '<button class="yk-btn yk-btn-ghost yk-btn-sm" id="dPrev">‹</button>'+
         '<div id="dLabel" style="flex:1;text-align:center;font-weight:800;font-size:.9rem;cursor:pointer"><span id="dText">今天</span><br><span id="dFull" class="yk-text-xs yk-text-muted"></span></div>'+
+      '<input type="date" id="dInput" style="position:absolute;opacity:0;width:1px;height:1px;pointer-events:none" tabindex="-1" aria-hidden="true">'+
         '<button class="yk-btn yk-btn-ghost yk-btn-sm" id="dNext">›</button>'+
         '<button class="yk-btn yk-btn-outline yk-btn-sm" id="dToday">今天</button>'+
       '</div>'+
@@ -52,6 +53,8 @@
     if(b=document.getElementById('dPrev')) b.onclick=function(){set(Y.addDays(cur,-1));};
     if(b=document.getElementById('dNext')) b.onclick=function(){var d=Y.addDays(cur,1); if(d<=Y.today()) set(d);};
     if(b=document.getElementById('dToday')) b.onclick=function(){set(Y.today());};
+    if(b=document.getElementById('dLabel')) b.onclick=function(){var i=document.getElementById('dInput'); if(i){ if(i.showPicker){try{i.showPicker();}catch(e){}} i.click(); }};
+    if(b=document.getElementById('dInput')) b.onchange=function(){ if(b.value){ if(b.value<=Y.today()) set(b.value); else YK.toast('不能查看未来日期','err'); } };
     if(b=document.getElementById('bPick')) b.onclick=function(){preset=null;openPicker();};
     if(b=document.getElementById('bManual')) b.onclick=openManual;
     if(b=document.getElementById('bTpl')) b.onclick=saveTpl;
@@ -212,7 +215,7 @@
     var mask=document.querySelector('.yk-modal-mask.show'); if(!mask) return;
     var type=defType;
     var g=mask.querySelector('#gram'), gv=mask.querySelector('#gramVal'), calc=mask.querySelector('#calc');
-    function upd(){var val=Number(g.value);gv.textContent=val+'g';var r=val/100;calc.innerHTML='本次：<b style="color:var(--blue)">'+Math.round(f.kcal*r)+' kcal</b> · 蛋白 '+(f.p*r).toFixed(1)+'g';}
+    function upd(){var val=Number(g.value);gv.textContent=val+'g';var r=val/100;calc.innerHTML='本次：<b style="color:var(--blue)">'+Math.round(f.kcal*r)+' kcal</b> · 蛋白 '+(f.p*r).toFixed(1)+'g · 碳水 '+(f.c*r).toFixed(1)+'g · 脂肪 '+(f.f*r).toFixed(1)+'g';}
     g.addEventListener('input',upd);
     mask.querySelectorAll('#types .yk-type-btn').forEach(function(b){b.onclick=function(){type=b.dataset.t;mask.querySelectorAll('#types .yk-type-btn').forEach(function(x){x.classList.remove('active');});b.classList.add('active');};});
     mask.querySelector('#mMealNo').onclick=function(){YK.closeModal(mask);};

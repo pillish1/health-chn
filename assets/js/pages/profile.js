@@ -98,12 +98,11 @@
       }
       if (data.mealsAll) {
         Object.keys(data.mealsAll).forEach(function (d) {
-        if (data.weights) { try { localStorage.setItem('ydjk:weights', JSON.stringify(data.weights)); } catch (e) {} }
-        if (data.achievements) { try { localStorage.setItem('ydjk:achievements', JSON.stringify(data.achievements)); } catch (e) {} }
-
           try { localStorage.setItem('ydjk:meals:' + d, JSON.stringify(data.mealsAll[d] || [])); } catch (e) {}
         });
       }
+      if (data.weights) { try { localStorage.setItem('ydjk:weights', JSON.stringify(data.weights)); } catch (e) {} }
+      if (data.achievements) { try { localStorage.setItem('ydjk:achievements', JSON.stringify(data.achievements)); } catch (e) {} }
       if (data.favs) { try { localStorage.setItem('ydjk:favs', JSON.stringify(data.favs)); } catch (e) {} }
       if (data.mealTemplates && Y && Y.saveMealTemplate) {
         (data.mealTemplates || []).forEach(function (t) { Y.saveMealTemplate(t); });

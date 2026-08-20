@@ -117,7 +117,9 @@
     if(d.profile)Y.saveProfile(d.profile);
     if(d.workouts)Object.keys(d.workouts).forEach(function(x){try{localStorage.setItem('ydjk:workouts:'+x,JSON.stringify(d.workouts[x]||[]));}catch(e){}});
     if(d.mealsAll)Object.keys(d.mealsAll).forEach(function(x){try{localStorage.setItem('ydjk:meals:'+x,JSON.stringify(d.mealsAll[x]||[]));}catch(e){}});
+    if(d.checkins){try{localStorage.setItem('ydjk:checkins',JSON.stringify(d.checkins));}catch(e){}}
     if(d.weights){try{localStorage.setItem('ydjk:weights',JSON.stringify(d.weights));}catch(e){}}
+    if(d.achievements){try{localStorage.setItem('ydjk:achievements',JSON.stringify(d.achievements));}catch(e){}}
     if(d.favs){try{localStorage.setItem('ydjk:favs',JSON.stringify(d.favs));}catch(e){}}
     if(d.mealTemplates&&Y.saveMealTemplate)(d.mealTemplates||[]).forEach(function(t){try{Y.saveMealTemplate(t);}catch(e){}});
     // 导入后刷新所有视图
