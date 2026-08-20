@@ -72,8 +72,9 @@
 5. **不主动抢活**：对方登记在案的任务，另一方不碰；有不同意见写进「当前状态」区留给用户决定。
 
 ### 当前状态
-- 当前操作者：**DeepSeek Harness（全权）**——v1.28 SPA 打包完成（profile3.js 修复 + build-apk.ps1 瘦身/BOM），待手机验证
+- 当前操作者：**DeepSeek Harness（全权）**——v1.29 修复白屏（SPA 移除 app.js），待手机验证
 - 最近操作记录：
+  - Harness 修复 SPA 白屏（v1.29，本提交）：根因=app3.html 加载了多页面版 app.js，其 initOnboarding 在无档案数据时跳转 welcome.html，而 SPA 版 APK 已瘦身掉该文件→404→白屏。修复=从 app3.html 移除 app.js（SPA 的 UI 由 app-shell3.js 提供，views3 全用 YK.*，零依赖 app.js；app-shell3 自身定义 YDJK_UI 会覆盖 app.js 的）。jsdom 验证：导航尝试 0 次、5 Tab 全渲染、无 JS 报错。app-shell3 版本 v120→v121
   - Harness 完成 v1.28 SPA 打包（本提交）：①views3/profile3.js 字符串拼接断行语法错误（「我的」页会崩）已修复 ②build-apk.ps1 丢 BOM 导致 PowerShell 解析中文崩溃，重存 UTF-8 BOM ③build-apk.ps1 瘦身：排除旧多页面+app/app2 开发迭代+fix_plans.py，且先清空 mobile/www 再同步（robocopy /MIR+/XF 不会删目标残留的排除文件）；APK 从 60+ 冗余文件瘦到 22 个 SPA 必需文件（3.72MB）④jsdom 冒烟 app3 SPA：6 视图注册+5 Tab 全渲染✓（唯一报错为 jsdom 不支持 IndexedDB，真机无碍）⑤.gitignore 隔离 app/app2/views/views2 等开发迭代 ⑥APK 清理：删 v1.25/26/27 过渡版，v1.23 归档
   - Harness 完成记录体验打磨第二轮（commit a22cd2b）：①运动收藏的跨部位动作保存时 muscle 误用当前部位 tab（wkCurrentMuscle），改回动作本身的 a.muscle（收藏了「慢跑」在胸 tab 里点选，之前会存成胸部）②记一餐「补记」取消后 presetMealType 残留，导致下次主「记一餐」误预设成别的餐次，主按钮点击时清空 ③深色模式 --primary-dark(#1d4ed8) 作文字色偏暗，food-card kcal/克数/选中 radio 低对比，暗色下改 #60a5fa。jsdom test-muscle/test-preset 通过，style.css?v=91
   - Harness 完成记录体验打磨（commit d97b679）：①记一餐排序失效——v1.23 换胶囊菜单后 renderFoods 仍读已删除的 sortSel，升/降序点了不生效，改为模块级 currentSort ②排序按钮点击后图标丢失——动态 innerHTML 的 <i data-icon> 未被 icons.js 注入，改用 YDJK_ICON('sort') ③运动建议「训练次数」原来按动作数累加、同一天多动作会误判为多次，改为按天计数。jsdom test-sort/test-suggest 通过，缓存版本 v77→v78
@@ -84,7 +85,7 @@
   - 小怀川搜索升级：拼音首字母查表 py-map.js（568 字，pinyin 库离线生成）+ 别名 + 匹配度评分排序 + 防抖 + 家常菜 tab
   - 小怀川修复：建档完成跳转首页、welcome 文案、弹窗横向滑动、顶部精简（去 m-header/breadcrumb）
   - Harness 复核 v1.18 通过；建档表单 v2（commit 3104735）；智能建议（f0459cb/c13a7c9 + 小怀川 9498c24）
-- 进行中任务：v1.28 SPA 已打包，待用户手机安装验证（5 Tab/建档/记录/统计/数据保护）
+- 进行中任务：v1.29 白屏修复版已打包，待用户手机安装验证（5 Tab/建档/记录/统计/数据保护）
     - Harness 全面整改 v1.25（未打包）：①新增 stats.html 统计分析页（周/月/全部范围切换、体重趋势、摄入趋势、训练消耗、蛋白质趋势、成就徽章、训练部位分布）②storage.js 新增体重记录/成就系统/训练计划模板/自动备份提醒 ③plans.js 新增距离/配速字段、记住上次部位（localStorage）、训练计划一键套用 ④foods.js 新增"存为套餐"支持多食物组合 ⑤profile.js 新增备份提醒 ⑥app.js 新增成就自动解锁 ⑦sw.js v78→v92 ⑧style.css 深色模式对比度优化 + 新组件样式
 
     - Harness v1.25+ App 化改造：新增 app.html（SPA 入口）+ app.css（App 专属样式）+ app-shell.js（路由系统）+ 6 个视图文件（home/foods/plans/stats/profile/about）。从多页面 MPA 升级为单页面 App，页面切换无刷新带过渡动画，全局固定 m-header + 底部 Tab，加载动画优化。
