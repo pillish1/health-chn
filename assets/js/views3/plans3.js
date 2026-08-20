@@ -83,7 +83,11 @@
     if (prefill && prefill.actions) {
       prefill.actions.forEach(function (a) {
         var f = DATA.ACTIONS.filter(function (x) { return x.name === a.action; })[0];
-        if (f) { sel[f.id] = { sets: a.sets || 3, reps: a.reps || 10 }; if (curM === 'chest') curM = f.muscle; }
+        if (f) {
+          if (isCardioAction(f)) { sel[f.id] = { sets: 1, reps: 1, minutes: a.reps || a.sets || 30 }; } // 有氧：plan 的 reps 视为分钟
+          else { sel[f.id] = { sets: a.sets || 3, reps: a.reps || 10 }; }
+          if (curM === 'chest') curM = f.muscle;
+        }
       });
     }
     var title = prefill ? ('🏋️ ' + prefill.name) : '🏋️ 添加训练';
@@ -116,7 +120,8 @@
       detail.querySelectorAll('.js-minutes').forEach(function (inp) { inp.onchange = function () { var i = inp.dataset.i; sel[i] = sel[i] || {}; sel[i].minutes = Number(inp.value) || 30; }; });
     }
     drawM(); drawA(); drawSel();
-    ms.querySelectorAll('.js-m').forEach(function (b) { b.onclick = function () { curM = b.dataset.i; drawM(); drawA(); }; });
+    // 部位按钮用事件委托：drawM() 会重渲染按钮组，逐按钮绑定会在重渲染后丢失事件（点了切不走）
+    ms.addEventListener('click', function (e) { var b = e.target.closest('.js-m'); if (!b) return; curM = b.dataset.i; drawM(); drawA(); });
     acs.addEventListener('click', function (e) { var b = e.target.closest('.js-a'); if (!b) return; var id = b.dataset.i; if (sel[id]) delete sel[id]; else sel[id] = { sets: 3, reps: 10 }; drawA(); drawSel(); });
     mask.querySelector('#aNo').onclick = function () { YK.closeModal(mask); };
     mask.querySelector('#aYes').onclick = function () {
