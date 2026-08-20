@@ -37,6 +37,7 @@
         '<button class="yk-btn yk-btn-ghost yk-btn-sm" id="bManual">✏️ 手动</button>'+
         '<button class="yk-btn yk-btn-ghost yk-btn-sm" id="bTpl">💾 套餐</button>'+
       '</div>'+
+      '<div class="yk-flex" style="gap:6px;margin-bottom:10px"><button class="yk-btn yk-btn-outline yk-btn-sm" id="bCopy" style="flex:1">📋 复制昨天的饮食</button></div>'+
       '<div id="tplBox"></div>'+
       '<div id="recentBox"></div>'+
       '<div class="yk-card"><div class="yk-card-title">今日饮食</div><div id="mealList"></div></div>';
@@ -58,9 +59,20 @@
     if(b=document.getElementById('bPick')) b.onclick=function(){preset=null;openPicker();};
     if(b=document.getElementById('bManual')) b.onclick=openManual;
     if(b=document.getElementById('bTpl')) b.onclick=saveTpl;
+    if(b=document.getElementById('bCopy')) b.onclick=copyYesterday;
   }
 
   function set(d){cur=d;render();}
+
+  // 复制前一天的饮食到当前查看日期
+  function copyYesterday(){
+    var y=Y.addDays(cur,-1);
+    var meals=Y.getMeals(y);
+    if(!meals.length){YK.toast('昨天没有饮食记录','err');return;}
+    meals.forEach(function(m){Y.addMeal(cur,{type:m.type,name:m.name,kcal:m.kcal,protein:m.protein,carbs:m.carbs,fat:m.fat});});
+    YK.toast('✅ 已复制昨天 '+meals.length+' 条');
+    render();
+  }
 
   function render(){
     if(!Y || !cur) return;
