@@ -49,36 +49,6 @@
     });
   }
 
-  /* ---------- 通用读 ---------- */
-  function idbGet(key) {
-    return openDB().then(function (d) {
-      return new Promise(function (resolve) {
-        var tx = d.transaction(STORE_MAIN, 'readonly');
-        var req = tx.objectStore(STORE_MAIN).get(key);
-        req.onsuccess = function () { resolve(req.result ? req.result.value : null); };
-        req.onerror = function () { resolve(null); };
-      });
-    });
-  }
-
-  /* ---------- 获取所有主数据 ---------- */
-  function idbGetAll() {
-    return openDB().then(function (d) {
-      return new Promise(function (resolve) {
-        var tx = d.transaction(STORE_MAIN, 'readonly');
-        var req = tx.objectStore(STORE_MAIN).getAll();
-        req.onsuccess = function () {
-          var map = {};
-          (req.result || []).forEach(function (item) {
-            map[item.key] = item.value;
-          });
-          resolve(map);
-        };
-        req.onerror = function () { resolve({}); };
-      });
-    });
-  }
-
   /* ---------- 保存快照 ---------- */
   function saveSnapshot() {
     var all = collectAllFromLS();

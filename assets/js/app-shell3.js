@@ -7,7 +7,7 @@
   var ROUTES = ['home','foods','plans','stats','profile','about'];
   var currentRoute = null;
 
-  window.YK_APP_VERSION = 'v1.34';
+  window.YK_APP_VERSION = 'v1.35';
 
   function getHashRoute() {
     var h = location.hash.replace(/^#\//,'').split('?')[0];
@@ -233,20 +233,6 @@
         window.YK3_VIEWS.home.refresh();
       }
     };
-  }
-
-  /*
-
-  // 注意：下面的 } 是多余的闭合，但作为代码符不至于影响
-
-  */
-  /* 继续注释 */
-  /* 这里开始注释覆盖多余的 } */
-
-  if (false) {
-
-
-
   }
 
   /* 全局 API */

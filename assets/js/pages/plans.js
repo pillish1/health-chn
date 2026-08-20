@@ -304,51 +304,6 @@
     wrap.innerHTML = html + '<div class="wk-sel-total">共 ' + ids.length + ' 项 · 约 <b>' + estMin + ' 分钟</b> · 预计消耗 <b>约 ' + total + ' kcal</b></div>';
   }
   function saveWorkout() {
-    var date = document.getElementById('wkDate').value || currentDate;
-    var ids = Object.keys(selectedActions);
-    if (!ids.length) { window.YDJK_UI.toast('请至少点选一个动作', 'err'); return; }
-      // 有氧详情
-      var distInput = document.getElementById('wkDistance');
-      var paceInput = document.getElementById('wkPace');
-      var distVal = distInput && distInput.value ? Number(distInput.value) : null;
-      var paceVal = paceInput && paceInput.value ? Number(paceInput.value) : null;
-
-    ids.forEach(function (id) {
-      var a = DATA.ACTIONS.find(function (x) { return x.id === id; });
-      var s = selectedActions[id];
-      YDJK.addWorkout(date, {
-        muscle: a ? a.muscle : wkCurrentMuscle,
-        action: a ? a.name : '训练',
-        sets: s.sets || 3,
-        reps: s.reps || 10,
-        weight: s.weight ? Number(s.weight) : null,
-        minutes: null, /* 时长由组数自动推导（每组约3分钟） */
-        met: a ? metFor({ muscle: a.muscle, action: a.name }) : null
-          , /* 以下为误插入行，注释掉 */
-
-          distance: distVal, pace: paceVal,
-        // 删除此行（错误插入）
-
-
-      });
-      /* 修复：注释掉错误插入的代码段 */
-      /*
-
-          distance: distVal, pace: paceVal,
-      */
-
-
-    });
-    window.YDJK_UI.closeModal('addWorkoutModal');
-    window.YDJK_UI.toast('✅ 已记录 ' + ids.length + ' 个动作');
-    selectedActions = {};
-    currentDate = date;
-    renderWorkoutList();
-    renderSuggest();
-    renderCalendar();
-  }
-    /* 修复版 saveWorkout（覆盖上面被破坏的版本） */
-    function saveWorkout() {
       var date = document.getElementById('wkDate').value || currentDate;
       var ids = Object.keys(selectedActions);
       if (!ids.length) { window.YDJK_UI.toast('请至少点选一个动作', 'err'); return; }

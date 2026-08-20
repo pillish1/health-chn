@@ -58,7 +58,7 @@
     if(b=document.getElementById('dInput')) b.onchange=function(){ if(b.value){ if(b.value<=Y.today()) set(b.value); else YK.toast('不能查看未来日期','err'); } };
     if(b=document.getElementById('bPick')) b.onclick=function(){preset=null;openPicker();};
     if(b=document.getElementById('bManual')) b.onclick=openManual;
-    if(b=document.getElementById('bTpl')) b.onclick=saveTpl;
+    if(b=document.getElementById('bTpl')) b.onclick=openTplManager;
     if(b=document.getElementById('bCopy')) b.onclick=copyYesterday;
   }
 
@@ -140,9 +140,7 @@
       b.onclick=function(){
         var tpl=Y.getMealTemplates().filter(function(t){return t.id===b.dataset.id;})[0];
         if(!tpl) return;
-        var type=preset||getDefaultMealType();
-        tpl.items.forEach(function(it){Y.addMeal(cur,{type:type,name:it.name,kcal:it.kcal,protein:it.protein,carbs:it.carbs,fat:it.fat});});
-        YK.toast('✅ 已套用：'+tpl.name);preset=null;render();
+        applyTpl(tpl);
       };
     });
   }
@@ -163,10 +161,56 @@
     });
   }
 
-  function saveTpl(){
+  /* 套餐管理器：列表 + 套用/编辑/删除 + 从今天新建 */
+  function openTplManager(){
+    var tpls=Y.getMealTemplates();
+    var mealsToday=Y.getMeals(cur);
+    var listHtml=tpls.length ? tpls.map(function(t,i){
+      var kcal=t.items.reduce(function(s,it){return s+it.kcal;},0);
+      return '<div style="padding:10px 12px;background:var(--bg-soft);border-radius:12px;margin-bottom:8px">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:.85rem">'+esc(t.name)+'</b><span class="yk-text-xs yk-text-muted">'+t.items.length+'项 · '+kcal+'kcal</span></div>'+
+        '<div class="yk-text-xs yk-text-2" style="margin:4px 0 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t.items.map(function(it){return esc(it.name);}).join('、')+'</div>'+
+        '<div style="display:flex;gap:6px"><button class="yk-btn yk-btn-primary yk-btn-sm js-tpl-apply" data-i="'+i+'" style="flex:1">套用</button>'+
+        '<button class="yk-btn yk-btn-outline yk-btn-sm js-tpl-edit" data-i="'+i+'" style="flex:1">编辑</button>'+
+        '<button class="yk-btn yk-btn-ghost yk-btn-sm js-tpl-del" data-i="'+i+'" style="flex:1">删除</button></div></div>';
+    }).join('') : '<div class="yk-text-center yk-text-muted" style="padding:16px">还没有套餐，点下方「从今天创建」</div>';
+    var mask=YK.openModal('<div class="yk-modal-title">💾 我的套餐</div>'+
+      '<div style="max-height:46vh;overflow-y:auto;margin-bottom:6px">'+listHtml+'</div>'+
+      '<div class="yk-modal-actions">'+
+        '<button class="yk-btn yk-btn-ghost" id="tplMNo">关闭</button>'+
+        (mealsToday.length?'<button class="yk-btn yk-btn-primary" id="tplMNew">＋ 从今天创建</button>':'')+
+      '</div>');
+    if(!mask) return;
+    mask.querySelector('#tplMNo').onclick=function(){YK.closeModal(mask);};
+    mask.querySelectorAll('.js-tpl-apply').forEach(function(b){b.onclick=function(){
+      var tpl=tpls[+b.dataset.i]; if(!tpl) return;
+      applyTpl(tpl); YK.closeModal(mask);
+    };});
+    mask.querySelectorAll('.js-tpl-edit').forEach(function(b){b.onclick=function(){
+      var tpl=tpls[+b.dataset.i]; if(!tpl) return;
+      openTplEditor(tpl); YK.closeModal(mask);
+    };});
+    mask.querySelectorAll('.js-tpl-del').forEach(function(b){b.onclick=function(){
+      var tpl=tpls[+b.dataset.i]; if(!tpl) return;
+      Y.removeMealTemplate(tpl.id); YK.toast('已删除套餐'); render(); YK.closeModal(mask); openTplManager();
+    };});
+    var nb=mask.querySelector('#tplMNew');
+    if(nb) nb.onclick=function(){ YK.closeModal(mask); createTplFromToday(); };
+  }
+
+  /* 套用套餐到当前日期 */
+  function applyTpl(tpl){
+    if(!tpl||!tpl.items||!tpl.items.length){YK.toast('套餐为空','err');return;}
+    var type=preset||getDefaultMealType();
+    tpl.items.forEach(function(it){Y.addMeal(cur,{type:type,name:it.name,kcal:it.kcal,protein:it.protein,carbs:it.carbs,fat:it.fat});});
+    YK.toast('✅ 已套用：'+tpl.name);preset=null;render();
+  }
+
+  /* 从今天的饮食创建新套餐 */
+  function createTplFromToday(){
     var meals=Y.getMeals(cur);
     if(!meals.length){YK.toast('今天还没有记录','err');return;}
-    var mask=YK.openModal('<div class="yk-modal-title">💾 存为套餐</div><div class="yk-modal-subtitle">将今天 '+meals.length+' 条保存为套餐</div><div class="yk-field"><input class="yk-input" id="tplName" placeholder="套餐名"></div><div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="tplNo">取消</button><button class="yk-btn yk-btn-primary" id="tplYes">保存</button></div>');
+    var mask=YK.openModal('<div class="yk-modal-title">💾 从今天创建套餐</div><div class="yk-modal-subtitle">将今天 '+meals.length+' 条保存为套餐</div><div class="yk-field"><input class="yk-input" id="tplName" placeholder="套餐名"></div><div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="tplNo">取消</button><button class="yk-btn yk-btn-primary" id="tplYes">保存</button></div>');
     if(!mask) return;
     var inp=mask.querySelector('#tplName'); setTimeout(function(){inp.focus();},100);
     mask.querySelector('#tplNo').onclick=function(){YK.closeModal(mask);};
@@ -175,6 +219,37 @@
       Y.saveMealTemplate({id:'tpl-'+Date.now(),name:name,items:meals.map(function(m){return{name:m.name,kcal:m.kcal,protein:m.protein,carbs:m.carbs,fat:m.fat};})});
       YK.closeModal(mask);YK.toast('✅ 已保存');render();
     };
+  }
+
+  /* 套餐编辑器：改名 + 增删食物 */
+  function openTplEditor(tpl){
+    var items=(tpl&&tpl.items)?tpl.items.map(function(x){return{name:x.name,kcal:x.kcal,protein:x.protein||0,carbs:x.carbs||0,fat:x.fat||0};}):[];
+    var mask=YK.openModal('<div class="yk-modal-title">✏️ 编辑套餐</div>'+
+      '<div class="yk-field"><input class="yk-input" id="tplEName" value="'+(tpl?esc(tpl.name):'')+'" placeholder="套餐名"></div>'+
+      '<div id="tplEItems" style="max-height:32vh;overflow-y:auto;margin-bottom:8px"></div>'+
+      '<button class="yk-btn yk-btn-outline yk-btn-sm" id="tplEAdd" style="width:100%;margin-bottom:4px">＋ 添加食物</button>'+
+      '<div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="tplENo">取消</button><button class="yk-btn yk-btn-primary" id="tplEYes">保存套餐</button></div>');
+    if(!mask) return;
+    var nameInp=mask.querySelector('#tplEName'), listEl=mask.querySelector('#tplEItems');
+    function drawItems(){
+      if(!items.length){listEl.innerHTML='<div class="yk-text-center yk-text-muted" style="padding:10px">暂无食物，点「添加食物」</div>';return;}
+      listEl.innerHTML=items.map(function(it,i){
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--bg-soft);border-radius:10px;margin-bottom:6px">'+
+          '<div><b style="font-size:.82rem">'+esc(it.name)+'</b><span class="yk-text-xs yk-text-muted" style="margin-left:6px">'+it.kcal+'kcal</span></div>'+
+          '<button class="js-tpl-item-del" data-i="'+i+'" style="border:none;background:none;color:var(--text-3);cursor:pointer;padding:4px">✕</button></div>';
+      }).join('');
+      listEl.querySelectorAll('.js-tpl-item-del').forEach(function(b){b.onclick=function(){items.splice(+b.dataset.i,1);drawItems();};});
+    }
+    mask.querySelector('#tplEAdd').onclick=function(){ openPicker(function(f){ items.push({name:f.name,kcal:f.kcal,protein:f.p,carbs:f.c,fat:f.f}); drawItems(); }); };
+    mask.querySelector('#tplENo').onclick=function(){YK.closeModal(mask);};
+    mask.querySelector('#tplEYes').onclick=function(){
+      var name=nameInp.value.trim();
+      if(!name){YK.toast('请输入套餐名','err');return;}
+      if(!items.length){YK.toast('套餐至少要有一个食物','err');return;}
+      Y.saveMealTemplate({id:(tpl&&tpl.id)||('tpl-'+Date.now()),name:name,items:items});
+      YK.closeModal(mask);YK.toast('✅ 套餐已保存');render();
+    };
+    drawItems();
   }
 
   function openManual(){
@@ -198,7 +273,7 @@
     };
   }
 
-  function openPicker(){
+  function openPicker(onPick){
     if(!DATA||!DATA.FOODS){YK.toast('食物库错误','err');return;}
     var mask=YK.openModal('<div class="yk-modal-title">🍽️ 记一餐</div><div class="yk-field" style="margin-bottom:8px"><input class="yk-input" id="search" placeholder="搜索食物…"></div><div id="cats" class="yk-flex" style="flex-wrap:wrap;gap:6px;margin-bottom:8px"></div><div id="foods" style="max-height:50vh;overflow-y:auto"></div><div class="yk-modal-actions"><button class="yk-btn yk-btn-ghost" id="closeF">取消</button></div>');
     if(!mask) return;
@@ -211,7 +286,7 @@
       var items=all.slice(0,showCount);
       fw.innerHTML=items.map(function(f){return '<div class="yk-food" data-d="'+esc(f.name)+'|'+f.kcal+'|'+f.protein+'|'+f.carbs+'|'+f.fat+'"><div><b style="font-size:.85rem">'+esc(f.name)+'</b><div class="yk-text-xs yk-text-muted">P'+f.protein+' · C'+f.carbs+' · F'+f.fat+'g</div></div><span style="font-weight:800;color:var(--blue);font-size:.78rem">'+f.kcal+'</span></div>';}).join('')||'<div class="yk-text-center yk-text-muted" style="padding:20px">未找到</div>';
       if(all.length>showCount){fw.innerHTML+='<button class="yk-cat-btn" id="more" style="display:block;margin:10px auto">显示更多 ('+(all.length-showCount)+')</button>';var more=fw.querySelector('#more');if(more)more.onclick=function(){showCount+=50;draw();};}
-      fw.querySelectorAll('.yk-food').forEach(function(c){c.onclick=function(){var d=c.dataset.d.split('|');openMeal({name:d[0],kcal:+d[1],p:+d[2],c:+d[3],f:+d[4]});YK.closeModal(mask);};});
+      fw.querySelectorAll('.yk-food').forEach(function(c){c.onclick=function(){var d=c.dataset.d.split('|');var f={name:d[0],kcal:+d[1],p:+d[2],c:+d[3],f:+d[4]};YK.closeModal(mask);if(onPick){onPick(f);}else{openMeal(f);}};});
     }
     cw.innerHTML=cats.map(function(c){return '<button class="yk-cat-btn'+(c===cc?' active':'')+'" data-c="'+c+'">'+c+'</button>';}).join('');
     cw.querySelectorAll('.yk-cat-btn').forEach(function(b){b.onclick=function(){cc=b.dataset.c;showCount=50;cw.querySelectorAll('.yk-cat-btn').forEach(function(x){x.classList.remove('active');});b.classList.add('active');draw();};});

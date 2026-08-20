@@ -248,13 +248,13 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .tag.orange { background: var(--accent-soft); color: #b45309; }
 .tag.blue { background: var(--info-soft); color: #1d4ed8; }
 .tag.red { background: var(--danger-soft); color: #b91c1c; }
-.tag.purple { background: var(--purple-soft); color: #0369a1; }
+
 .tag.gray { background: var(--surface-2); color: var(--text-2); }
 html[data-theme="dark"] .tag.green { color: #34d399; }
 html[data-theme="dark"] .tag.orange { color: #fbbf24; }
 html[data-theme="dark"] .tag.blue { color: #60a5fa; }
 html[data-theme="dark"] .tag.red { color: #f87171; }
-html[data-theme="dark"] .tag.purple { color: #7dd3fc; }
+
 
 /* ============ 表单 ============ */
 .field { margin-bottom: 18px; }
@@ -301,32 +301,6 @@ input[type="range"] { flex: 1; accent-color: var(--primary); height: 6px; }
 }
 .switch input:checked + .slider { background: var(--primary); }
 .switch input:checked + .slider::before { transform: translateX(21px); }
-
-/* ============ 结果面板 ============ */
-.result-panel {
-  background: linear-gradient(150deg, var(--primary-soft), var(--surface));
-  border: 2px solid var(--primary-light);
-  border-radius: var(--radius); padding: 30px; text-align: center;
-}
-.result-panel .big { font-size: 2.6rem; font-weight: 900; color: var(--primary-dark); letter-spacing: -.02em; }
-.result-panel .big small { font-size: 1rem; color: var(--text-2); font-weight: 600; }
-.result-panel .desc { margin-top: 10px; color: var(--text-2); }
-.result-panel .level-chip { display: inline-block; margin-top: 12px; }
-
-/* ============ 数据统计 ============ */
-.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
-.stat-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 20px; text-align: center; box-shadow: var(--shadow-sm);
-}
-.stat-card .s-icon { font-size: 1.5rem; }
-.stat-card .s-value { font-size: 1.6rem; font-weight: 900; color: var(--text); margin-top: 6px; }
-.stat-card .s-value small { font-size: .9rem; color: var(--muted); font-weight: 600; }
-.stat-card .s-label { font-size: .82rem; color: var(--muted); margin-top: 2px; }
-.stat-card.green { border-top: 4px solid var(--primary); }
-.stat-card.orange { border-top: 4px solid var(--accent); }
-.stat-card.blue { border-top: 4px solid var(--info); }
-.stat-card.purple { border-top: 4px solid var(--purple); }
 
 /* ============ 进度条 ============ */
 .progress { height: 10px; background: var(--surface-2); border-radius: var(--radius-full); overflow: hidden; }
@@ -459,20 +433,6 @@ html[data-theme="dark"] .alert.danger { color: #fca5a5; }
 .empty .e-title { font-weight: 700; color: var(--text-2); }
 .empty .e-desc { font-size: .88rem; margin-top: 4px; }
 
-/* ============ 计划卡片 ============ */
-.plan-day {
-  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
-  padding: 16px; margin-bottom: 10px;
-}
-.plan-day .pd-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.plan-day .pd-day { font-weight: 800; font-size: .95rem; }
-.plan-day .pd-meta { font-size: .8rem; color: var(--muted); }
-.plan-day .pd-list { display: grid; gap: 6px; }
-.plan-day .pd-item { display: flex; justify-content: space-between; gap: 10px; font-size: .9rem; color: var(--text-2); padding: 5px 8px; border-radius: 8px; background: var(--surface-2); }
-.plan-day .pd-item b { color: var(--text); }
-.plan-day.done { border-color: var(--primary-light); background: var(--primary-soft); }
-.plan-day.done .pd-head .pd-day { color: var(--primary-dark); }
-
 /* ============ 食物卡片 ============ */
 .food-card { display: flex; flex-direction: column; gap: 10px; }
 .food-card .f-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
@@ -542,22 +502,6 @@ body { font-variant-numeric: tabular-nums; }
 .card-hover { transition: transform .22s var(--ease), box-shadow .22s var(--ease), border-color .22s; }
 .card-hover:hover { border-color: color-mix(in srgb, var(--primary) 35%, var(--border)); }
 
-/* 今日行动项 */
-.action-list { text-align: left; }
-.action-item {
-  display: flex; align-items: center; gap: 12px; padding: 10px 14px;
-  border-radius: 14px; background: var(--surface-2); margin-bottom: 8px;
-  border: 1px solid transparent; transition: all .2s;
-}
-.action-item:last-child { margin-bottom: 0; }
-.action-item .a-ico { font-size: 1.25rem; flex: none; }
-.action-item .a-main { flex: 1; min-width: 0; }
-.action-item .a-label { font-weight: 700; font-size: .88rem; display: flex; justify-content: space-between; }
-.action-item .a-sub { font-size: .74rem; color: var(--muted); margin-top: 2px; }
-.action-item .progress { height: 6px; margin-top: 7px; }
-.action-item.done { background: var(--primary-soft); border-color: color-mix(in srgb, var(--primary) 30%, transparent); }
-.action-item.done .a-label { color: var(--primary-dark); }
-
 /* 三步引导 */
 .step-guide { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 46px; }
 .step-item {
@@ -618,11 +562,11 @@ body { font-variant-numeric: tabular-nums; }
 
 /* ============ 打印样式 ============ */
 @media print {
-  .navbar, .footer, .btn, .icon-btn, .tabs, .myplan-banner, .toast-wrap, .modal-overlay,
+  .navbar, .footer, .btn, .icon-btn, .tabs, .toast-wrap, .modal-overlay,
   .search-box, .cal-nav, .day-check, .js-fav, .water-add, .f-action, #manageArticlesBtn,
-  .step-guide, .hero-cta, .stat-card .s-icon, .hot-scroll, .trust-bar, .nav-actions { display: none !important; }
+  .step-guide, .hero-cta, .hot-scroll, .trust-bar, .nav-actions { display: none !important; }
   body { background: #fff !important; color: #000 !important; }
-  .card, .plan-day { box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid; }
+  .card { box-shadow: none !important; border: 1px solid #ddd !important; break-inside: avoid; }
   .hero, .section, .page-hero { padding: 16px 0 !important; background: none !important; }
   .article-body { max-width: 100% !important; }
 }
@@ -815,7 +759,7 @@ html[data-theme="dark"] {
 .tag.green { background: linear-gradient(120deg, #d1fae5, #a7f3d0); color: #065f46; }
 .tag.blue { background: linear-gradient(120deg, #dbeafe, #bfdbfe); color: #1d4ed8; }
 .tag.orange { background: linear-gradient(120deg, #fef3c7, #fde68a); color: #b45309; }
-.tag.purple { background: linear-gradient(120deg, #e0f2fe, #bae6fd); color: #0369a1; }
+
 .tag.red { background: linear-gradient(120deg, #fee2e2, #fecaca); color: #b91c1c; }
 
 /* ---- Toast：彩色渐变 ---- */
@@ -835,10 +779,6 @@ html[data-theme="dark"] {
 /* ---- 导航激活：渐变 pill ---- */
 .nav-links a.active { background: linear-gradient(120deg, rgba(59, 130, 246, .14), rgba(14, 165, 233, .12)); color: var(--primary-dark); }
 html[data-theme="dark"] .nav-links a.active { color: #93c5fd; }
-
-/* ---- 统计数字：更大更醒目 ---- */
-.stat-card .s-value { font-size: 1.75rem; background: linear-gradient(120deg, var(--primary), var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-html[data-theme="dark"] .stat-card .s-value { background: linear-gradient(120deg, #93c5fd, #c4b5fd); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* ---- 记分卡大数字（hero 环） ---- */
 .hero-stat .num { background: var(--brand-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -1082,8 +1022,6 @@ body{animation:pageIn .3s var(--ease) .18s both}
 .meal-group-head { padding-bottom: 8px; border-bottom: 1px dashed var(--border); margin-bottom: 4px; }
 .meal-group { margin-bottom: 18px; }
 
-/* 统计卡顶部色条更柔和 */
-.stat-card { border-top-width: 3px; border-top-style: solid; }
 
 /* 周圆点阴影 */
 .wd-dot { box-shadow: 0 2px 6px rgba(15, 23, 42, .08); }
