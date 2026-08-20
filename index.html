@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>悦动健康 · 你的私人健康管理平台</title>
+<meta name="description" content="悦动健康：科学运动记录、食物热量查询、饮食打卡，一站式健康生活管理。">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="悦动健康">
+<link rel="stylesheet" href="assets/css/style.css?v=91">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="悦动健康">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="悦动健康 · 你的私人健康管理平台">
+<meta property="og:description" content="悦动健康：科学运动记录、食物热量查询、饮食打卡，一站式健康生活管理。">
+<meta property="og:image" content="icons/icon-512.png">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "悦动健康",
+  "alternateName": "Yuedong Health",
+  "description": "科学运动记录、均衡饮食与数据追踪的一站式健康生活管理平台。",
+  "inLanguage": "zh-CN",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "foods.html?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+</head>
+<body>
+
+<!-- 移动端 App 头 -->
+<div class="m-header">
+  <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
+</div>
+    <div class="m-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+    </div>
+
+
+<div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="text-align:center">
+    <img src="icons/icon-192.png" alt="悦动健康" style="width:56px;height:56px;border-radius:16px;box-shadow:0 8px 24px rgba(139,92,246,.3);animation:pulse 1.2s ease-in-out infinite">
+    <div style="margin-top:12px;color:var(--muted);font-size:.85rem">加载中…</div>
+  </div>
+</div>
+<style>@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }</style>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="foods.html">饮食记录</a>
+        <a href="stats.html">统计</a>
+
+      <a href="plans.html">运动记录</a>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单"><i class="ic" data-icon="menu"></i></button>
+    </div>
+  </div>
+</nav>
+
+<header class="page-hero" style="padding-bottom:24px">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>今日状态</span></div>
+    <div class="flex-between flex-wrap" style="gap:10px">
+      <div>
+        <h1 style="margin:0"><i class="ic" data-icon="home"></i> 首页</h1>
+        <p style="margin-top:6px;margin-bottom:0">记录每一餐、每一次运动</p>
+      </div>
+      <div id="welcomeMini"></div>
+    </div>
+
+    <!-- 今日能量卡（主视觉） -->
+    <div class="energy-card" style="margin-top:18px">
+      <div class="energy-head">
+        <span class="muted small" id="dashDate"></span>
+        <span class="streak-chip" id="streakChip"><i class="ic" data-icon="flame"></i> <b id="statStreak">0</b> 天</span>
+      </div>
+      <div class="energy-body">
+        <div class="energy-ring"><div id="ringMeal"></div></div>
+        <div class="energy-info">
+          <div class="ei-row"><i class="ic ei-ico blue" data-icon="food"></i><span>已摄入</span><b id="eiIntake">0</b><span class="muted">/ 建议摄入 <b id="eiGoal">2000</b> kcal</span></div>
+          <div class="ei-row"><i class="ic ei-ico green" data-icon="flame"></i><span>今日消耗</span><b id="eiBurn">0</b><span class="muted">kcal</span></div>
+          <div class="ei-detail" id="eiDetail"></div>
+          <div class="ei-row"><i class="ic ei-ico purple" data-icon="target"></i><span>净摄入</span><b id="eiNet">0</b><span class="muted">kcal</span><span id="netTag" class="net-tag"></span></div>
+          <div class="ei-note"><i class="ic" data-icon="tip"></i> 建议摄入 = 达成目标的一日热量；今日消耗 = 基础代谢 + 日常活动 + 运动。消耗 &gt; 摄入即热量缺口（利于减脂）</div>
+        </div>
+      </div>
+      <div class="energy-macros" id="energyMacros"></div>
+      <div class="energy-actions">
+        <button class="btn btn-primary" style="flex:1" onclick="location.href='foods.html'"><i class="ic" data-icon="food"></i> 记一餐</button>
+        <button class="btn btn-outline" style="flex:1" onclick="location.href='plans.html'"><i class="ic" data-icon="run"></i> 记运动</button>
+      </div>
+    </div>
+
+    <!-- 今日待办（今天还差什么） -->
+    <div id="todayTasks" style="max-width:980px;margin:16px auto 0"></div>
+
+    <!-- 今日记录简览（有记录时显示） -->
+    <div id="todayBrief" style="max-width:980px;margin:16px auto 0"></div>
+
+    <!-- 一周一览 -->
+    <div id="weekCard" style="max-width:980px;margin:16px auto 0"></div>
+
+    <!-- 今日建议 -->
+    <div class="dash-tip" id="dashTip" style="max-width:980px;margin:16px auto 0">
+      <div class="dash-tip-title"><i class="ic" data-icon="tip"></i> 今日建议</div>
+      <div class="dash-tip-body" id="dashTipBody">记录数据后，这里会给你专属建议</div>
+    </div>
+  </div>
+</header>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:var(--text)"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+        <p class="f-desc">科学饮食 + 运动记录，所有数据仅保存在本机。</p>
+      </div>
+      <div>
+        <h4>核心功能</h4>
+        <a href="foods.html">饮食记录</a>
+        <a href="plans.html">运动记录</a>
+      </div>
+      <div>
+        <h4>关于</h4>
+        <a href="about.html">关于本站</a>
+        <a href="about.html#privacy">隐私说明</a>
+        <a href="about.html#disclaimer">免责声明</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© <span class="js-year">2026</span> 悦动健康 · 让运动成为习惯 | 本站内容仅供参考，不构成医疗建议</div>
+  </div>
+</footer>
+
+<!-- 档案引导弹窗 -->
+<div class="modal-overlay" id="onboardModal">
+  <div class="modal">
+    <div class="modal-title"><i class="ic" data-icon="wave"></i> 欢迎来到悦动健康</div>
+    <div class="modal-sub">先花 30 秒建立你的健康档案，之后所有计算与推荐将为你量身定制</div>
+    <form id="onboardForm"></form>
+    <div class="flex gap-sm mt-2">
+        <button type="button" class="btn btn-ghost" onclick="window.YDJK_UI.closeModal('onboardModal')" style="flex:1">取消</button>
+        <button type="button" class="btn btn-primary" onclick="window.YDJK_UI.submitProfileForm()" style="flex:1">保存档案，开始使用 →</button>
+      </div>
+  </div>
+</div>
+
+
+<script src="assets/js/storage.js?v=90"></script>
+<script src="assets/js/data.js?v=90"></script>
+<script src="assets/js/charts.js?v=90"></script>
+<script src="assets/js/app.js?v=90"></script>
+<script src="assets/js/pages/home.js?v=90"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+
+<!-- 底部 Tab 导航（移动端 App 式） -->
+<nav class="tab-bar">
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico"><i class="ic" data-icon="home"></i></span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico"><i class="ic" data-icon="food"></i></span><span class="tab-lbl">饮食</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico"><i class="ic" data-icon="workout"></i></span><span class="tab-lbl">运动</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico"><i class="ic" data-icon="user"></i></span><span class="tab-lbl">我的</span></a>
+    <a class="tab-item" data-tab="stats" href="stats.html"><span class="tab-ico"><i class="ic" data-icon="stats"></i></span><span class="tab-lbl">统计</span></a>
+
+</nav>
+
+
+<script src="assets/js/icons.js?v=90"></script>
+</body>
+</html>

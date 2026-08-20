@@ -1,0 +1,23 @@
+# Node
+node_modules/
+
+# Capacitor / Android 构建产物（由 npx cap add 生成）
+mobile/android/
+mobile/www/
+mobile/package-lock.json
+
+# 系统文件
+Thumbs.db
+.DS_Store
+
+# 本地备份
+*.zip
+
+# 构建日志与脚本（本地工具）
+mobile/*.log
+mobile/build-apk.bat
+push-retry.log
+
+# APK 安装包（保留在磁盘，不入库）
+*.apk
+

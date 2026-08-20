@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>运动记录 · 悦动健康</title>
+<meta name="description" content="自由记录你的每一次运动，获取个性化的运动建议。">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="悦动健康">
+<link rel="stylesheet" href="assets/css/style.css?v=91">
+<meta property="og:type" content="website">
+<meta property="og:title" content="运动记录 · 悦动健康">
+<meta property="og:image" content="icons/icon-512.png">
+<meta name="twitter:card" content="summary">
+</head>
+<body>
+
+<!-- 移动端 App 头 -->
+<div class="m-header">
+  <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
+    <div class="m-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+    </div>
+
+</div>
+
+<div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="text-align:center">
+    <img src="icons/icon-192.png" alt="悦动健康" style="width:56px;height:56px;border-radius:16px;box-shadow:0 8px 24px rgba(139,92,246,.3);animation:pulse 1.2s ease-in-out infinite">
+    <div style="margin-top:12px;color:var(--muted);font-size:.85rem">加载中…</div>
+  </div>
+</div>
+<style>@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }</style>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康 logo"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="foods.html">饮食记录</a>
+      <a href="plans.html">运动记录</a>
+        <a href="stats.html">统计</a>
+
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单"><i class="ic" data-icon="menu"></i></button>
+    </div>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">首页</a><span>›</span><span>运动记录</span></div>
+    <h1><i class="ic" data-icon="run"></i> 运动记录</h1>
+    <p>记录你今天的运动，这里会给你合适的建议</p>
+  </div>
+</header>
+
+<section class="section-sm">
+  <div class="container">
+    <!-- 运动日历（主入口：点日期查看/记录那天的训练） -->
+    <div class="card mb-3">
+      <div class="flex-between" style="margin-bottom:10px">
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 运动日历</div>
+        <div class="cal-nav">
+          <button id="calPrev" title="上个月" aria-label="上个月">‹</button>
+          <span class="small muted" id="monthLabel" style="min-width:90px;text-align:center"></span>
+          <button id="calNext" title="下个月" aria-label="下个月">›</button>
+        </div>
+      </div>
+      <p class="small muted" style="margin:0 0 10px">点选日期，查看并记录那一天的运动</p>
+      <div id="calHeatmap"></div>
+    </div>
+
+    <!-- 训练记录（选中日期） -->
+    <div class="card mb-3">
+      <div class="flex-between" style="margin-bottom:14px">
+        <div class="card-title" style="margin:0"><i class="ic" data-icon="workout"></i> <span id="wkDateLabel">今天的训练</span></div>
+        <div class="flex gap-sm" style="gap:8px">
+          <button class="btn btn-outline btn-xs" id="wkTodayBtn" type="button">今天</button>
+          <button class="btn btn-primary btn-sm" id="btnAddWorkout" type="button">＋ 添加训练</button>
+        </div>
+      </div>
+      <div id="workoutList"></div>
+      <div id="workoutEmpty" class="empty hidden"><div class="e-icon"><i class="ic" data-icon="dumbbell"></i></div><div class="e-title" id="wkEmptyTitle">还没有训练记录</div><div class="e-desc">点「添加训练」或在日历上选日期，记下当天的运动</div></div>
+      <div class="alert success mt-2" id="wkTotal" style="display:none"></div>
+
+      <!-- 训练计划模板 -->
+      <div class="card mb-3" id="planCard">
+        <div class="flex-between" style="margin-bottom:10px">
+          <div class="card-title" style="margin:0"><i class="ic" data-icon="calendar"></i> 训练计划</div>
+        </div>
+        <p class="small muted" style="margin:0 0 10px">选择一个计划，一键套用今日训练</p>
+        <div id="planList"></div>
+      </div>
+
+    </div>
+
+    <!-- 添加训练弹窗（点选动作模式） -->
+    <div class="modal-overlay" id="addWorkoutModal">
+      <div class="modal" style="max-width:520px">
+        <div class="modal-title"><i class="ic" data-icon="dumbbell"></i> 添加训练</div>
+        <div class="modal-sub">点选今天练了哪些动作</div>
+        <div class="field" id="wkFavField">
+          <label>⭐ 我的收藏 <span class="muted" style="font-weight:400;font-size:.72rem">点动作卡片上的 ☆ 收藏，会自动出现在这里</span></label>
+          <div class="wk-fav-list" id="wkFavList"></div>
+        </div>
+        <div class="field">
+          <label>训练日期</label>
+          <input class="input" type="date" id="wkDate">
+        </div>
+        <div class="field">
+          <label>① 选择部位</label>
+          <div class="wk-muscle-chips" id="wkMuscleGroup"></div>
+        </div>
+        <div class="field">
+          <label>② 点选动作（可多选）</label>
+          <div class="wk-action-grid" id="wkActionGrid"></div>
+        </div>
+        <div class="field">
+          <label>③ 已选动作 · 组数×次数</label>
+          <div id="wkSelected"></div>
+        </div>
+                <div class="flex gap-sm mt-2">
+          <button class="btn btn-ghost" style="flex:1" onclick="window.YDJK_UI.closeModal('addWorkoutModal')">取消</button>
+          <div class="field" id="cardioDetailField" style="display:none">
+            <label>有氧详情（可选）</label>
+            <div class="flex gap-sm" style="gap:8px">
+              <input class="input" type="number" id="wkDistance" placeholder="距离(km)" min="0" step="0.1" style="flex:1">
+              <input class="input" type="number" id="wkPace" placeholder="配速(min/km)" min="0" step="0.1" style="flex:1">
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="btnSaveWorkout" style="flex:1">保存训练</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 编辑训练弹窗 -->
+    <div class="modal-overlay" id="editWorkoutModal">
+      <div class="modal" style="max-width:420px">
+        <div class="modal-title"><i class="ic" data-icon="edit"></i> 编辑训练</div>
+        <div class="modal-sub" id="ewSub"></div>
+        <div class="field"><label>组数</label><input class="input" type="number" id="ewSets" min="1" max="20" value="3"></div>
+        <div class="field"><label>次数</label><input class="input" type="number" id="ewReps" min="1" max="200" value="10"></div>
+        <div class="field"><label>重量 (kg，可选)</label><input class="input" type="number" id="ewWeight" min="0" max="500" step="0.5" placeholder="0"></div>
+                <div class="flex gap-sm mt-2">
+          <button class="btn btn-ghost" style="flex:1" onclick="window.YDJK_UI.closeModal('editWorkoutModal')">取消</button>
+          <button class="btn btn-primary" id="btnSaveEditWk" style="flex:1">保存修改</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 运动建议（基于记录生成） -->
+    <div class="card mb-3" id="suggestCard">
+      <div class="card-title"><i class="ic" data-icon="tip"></i> 运动建议</div>
+      <div id="suggestBody" class="text-2" style="font-size:.92rem;line-height:1.8">
+        <p style="margin:0">开始记录运动后，这里会根据你的运动习惯给出建议 <i class="ic" data-icon="workout"></i></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script src="assets/js/storage.js?v=90"></script>
+<script src="assets/js/data.js?v=90"></script>
+<script src="assets/js/charts.js?v=90"></script>
+<script src="assets/js/app.js?v=90"></script>
+<script src="assets/js/pages/plans.js?v=91"></script>
+
+<!-- 底部 Tab 导航（移动端 App 式） -->
+<nav class="tab-bar">
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico"><i class="ic" data-icon="home"></i></span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico"><i class="ic" data-icon="food"></i></span><span class="tab-lbl">饮食</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico"><i class="ic" data-icon="workout"></i></span><span class="tab-lbl">运动</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico"><i class="ic" data-icon="user"></i></span><span class="tab-lbl">我的</span></a>
+    <a class="tab-item" data-tab="stats" href="stats.html"><span class="tab-ico"><i class="ic" data-icon="stats"></i></span><span class="tab-lbl">统计</span></a>
+
+</nav>
+
+
+<script src="assets/js/icons.js?v=90"></script>
+</body>
+</html>

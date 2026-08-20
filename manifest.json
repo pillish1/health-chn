@@ -1,0 +1,23 @@
+{
+  "name": "悦动健康 · 运动健康生活",
+  "short_name": "悦动健康",
+  "description": "科学运动 + 均衡饮食 + 数据追踪，一站式私人健康管理平台",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#f4f8ff",
+  "theme_color": "#2563eb",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
+  ,
+  "start_url": "./app.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f0f4fa",
+  "theme_color": "#3b82f6"
+

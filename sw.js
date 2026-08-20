@@ -1,0 +1,116 @@
+/* ============================================================
+   悦动健康 · Service Worker（离线缓存 + 自动更新）
+   ============================================================ */
+var CACHE = 'yuedong-health-v78';
+var CACHE = 'yuedong-health-v92';
+
+var ASSETS = [
+  './',
+  './index.html',
+  './foods.html',
+  './plans.html',
+  './profile.html',
+  './welcome.html',
+  './about.html',
+  './404.html',
+    './manifest-app2.json',
+    './app3.html',
+    './manifest-app3.json',
+    './assets/css/app3.css?v=120',
+      './assets/js/ydb.js?v=130',
+
+    './assets/js/app-shell3.js?v=120',
+    './assets/js/views3/home3.js?v=120',
+    './assets/js/views3/foods3.js?v=120',
+      './assets/js/views3/foods3v2.js?v=130',
+
+    './assets/js/views3/plans3.js?v=120',
+    './assets/js/views3/stats3.js?v=120',
+    './assets/js/views3/profile3.js?v=120',
+    './assets/js/views3/about3.js?v=120',
+
+
+    './app.html',
+    './app2.html',
+    './assets/css/app2.css?v=100',
+    './assets/js/app-shell2.js?v=100',
+    './assets/js/views2/home2.js?v=100',
+    './assets/js/views2/foods2.js?v=100',
+    './assets/js/views2/plans2.js?v=100',
+    './assets/js/views2/stats2.js?v=100',
+    './assets/js/views2/profile2.js?v=100',
+    './assets/js/views2/about2.js?v=100',
+
+    './manifest-app.json',
+    './assets/css/app.css?v=95',
+    './assets/js/app-shell.js?v=95',
+    './assets/js/views/home-view.js?v=95',
+    './assets/js/views/foods-view.js?v=95',
+    './assets/js/views/plans-view.js?v=95',
+    './assets/js/views/stats-view.js?v=95',
+    './assets/js/views/profile-view.js?v=95',
+    './assets/js/views/about-view.js?v=95',
+
+    './stats.html',
+
+  './manifest.json',
+  './assets/css/style.css?v=91',
+  './assets/js/storage.js?v=90',
+  './assets/js/data.js?v=90',
+  './assets/js/py-map.js?v=91',
+  './assets/js/py-foods.js?v=91',
+  './assets/js/charts.js?v=90',
+  './assets/js/app.js?v=90',
+  './assets/js/icons.js?v=90',
+  './assets/js/pages/home.js?v=90',
+  './assets/js/pages/foods.js?v=91',
+  './assets/js/pages/plans.js?v=91',
+  './assets/js/pages/profile.js?v=90',
+    './assets/js/pages/stats.js?v=91',
+
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/favicon-32.png'
+];
+
+self.addEventListener('install', function (e) {
+  // 逐条预缓存：个别资源 404 不影响整体安装（避免旧版引用已删除页面导致 install 失败）
+  e.waitUntil(
+    caches.open(CACHE).then(function (c) {
+      return Promise.all(ASSETS.map(function (u) {
+        return c.add(u).catch(function () {});
+      }));
+    }).then(function () { return self.skipWaiting(); })
+  );
+});
+
+self.addEventListener('activate', function (e) {
+  e.waitUntil(
+    caches.keys().then(function (keys) {
+      return Promise.all(keys.filter(function (k) { return k !== CACHE; }).map(function (k) { return caches.delete(k); }));
+    }).then(function () { return self.clients.claim(); })
+  );
+});
+
+// 网络优先，失败回退缓存（保证更新可见 + 离线可用）
+self.addEventListener('fetch', function (e) {
+  var req = e.request;
+  if (req.method !== 'GET') return;
+  var url = new URL(req.url);
+  if (url.origin !== location.origin) return;
+  e.respondWith(
+    fetch(req).then(function (res) {
+      if (res && res.status === 200) {
+        var copy = res.clone();
+        caches.open(CACHE).then(function (c) { c.put(req, copy); });
+      }
+      return res;
+    }).catch(function () {
+      return caches.match(req).then(function (cached) {
+        if (cached) return cached;
+        if (req.mode === 'navigate') return caches.match('./index.html');
+        return Response.error();
+      });
+    })
+  );
+});

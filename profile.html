@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人资料 · 悦动健康</title>
+<meta name="theme-color" content="#3b82f6">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="assets/css/style.css?v=91">
+<style>
+  /* 隐藏 nav 外的多余统计链接 */
+  body > .tab-item[data-tab="stats"] { display: none !important; }
+</style>
+
+</head>
+<body>
+
+<!-- 移动端 App 头 -->
+<div class="m-header">
+  <a class="m-logo" href="index.html"><img src="icons/icon-192.png" alt="悦动健康">悦动健康</a>
+    <div class="m-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题"><i class="ic" data-icon="moon"></i></button>
+    </div>
+
+</div>
+
+<div id="pageLoader" style="position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="text-align:center">
+    <img src="icons/icon-192.png" alt="悦动健康" style="width:56px;height:56px;border-radius:16px;box-shadow:0 8px 24px rgba(139,92,246,.3);animation:pulse 1.2s ease-in-out infinite">
+    <div style="margin-top:12px;color:var(--muted);font-size:.85rem">加载中…</div>
+  </div>
+</div>
+<style>@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }</style>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html"><span class="logo-icon"><img src="icons/icon-192.png" alt="悦动健康"></span>悦动<span class="hl">健康</span></a>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="主题"><i class="ic" data-icon="moon"></i></button>
+      <button class="icon-btn" onclick="history.back()" title="返回">←</button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <h1><i class="ic" data-icon="user"></i> 我的</h1>
+    <p>健康档案、数据备份与设置</p>
+  </div>
+</section>
+
+<section class="section-sm">
+  <div class="container" style="max-width:640px">
+    <div id="profilePanel">
+      <!-- 设置列表 -->
+      <div class="card mb-3" style="padding:6px 0">
+        <button class="list-row" id="btnEditProfile" type="button" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:12px 16px;display:flex;align-items:center;gap:12px">
+          <span class="icon-badge blue" style="width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.1rem;flex:none"><i class="ic" data-icon="clipboard"></i></span>
+          <span class="lr-main"><b class="small">健康档案</b><span class="lr-sub" style="display:block;font-size:.74rem;color:var(--muted)">查看/修改你的性别、年龄、身高体重与目标</span></span>
+          <span style="color:var(--muted)">›</span>
+        </button>
+        <button class="list-row" id="btnThemeToggle" type="button" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:12px 16px;display:flex;align-items:center;gap:12px">
+          <span class="icon-badge purple" style="width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.1rem;flex:none"><i class="ic" data-icon="moon"></i></span>
+          <span class="lr-main"><b class="small">深色模式</b><span class="lr-sub" style="display:block;font-size:.74rem;color:var(--muted)">切换浅色 / 深色外观</span></span>
+          <span style="color:var(--muted)" id="themeState">浅色</span>
+        </button>
+        <a class="list-row" href="about.html" style="display:flex;align-items:center;gap:12px;padding:12px 16px;text-decoration:none">
+          <span class="icon-badge green" style="width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.1rem;flex:none"><i class="ic" data-icon="info"></i></span>
+          <span class="lr-main"><b class="small">关于</b><span class="lr-sub" style="display:block;font-size:.74rem;color:var(--muted)">版本信息、隐私与免责声明</span></span>
+          <span style="color:var(--muted)">›</span>
+        </a>
+          <a class="list-row" href="stats.html" style="display:flex;align-items:center;gap:12px;padding:12px 16px;text-decoration:none">
+            <span class="icon-badge blue" style="width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:1.1rem;flex:none"><i class="ic" data-icon="stats"></i></span>
+            <span class="lr-main"><b class="small">统计分析</b><span class="lr-sub" style="display:block;font-size:.74rem;color:var(--muted)">体重趋势、摄入/训练趋势、成就徽章</span></span>
+            <span style="color:var(--muted)">›</span>
+          </a>
+
+      </div>
+
+      <!-- 数据备份（本地模式） -->
+      <div class="card mb-3">
+        <div class="card-title"><i class="ic" data-icon="folder"></i> 数据备份</div>
+        <p class="text-2 small">数据仅保存在这台设备上。导出 JSON 文件可随时备份，换手机时在新设备导入即可恢复全部记录。</p>
+        <div class="flex gap-sm" style="flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" id="btnExportData"><i class="ic" data-icon="upload"></i> 导出备份</button>
+          <button class="btn btn-outline btn-sm" id="btnImportData"><i class="ic" data-icon="save"></i> 导入备份</button>
+        </div>
+        <input type="file" id="importInput" accept=".json,application/json" style="display:none">
+        <div class="small muted mt-2" id="backupStatus"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- 健康档案编辑弹窗（与首页共用建档逻辑） -->
+<div class="modal-overlay" id="onboardModal">
+  <div class="modal">
+    <div class="modal-title" id="onboardModalTitle"><i class="ic" data-icon="wave"></i> 欢迎来到悦动健康</div>
+    <div class="modal-sub" id="onboardModalSub">先花 30 秒建立你的健康档案，之后所有计算与推荐将为你量身定制</div>
+    <form id="onboardForm"></form>
+    <div class="flex gap-sm mt-2">
+      <button type="button" class="btn btn-ghost" onclick="window.YDJK_UI.closeModal('onboardModal')" style="flex:1">取消</button>
+      <button type="button" class="btn btn-primary" onclick="window.YDJK_UI.submitProfileForm()" style="flex:1">保存档案</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/storage.js?v=90"></script>
+<script src="assets/js/data.js?v=90"></script>
+
+<script src="assets/js/app.js?v=90"></script>
+<script src="assets/js/pages/profile.js?v=90"></script>
+
+<!-- 底部 Tab 导航（移动端 App 式） -->
+<nav class="tab-bar">
+  <a class="tab-item" data-tab="home" href="index.html"><span class="tab-ico"><i class="ic" data-icon="home"></i></span><span class="tab-lbl">首页</span></a>
+  <a class="tab-item" data-tab="foods" href="foods.html"><span class="tab-ico"><i class="ic" data-icon="food"></i></span><span class="tab-lbl">饮食</span></a>
+  <a class="tab-item" data-tab="plans" href="plans.html"><span class="tab-ico"><i class="ic" data-icon="workout"></i></span><span class="tab-lbl">运动</span></a>
+  <a class="tab-item" data-tab="profile" href="profile.html"><span class="tab-ico"><i class="ic" data-icon="user"></i></span><span class="tab-lbl">我的</span></a>
+    <a class="tab-item" data-tab="stats" href="stats.html"><span class="tab-ico"><i class="ic" data-icon="stats"></i></span><span class="tab-lbl">统计</span></a>
+
+</nav>
+
+
+    <a class="tab-item" data-tab="stats" href="stats.html"><span class="tab-ico"><i class="ic" data-icon="stats"></i></span><span class="tab-lbl">统计</span></a>
+
+<script src="assets/js/icons.js?v=90"></script>
+</body>
+</html>
